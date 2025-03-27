@@ -11,6 +11,7 @@
 		D02E5EB52D95418600534F24 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = D02E5EB42D95418600534F24 /* RxCocoa */; };
 		D02E5EB72D95418600534F24 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D02E5EB62D95418600534F24 /* RxSwift */; };
 		D02E5EBA2D95419200534F24 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D02E5EB92D95419200534F24 /* SnapKit */; };
+		D02E5F252D95441200534F24 /* JTAppleCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = D02E5F242D95441200534F24 /* JTAppleCalendar */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D02E5EBA2D95419200534F24 /* SnapKit in Frameworks */,
+				D02E5F252D95441200534F24 /* JTAppleCalendar in Frameworks */,
 				D02E5EB72D95418600534F24 /* RxSwift in Frameworks */,
 				D02E5EB52D95418600534F24 /* RxCocoa in Frameworks */,
 			);
@@ -93,6 +95,7 @@
 				D02E5EB42D95418600534F24 /* RxCocoa */,
 				D02E5EB62D95418600534F24 /* RxSwift */,
 				D02E5EB92D95419200534F24 /* SnapKit */,
+				D02E5F242D95441200534F24 /* JTAppleCalendar */,
 			);
 			productName = ALLEX;
 			productReference = D02E5D832D95094600534F24 /* ALLEX.app */;
@@ -126,6 +129,7 @@
 			packageReferences = (
 				D02E5EB32D95418600534F24 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				D02E5EB82D95419200534F24 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				D02E5F232D95441200534F24 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D02E5D842D95094600534F24 /* Products */;
@@ -382,6 +386,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		D02E5F232D95441200534F24 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/patchthecode/JTAppleCalendar.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -399,6 +411,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D02E5EB82D95419200534F24 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		D02E5F242D95441200534F24 /* JTAppleCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D02E5F232D95441200534F24 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */;
+			productName = JTAppleCalendar;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
