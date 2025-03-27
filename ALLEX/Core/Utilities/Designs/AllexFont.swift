@@ -53,7 +53,7 @@ extension UIFont {
         }
     }
     
-    static func setStreamifyFont(_ type: FontName) -> UIFont {
+    static func setAllexFont(_ type: FontName) -> UIFont {
         return UIFont(name: type.font, size: type.size)!
     }
     
