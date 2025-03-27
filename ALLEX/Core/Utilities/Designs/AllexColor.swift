@@ -12,9 +12,9 @@ extension UIColor {
     enum ColorName {
         case pirmary
         case backGround
-        case textColor000
-        case textColor005
-        case textColor010
+        case textPirmary
+        case textSecondary
+        case textTertiary
         
         var color: UIColor {
             switch self {
@@ -22,12 +22,12 @@ extension UIColor {
                     .pirmary
             case .backGround:
                     .backGround
-            case .textColor000:
-                    .textColor000
-            case .textColor005:
-                    .textColor005
-            case .textColor010:
-                    .textColor010
+            case .textPirmary:
+                    .textPirmary
+            case .textSecondary:
+                    .textSecondary
+            case .textTertiary:
+                    .textTertiary
             }
         }
     }
