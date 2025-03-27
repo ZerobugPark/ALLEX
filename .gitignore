@@ -11,7 +11,7 @@
 .DS_Store
 
 ## API
-Networking/APIKey.swift
+Core/Network/APIKey.swift
 
 ## User settings
 xcuserdata/
