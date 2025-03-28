@@ -17,9 +17,10 @@ class ViewController: UIViewController {
         Task {
             do {
                 
-                let reuslt = try await ImageNetworkManager.shared.fetchAsycnAwait()
+                let reuslt = try await NetworkManger.shared.fetchGoogleData()
+                print(reuslt)
             } catch {
-                if let error = error as? ErrorCode {
+                if let error = error as? NetworkError {
                     print(error.localizedDescription)
                 } else {
                     print(error.localizedDescription)
