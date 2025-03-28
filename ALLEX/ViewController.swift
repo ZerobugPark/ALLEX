@@ -14,13 +14,21 @@ class ViewController: UIViewController {
         
         view.backgroundColor = .backGround
         
-        for family in UIFont.familyNames {
-            print(family)
-            
-            for names in UIFont.fontNames(forFamilyName: family) {
-                print("== \(names)")
+        Task {
+            do {
+                
+                let reuslt = try await ImageNetworkManager.shared.fetchAsycnAwait()
+            } catch {
+                if let error = error as? ErrorCode {
+                    print(error.localizedDescription)
+                } else {
+                    print(error.localizedDescription)
+                }
+                
             }
         }
+        
+    
         
         
     }
