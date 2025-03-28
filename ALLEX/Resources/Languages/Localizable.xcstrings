@@ -1,0 +1,24 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "ProfileText" : {
+      "comment" : "온보딩 화면 프로필 설정 타이틀",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AlleX Profile Setting"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allex 프로필 설정"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
