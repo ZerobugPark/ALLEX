@@ -11,7 +11,7 @@ import JTAppleCalendar
 import SnapKit
 
 
-class SignUpViewController: UIViewController {
+class SignUpViewController: BaseViewController<SignUpView, SignUpViewModel> {
     
     // JTAppleCalendarView 인스턴스 생성
     let calendarView: JTACMonthView = {
@@ -36,14 +36,22 @@ class SignUpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupUI()
-        configureCalendarView()
+        view.backgroundColor = .backGround
+        
+      //  setupUI()
+      //  configureCalendarView()
         
     }
     
+  
+    
+}
+
+
+extension SignUpViewController {
     private func setupUI() {
-        view.backgroundColor = .white
-        view.addSubview(calendarView)
+       // view.backgroundColor = .white
+       // view.addSubview(calendarView)
         
         calendarView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
@@ -60,9 +68,7 @@ class SignUpViewController: UIViewController {
         calendarView.scrollToDate(Date(), animateScroll: false) // 현재 날짜로 스크롤
     }
     
-    
 }
-
 
 // JTACMonthView DataSource Extension
 extension SignUpViewController: JTACMonthViewDataSource {
