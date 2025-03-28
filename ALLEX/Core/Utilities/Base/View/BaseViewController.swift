@@ -13,6 +13,18 @@ class BaseViewController<T: BaseView, VM: BaseViewModel>: UIViewController {
 
     var disposeBag = DisposeBag()
     
+    let mainView = T()
+    let viewModel: VM
+    
+    override func loadView() {
+        view = mainView
+    }
+    
+    init(viewModel: VM) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
