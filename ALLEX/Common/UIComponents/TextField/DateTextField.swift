@@ -16,8 +16,7 @@ final class DateTextField: UITextField, UITextFieldDelegate {
     private var datePickerContainer = UIView()
 
     let editingBeginSubject = PublishRelay<Void>()
-    
-    
+     
     init() {
         super.init(frame: .zero)
    
@@ -53,6 +52,7 @@ final class DateTextField: UITextField, UITextFieldDelegate {
         
         // 툴바 설정
         let toolbar = UIToolbar()
+        toolbar.sizeToFit()
         toolbar.setItems([cancelButton, doneButton], animated: false)
 
         
@@ -106,11 +106,16 @@ final class DateTextField: UITextField, UITextFieldDelegate {
         dateFormatter.dateStyle = .medium
         self.text = dateFormatter.string(from: datePicker.date)
         
-        datePickerContainer.removeFromSuperview()
+        // 텍스트에 직접 대입하는것은 RxSwift에서 조회가 불가능
+        // 값이 변경되었다는것을 알려줘서 RxSWift가 알 수 있게 처리해야 함
+        self.sendActions(for: .valueChanged)
+        
+        
         self.resignFirstResponder() // 닫기
     }
 
     @objc private func cancelPressed() {
+        
         self.resignFirstResponder() // 취소 시 닫기
     }
 
@@ -118,7 +123,7 @@ final class DateTextField: UITextField, UITextFieldDelegate {
     @discardableResult
     override func resignFirstResponder() -> Bool {
         super.resignFirstResponder()
-
+        datePickerContainer.removeFromSuperview()
         return true
     }
 

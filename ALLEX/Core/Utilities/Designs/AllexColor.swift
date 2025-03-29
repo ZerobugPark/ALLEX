@@ -19,6 +19,7 @@ extension UIColor {
         case textTertiary
         case toolBar
         case unvalid
+        case valid
         
         var color: UIColor {
             switch self {
@@ -40,6 +41,8 @@ extension UIColor {
                     .toolBar
             case .unvalid:
                     .unvalid
+            case .valid:
+                    .valid
             }
         }
     }

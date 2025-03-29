@@ -55,6 +55,23 @@
         }
       }
     },
+    "Start_Button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Getting started"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시작하기"
+          }
+        }
+      }
+    },
     "Start_Date" : {
       "comment" : "클라이밍 시작한 날짜",
       "extractionState" : "manual",
@@ -67,13 +84,13 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "나의 첫 클라이밍"
+            "state" : "translated",
+            "value" : "나의 첫 클라이밍 시작"
           }
         }
       }
     },
-    "Verified_NickName" : {
+    "UnVerified_NickName" : {
       "comment" : "닉네임 유효성검사",
       "extractionState" : "manual",
       "localizations" : {
@@ -85,8 +102,25 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "공백 제외 두글자 이상 입력해주세요"
+            "state" : "translated",
+            "value" : "두 글자 이상 입력해주세요"
+          }
+        }
+      }
+    },
+    "Verified_NickName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "available nickname"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용 가능한 누리이름 입니다."
           }
         }
       }

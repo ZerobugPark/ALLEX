@@ -30,3 +30,16 @@ final class TertiaryLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+extension TertiaryLabel {
+    func updateTextColorBasedOnLength(count: Int) {
+            
+        switch count {
+        case ...1:
+            textColor = .setAllexColor(.unvalid)
+        default:
+            textColor = .setAllexColor(.valid)
+            
+        }
+    }
+}

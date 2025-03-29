@@ -14,17 +14,18 @@ final class SignUpView: BaseView {
     private let titleLabel = TitleLabel(key: .profileTitle , title: "")
     private let circleView = UIView()
     private let nicknameLabel = SubTitleLabel(key: .nicknameTitle, title: "")
+    
     private let dateLabel = SubTitleLabel(key: .startDate, title: "")
-    private let spaceLabel = SubTitleLabel(key: .space, title: "")
     
     let nicknameTextField = BaseTextField()
-    let infoLabel = TertiaryLabel(key: .verifiedNickName, title: "")
-    
-    
+    let countLabel = TertiaryLabel(title: "0/7")
+    let infoLabel = TertiaryLabel(key: .unVerifiedNickName, title: "")
+
     let dateTextField = DateTextField()
+    let startButton = BaseButton(key: .start)
     
     override func configureHierarchy() {
-        self.addSubviews(titleLabel, nicknameLabel, circleView, nicknameTextField, infoLabel, dateLabel, dateTextField, spaceLabel)
+        self.addSubviews(titleLabel, nicknameLabel, circleView, nicknameTextField, countLabel, infoLabel, dateLabel, dateTextField, startButton)
         
     }
     
@@ -44,6 +45,12 @@ final class SignUpView: BaseView {
             make.centerY.equalToSuperview().multipliedBy(0.6)
             make.leading.equalTo(nicknameLabel.snp.trailing).offset(4)
             make.size.equalTo(6)
+        }
+        
+        countLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview().multipliedBy(0.6)
+            make.trailing.equalToSuperview().offset(-32)
+            
         }
     
         nicknameTextField.snp.makeConstraints { make in
@@ -71,12 +78,11 @@ final class SignUpView: BaseView {
             make.horizontalEdges.equalToSuperview().inset(32)
             make.height.equalTo(50)
         }
-//        
-//        spaceLabel.snp.makeConstraints { make in
-//            make.top.equalTo(dateTextField.snp.bottom).offset(25)
-//            make.leading.equalToSuperview().offset(32)
-//        }
-//        
+   
+        startButton.snp.makeConstraints { make in
+            make.top.equalTo(dateTextField.snp.bottom).offset(44)
+            make.horizontalEdges.equalToSuperview().inset(32)
+        }
 
     }
     
@@ -84,18 +90,19 @@ final class SignUpView: BaseView {
         titleLabel.font = .setAllexFont(.bold_24)
         nicknameLabel.font = .setAllexFont(.regular_16)
         dateLabel.font = .setAllexFont(.regular_16)
-        spaceLabel.font = .setAllexFont(.regular_16)
+      
             
         infoLabel.textAlignment = .right
         infoLabel.textColor = .setAllexColor(.unvalid)
         infoLabel.font = .setAllexFont(.light_9)
-      
+        
+        countLabel.font = .setAllexFont(.light_12)
 
         
         circleView.clipsToBounds = true
         circleView.backgroundColor = .setAllexColor(.pirmary)
         
-        
+        startButton.isEnabled = false
     }
     
     override func layoutSubviews() {
