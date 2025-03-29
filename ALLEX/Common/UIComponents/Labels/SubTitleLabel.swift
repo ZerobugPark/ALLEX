@@ -1,5 +1,5 @@
 //
-//  TitleLabel.swift
+//  SubTitleLabel.swift
 //  ALLEX
 //
 //  Created by youngkyun park on 3/29/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class TitleLabel: UILabel {
+final class SubTitleLabel: UILabel {
 
     init() {
         super.init(frame: .zero)
@@ -22,7 +22,7 @@ final class TitleLabel: UILabel {
         
         self.init()
         text = key.rawValue.localized(with: title)
-        textColor = .setAllexColor(.textPirmary)
+        textColor = .setAllexColor(.textSecondary)
  
     }
     
@@ -30,3 +30,5 @@ final class TitleLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+
