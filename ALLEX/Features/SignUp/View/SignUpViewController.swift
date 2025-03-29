@@ -13,6 +13,9 @@ import SnapKit
 
 class SignUpViewController: BaseViewController<SignUpView, SignUpViewModel> {
     
+    
+    weak var coordinator: SignUpCoordinator?
+    
     // JTAppleCalendarView 인스턴스 생성
     let calendarView: JTACMonthView = {
         let calendar = JTACMonthView()

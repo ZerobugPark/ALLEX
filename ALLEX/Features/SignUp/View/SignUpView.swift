@@ -20,12 +20,13 @@ final class SignUpView: BaseView {
     override func configureLayout() {
         
         titleLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(44)
+            make.leading.equalToSuperview().offset(16)
         }
     }
     
     override func configureView() {
-        titleLabel.font = .setAllexFont(.bold_16)
+        titleLabel.font = .setAllexFont(.bold_24)
         titleLabel.textColor = .setAllexColor(.textPirmary)
          
     }
