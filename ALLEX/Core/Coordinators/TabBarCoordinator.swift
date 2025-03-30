@@ -7,10 +7,12 @@
 
 import UIKit
 
-final class TabBarCoordinator: Coordinator {
+import SnapKit
 
+final class TabBarCoordinator: Coordinator {
+    
     var childCoordinators: [Coordinator] = []
-        
+    
     let tabBarController: UITabBarController
     private let sharedData = SharedDataModel()
     
@@ -18,7 +20,7 @@ final class TabBarCoordinator: Coordinator {
         self.tabBarController = tabBarController
         configureApperance()
     }
-   
+    
     
     func start() {
         
@@ -34,11 +36,16 @@ final class TabBarCoordinator: Coordinator {
         calendarNav.view.backgroundColor = .setAllexColor(.backGround)
         calendarCoordinator.start()
         
-        let cameraNav = UINavigationController()
-        let cameraCoordinator = CameraCoordinator(navigationController: cameraNav, sharedData: sharedData)
-        cameraNav.view.backgroundColor = .setAllexColor(.backGround)
-        cameraCoordinator.start()
-
+        
+        // 중앙에 빈 아이템 추가 (투명하게)
+        let emptyVC = UIViewController()
+        
+        
+        //        let cameraNav = UINavigationController()
+        //        let cameraCoordinator = CameraCoordinator(navigationController: cameraNav, sharedData: sharedData)
+        //        cameraNav.view.backgroundColor = .setAllexColor(.backGround)
+        //        cameraCoordinator.start()
+        
         let reportNav = UINavigationController()
         let reportCoordinator = ReportCoordinator(navigationController: reportNav, sharedData: sharedData)
         reportNav.view.backgroundColor = .setAllexColor(.backGround)
@@ -49,22 +56,27 @@ final class TabBarCoordinator: Coordinator {
         profileNav.view.backgroundColor = .setAllexColor(.backGround)
         profileCoordinator.start()
         
-             
+        
         homeNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "house"), tag: 0)
         calendarNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "calendar"), tag: 1)
         
-        cameraNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "camera"), tag: 2)
-     
+        let emptyItem = UITabBarItem(title: "", image: nil, tag: 2)
+        emptyItem.isEnabled = false // 선택 불가능하게 설정
+        emptyVC.tabBarItem = emptyItem  // 빈 탭 아이템 설정
+        
+        //cameraNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "camera"), tag: 2)
+        
         reportNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "chart.xyaxis.line"), tag: 3)
         
         profileNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "person.crop.circle"), tag: 4)
         
         
-
+        tabBarController.setViewControllers([homeNav, calendarNav, emptyVC, reportNav, profileNav], animated: true)
         
-        tabBarController.setViewControllers([homeNav, calendarNav, cameraNav, reportNav, profileNav], animated: true)
-
+        addCameraButton()
+        
     }
+    
     
     
     private func configureApperance() {
@@ -72,12 +84,12 @@ final class TabBarCoordinator: Coordinator {
         tabBarApperance.configureWithOpaqueBackground()
         tabBarApperance.backgroundColor = .setAllexColor(.backGround)
         
-      //  선택 되었을 때 컬러
+        //  선택 되었을 때 컬러
         tabBarApperance.stackedLayoutAppearance.selected.iconColor = .setAllexColor(.tabBarSelected)
-       
+        
         //미선택일 때 컬러
         tabBarApperance.stackedLayoutAppearance.normal.iconColor = .setAllexColor(.tabBarUnSelected)
- 
+        
         UITabBar.appearance().standardAppearance = tabBarApperance
         
         if #available(iOS 15.0, *) {
@@ -85,6 +97,54 @@ final class TabBarCoordinator: Coordinator {
             UITabBar.appearance().scrollEdgeAppearance = tabBarApperance
         }
         
+    }
+    
+    private func addCameraButton() {
+        
+        // 이미지뷰 생성
+        let view = UIView()
+        //view.backgroundColor = .red
+ 
+        let cameraImageView = UIImageView()
+        
+        view.addSubview(cameraImageView)
+        // 이미지 설정
+        cameraImageView.image = UIImage(systemName: "camera")
+        cameraImageView.backgroundColor = .clear
+        cameraImageView.tintColor = .setAllexColor(.pirmary)//.tabBarUnSelected
+        
+        view.isUserInteractionEnabled = true // 탭 가능하도록 설정
+        
+        // 탭 제스처 추가
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cameraButtonTapped))
+        view.addGestureRecognizer(tapGesture)
+        
+        // 탭바에 이미지뷰 추가
+        tabBarController.tabBar.addSubview(view)
+        
+        view.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.width.equalTo(tabBarController.tabBar.snp.width).multipliedBy(0.2)
+            make.height.equalTo(tabBarController.tabBar.safeAreaLayoutGuide)
+            
+        }
+        
+        
+        cameraImageView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().offset(4)
+            make.size.equalTo(tabBarController.tabBar.snp.width).multipliedBy(0.078)
+            
+        }
+        
+        
+    }
+    
+    
+    @objc func cameraButtonTapped() {
+        let cameraCoordinator = CameraCoordinator(presentingController: tabBarController, sharedData: sharedData)
+        cameraCoordinator.start()
     }
     
     

@@ -57,6 +57,10 @@ final class SignUpViewModel: BaseViewModel {
                       vaildStatus: vaildStatus.asDriver(onErrorJustReturn: false),
                       showHome: showHome.asDriver(onErrorJustReturn: ()))
     }
+    
+    deinit {
+        print(String(describing: self) + "Deinit")
+    }
 }
 
 

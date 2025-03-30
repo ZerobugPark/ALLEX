@@ -7,12 +7,14 @@
 
 import UIKit
 
-class CameraViewController: UIViewController {
+final class CameraViewController: BaseViewController<CameraView, CameraViewModel> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
+        
+    
+        view.backgroundColor = .blue
     }
     
 
