@@ -31,9 +31,7 @@ class BaseViewController<T: BaseView, VM: BaseViewModel>: UIViewController {
         
     }
     
-    func bind() {
-        
-    }
+    func bind() {}
     
     
     required init?(coder: NSCoder) {

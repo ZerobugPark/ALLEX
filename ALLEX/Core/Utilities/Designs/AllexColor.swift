@@ -12,9 +12,16 @@ extension UIColor {
     enum ColorName {
         case pirmary
         case backGround
+        case backGroundSecondary
+        case backGroundTertiary
         case textPirmary
         case textSecondary
         case textTertiary
+        case toolBar
+        case unvalid
+        case valid
+        case tabBarSelected
+        case tabBarUnSelected
         
         var color: UIColor {
             switch self {
@@ -22,12 +29,26 @@ extension UIColor {
                     .pirmary
             case .backGround:
                     .backGround
+            case .backGroundSecondary:
+                    .backGroundSecondary
+            case .backGroundTertiary:
+                    .backGroundTertiary
             case .textPirmary:
                     .textPirmary
             case .textSecondary:
                     .textSecondary
             case .textTertiary:
                     .textTertiary
+            case .toolBar:
+                    .toolBar
+            case .unvalid:
+                    .unvalid
+            case .valid:
+                    .valid
+            case .tabBarSelected:
+                    .tabBarSelected
+            case .tabBarUnSelected:
+                    .tabBarUnSelected
             }
         }
     }
