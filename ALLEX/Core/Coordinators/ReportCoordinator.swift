@@ -14,6 +14,7 @@ final class ReportCoordinator: Coordinator {
     private let navigationController: UINavigationController
  
     init(navigationController: UINavigationController) {
+        print("123333")
         self.navigationController = navigationController
     }
     

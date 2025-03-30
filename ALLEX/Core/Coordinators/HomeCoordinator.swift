@@ -14,12 +14,14 @@ final class HomeCoordinator: Coordinator {
     private let navigationController: UINavigationController
  
     init(navigationController: UINavigationController) {
+        print("123")
         self.navigationController = navigationController
     }
     
     func start() {
-        //let vm = HomeView()
-        let vc = HomeViewController()
+        let vm = HomeViewModel()
+        let vc = HomeViewController(viewModel: vm)
+        vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
     
     }

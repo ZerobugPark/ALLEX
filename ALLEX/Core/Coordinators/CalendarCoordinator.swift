@@ -14,6 +14,7 @@ final class CalendarCoordinator: Coordinator {
     private let navigationController: UINavigationController
  
     init(navigationController: UINavigationController) {
+        print("12223111")
         self.navigationController = navigationController
     }
     

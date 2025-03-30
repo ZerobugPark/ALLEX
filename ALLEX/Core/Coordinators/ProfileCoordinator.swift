@@ -14,6 +14,7 @@ final class ProfileCoordinator: Coordinator {
     private let navigationController: UINavigationController
  
     init(navigationController: UINavigationController) {
+        print("12322")
         self.navigationController = navigationController
     }
     
