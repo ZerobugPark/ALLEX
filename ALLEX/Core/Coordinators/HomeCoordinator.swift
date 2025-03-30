@@ -19,9 +19,9 @@ final class HomeCoordinator: Coordinator {
     }
     
     func start() {
-        ///let vm = SignUpViewModel()
-        let vc = ViewController()
-        
+    
+        let vc = HomeViewController()
+        vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
     }
      

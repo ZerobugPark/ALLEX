@@ -24,7 +24,7 @@ final class SignUpCoordinator: Coordinator {
     func start() {
         let vm = SignUpViewModel()
         let vc = SignUpViewController(viewModel: vm)
-        
+        vc.coordinator = self
         
         navigationController.pushViewController(vc, animated: true)
     }

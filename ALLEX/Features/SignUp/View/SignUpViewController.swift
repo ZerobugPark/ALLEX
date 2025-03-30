@@ -7,7 +7,6 @@
 
 import UIKit
 
-//import JTAppleCalendar
 import RxCocoa
 import RxSwift
 
@@ -39,7 +38,7 @@ final class SignUpViewController: BaseViewController<SignUpView, SignUpViewModel
             
             owner.mainView.countLabel.text = "\(value)/7"
             
-            if value < 2{
+            if value < 2 {
                 
                 owner.mainView.infoLabel.text = LocalizedKey.unVerifiedNickName.rawValue.localized(with: "")
             } else {
@@ -58,7 +57,9 @@ final class SignUpViewController: BaseViewController<SignUpView, SignUpViewModel
         }.disposed(by: disposeBag)
         
         output.showHome.drive(with: self) { owner, _ in
-            print("dd")
+
+            owner.coordinator?.didFinishShighUp()
+            
         }.disposed(by: disposeBag)
         
         mainView.dateTextField.rx.controlEvent(.touchDown)
