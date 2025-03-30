@@ -14,7 +14,6 @@ final class SignUpCoordinator: Coordinator {
     
     var onSignUpCompleted: (()-> Void)?
     
-
     private let navigationController: UINavigationController
     
     init(navigationController: UINavigationController) {
@@ -25,7 +24,7 @@ final class SignUpCoordinator: Coordinator {
         let vm = SignUpViewModel()
         let vc = SignUpViewController(viewModel: vm)
         vc.coordinator = self
-        
+
         navigationController.pushViewController(vc, animated: true)
     }
     
@@ -33,6 +32,8 @@ final class SignUpCoordinator: Coordinator {
         onSignUpCompleted?() // AppCoordinator가 홈으로 화면 전환
     }
      
-    
+    deinit {
+           print("SignUpCoordinator deinitialized")
+       }
 }
 

@@ -1,13 +1,13 @@
 //
-//  HomeCoordinator.swift
+//  CalendarCoordinator.swift
 //  ALLEX
 //
-//  Created by youngkyun park on 3/29/25.
+//  Created by youngkyun park on 3/30/25.
 //
 
 import UIKit
 
-final class HomeCoordinator: Coordinator {
+final class CalendarCoordinator: Coordinator {
         
     var childCoordinators: [Coordinator] = []
 
@@ -19,7 +19,7 @@ final class HomeCoordinator: Coordinator {
     
     func start() {
         //let vm = HomeView()
-        let vc = HomeViewController()
+        let vc = CalendarViewController()
         navigationController.pushViewController(vc, animated: true)
     
     }

@@ -20,6 +20,8 @@ extension UIColor {
         case toolBar
         case unvalid
         case valid
+        case tabBarSelected
+        case tabBarUnSelected
         
         var color: UIColor {
             switch self {
@@ -43,6 +45,10 @@ extension UIColor {
                     .unvalid
             case .valid:
                     .valid
+            case .tabBarSelected:
+                    .tabBarSelected
+            case .tabBarUnSelected:
+                    .tabBarUnSelected
             }
         }
     }
