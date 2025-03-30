@@ -12,6 +12,7 @@ final class TabBarCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
         
     let tabBarController: UITabBarController
+    private let sharedData = SharedDataModel()
     
     init(tabBarController: UITabBarController) {
         self.tabBarController = tabBarController
@@ -21,31 +22,30 @@ final class TabBarCoordinator: Coordinator {
     
     func start() {
         
-        //let tabBarController = UITabBarController() // TabBarController 인스턴스를 생성
         
         
         let homeNav = UINavigationController()
-        let homeCoordinator = HomeCoordinator(navigationController: homeNav)
+        let homeCoordinator = HomeCoordinator(navigationController: homeNav, sharedData: sharedData)
         homeNav.view.backgroundColor = .setAllexColor(.backGround)
         homeCoordinator.start()
         
         let calendarNav = UINavigationController()
-        let calendarCoordinator = CalendarCoordinator(navigationController: calendarNav)
+        let calendarCoordinator = CalendarCoordinator(navigationController: calendarNav, sharedData: sharedData)
         calendarNav.view.backgroundColor = .setAllexColor(.backGround)
         calendarCoordinator.start()
         
         let cameraNav = UINavigationController()
-        let cameraCoordinator = CameraCoordinator(navigationController: cameraNav)
+        let cameraCoordinator = CameraCoordinator(navigationController: cameraNav, sharedData: sharedData)
         cameraNav.view.backgroundColor = .setAllexColor(.backGround)
         cameraCoordinator.start()
 
         let reportNav = UINavigationController()
-        let reportCoordinator = ReportCoordinator(navigationController: reportNav)
+        let reportCoordinator = ReportCoordinator(navigationController: reportNav, sharedData: sharedData)
         reportNav.view.backgroundColor = .setAllexColor(.backGround)
         reportCoordinator.start()
         
         let profileNav = UINavigationController()
-        let profileCoordinator = ProfileCoordinator(navigationController: profileNav)
+        let profileCoordinator = ProfileCoordinator(navigationController: profileNav, sharedData: sharedData)
         profileNav.view.backgroundColor = .setAllexColor(.backGround)
         profileCoordinator.start()
         

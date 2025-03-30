@@ -7,14 +7,27 @@
 
 import UIKit
 
-class CalendarViewController: UIViewController {
+import RxCocoa
+import RxSwift
+
+
+class CalendarViewController: BaseViewController<CalendarView, CalendarViewModel> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
+        //view.backgroundColor = .white
+    }
+    
+    override func bind() {
+        
+        let input = CalendarViewModel.Input(initdd: Observable.just(()))
+        
+        let output = viewModel.transform(input: input)
+        
     }
     
 
+    
 
 }

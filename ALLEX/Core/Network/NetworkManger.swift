@@ -7,8 +7,11 @@
 
 import UIKit
 
-final class NetworkManger: GoogleSheetRepository {
+import RxCocoa
+import RxSwift
 
+final class NetworkManger: GoogleSheetRepository {
+    
     
     static let shared = NetworkManger()
     
@@ -19,15 +22,18 @@ final class NetworkManger: GoogleSheetRepository {
         self.decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
     
-    func fetchGoogleData() async throws -> [GoogleSheetData] {
-        let response = try await fetchAsyncLet()
-        
-        return response
-    }
+    
+    
+    
+//    func fetchGoogleData() async throws -> [GoogleSheetData] {
+//        let response = try await fetchAsyncLet()
+//        
+//        return response
+//    }
     
     
     private func fetchAsyncAwait(api: GoogleSheetRequest) async throws -> GoogleSheetResponse  {
-                
+        
         guard let request = api.asURLRequest() else {
             let msg = "Invalid URL address."
             throw NetworkError.invalidRequest(message: msg)
@@ -37,12 +43,12 @@ final class NetworkManger: GoogleSheetRepository {
             let (data, response) = try await URLSession.shared.data(for: request)
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            
+                
                 let decodedErrorData = try decoder.decode(IntegrationErrorResponse.self, from: data)
                 throw NetworkError.from(decodedErrorData.error.code, message: decodedErrorData.error.message)
                 
             }
-        
+            
             let decodedData = try decoder.decode(GoogleSheetResponse.self, from: data)
             return decodedData
             
@@ -52,27 +58,72 @@ final class NetworkManger: GoogleSheetRepository {
     }
     
     
-
-    private func fetchAsyncLet() async throws -> [GoogleSheetData] {
-        async let brand = NetworkManger.shared.fetchAsyncAwait(api: .brand).transform()
-        async let gym = NetworkManger.shared.fetchAsyncAwait(api: .gym).transform()
-        async let grade = NetworkManger.shared.fetchAsyncAwait(api: .gymGrades).transform()
-        async let route = NetworkManger.shared.fetchAsyncAwait(api: .boulderingRoutes).transform()
-
-        do {
-            return try await [brand, gym, grade, route]
-        } catch {
-            let results = await [try? brand, try? gym, try? grade, try? route]
+    
+//    private func fetchAsyncLet() async throws -> [GoogleSheetData] {
+//        async let brand = NetworkManger.shared.fetchAsyncAwait(api: .brand).transform()
+//        async let gym = NetworkManger.shared.fetchAsyncAwait(api: .gym).transform()
+//        async let grade = NetworkManger.shared.fetchAsyncAwait(api: .gymGrades).transform()
+//        async let route = NetworkManger.shared.fetchAsyncAwait(api: .boulderingRoutes).transform()
+//        
+//        do {
+//            return try await [brand, gym, grade, route]
+//        } catch {
+//            let results = await [try? brand, try? gym, try? grade, try? route]
+//            
+//            let validResults = results.compactMap { $0 }
+//            if validResults.isEmpty {
+//                throw error
+//            }
+//            return validResults
+//        }
+//        
+//    }
+    
+    func callRequest() -> Single<Result<[GoogleSheetData], NetworkError>> {
+        
+        return Single<Result<[GoogleSheetData],NetworkError>>.create { value in
             
-            let validResults = results.compactMap { $0 }
-            if validResults.isEmpty {
-                throw error
+            Task {
+                do {
+                    async let brand = NetworkManger.shared.fetchAsyncAwait(api: .brand).transform()
+                    async let gym = NetworkManger.shared.fetchAsyncAwait(api: .gym).transform()
+                    async let grade = NetworkManger.shared.fetchAsyncAwait(api: .gymGrades).transform()
+                    async let route = NetworkManger.shared.fetchAsyncAwait(api: .boulderingRoutes).transform()
+                    
+                    let results = try await [brand, gym, grade, route]
+                    
+                    value(.success(.success(results)))
+                    
+                } catch let error as NetworkError {
+                    
+                    let results = await [
+                        try? NetworkManger.shared.fetchAsyncAwait(api: .brand).transform(),
+                        try? NetworkManger.shared.fetchAsyncAwait(api: .gym).transform(),
+                        try? NetworkManger.shared.fetchAsyncAwait(api: .gymGrades).transform(),
+                        try? NetworkManger.shared.fetchAsyncAwait(api: .boulderingRoutes).transform()
+                    ]
+                    
+                    let validResults = results.compactMap { $0 }
+                    
+                    if validResults.isEmpty {
+                        value(.success(.failure(error)))
+                    } else {
+                        value(.success(.success(validResults)))
+                    } 
+                    
+                }  catch {
+                    // 예상치 못한 에러 처리
+                    value(.success(.failure(.unknown(statusCode: 0, message: error.localizedDescription))))
+                }
             }
-            return validResults
+            
+            
+            
+            return Disposables.create()
         }
         
+
     }
-    
     
 }
 

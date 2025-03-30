@@ -7,7 +7,11 @@
 
 import UIKit
 
-final class HomeViewController: UIViewController {
+import RxCocoa
+import RxSwift
+
+
+final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
 
     weak var coordinator: HomeCoordinator?
     
@@ -18,22 +22,14 @@ final class HomeViewController: UIViewController {
       
     }
     
+    override func bind() {
+        
+        
+        let input = HomeViewModel.Input(viewdidLoad: Observable.just(()))
+        
+        let output = viewModel.transform(input: input)
+    }
 
 
 
 }
-
-//Task {
-//    do {
-//        
-//        let reuslt = try await NetworkManger.shared.fetchGoogleData()
-//        print(reuslt)
-//    } catch {
-//        if let error = error as? NetworkError {
-//            print(error.localizedDescription)
-//        } else {
-//            print(error.localizedDescription)
-//        }
-//        
-//    }
-//}
