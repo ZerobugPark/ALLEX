@@ -13,9 +13,10 @@ final class CameraCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
 
     private let navigationController: UINavigationController
+    private let sharedData: SharedDataModel
  
-    init(navigationController: UINavigationController) {
-        print("123111")
+    init(navigationController: UINavigationController, sharedData: SharedDataModel) {
+        self.sharedData = sharedData
         self.navigationController = navigationController
     }
     

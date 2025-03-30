@@ -12,9 +12,10 @@ final class ReportCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
 
     private let navigationController: UINavigationController
+    private let sharedData: SharedDataModel
  
-    init(navigationController: UINavigationController) {
-        print("123333")
+    init(navigationController: UINavigationController, sharedData: SharedDataModel) {
+        self.sharedData = sharedData
         self.navigationController = navigationController
     }
     

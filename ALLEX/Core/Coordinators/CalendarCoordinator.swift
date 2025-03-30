@@ -12,15 +12,16 @@ final class CalendarCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
 
     private let navigationController: UINavigationController
+    private let sharedData: SharedDataModel
  
-    init(navigationController: UINavigationController) {
-        print("12223111")
+    init(navigationController: UINavigationController, sharedData: SharedDataModel) {
+        self.sharedData = sharedData
         self.navigationController = navigationController
     }
     
     func start() {
-        //let vm = HomeView()
-        let vc = CalendarViewController()
+        let vm = CalendarViewModel(sharedData)
+        let vc = CalendarViewController(viewModel: vm)
         navigationController.pushViewController(vc, animated: true)
     
     }
