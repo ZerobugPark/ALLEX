@@ -27,7 +27,6 @@ class CalendarViewModel: BaseViewModel {
     
     init(_ sharedData: SharedDataModel) {
         self.sharedData = sharedData
-        print(sharedData, "123213")
     }
     
     
@@ -35,7 +34,6 @@ class CalendarViewModel: BaseViewModel {
         
         input.initdd.bind(with: self) { owner, _ in
             
-            print(owner.sharedData.getData(for: Gym.self)!)
             
         }.disposed(by: disposeBag)
         

@@ -48,6 +48,10 @@ final class SignUpViewModel: BaseViewModel {
 
         input.startButtonTapped.bind(with: self) { owner, value in
             
+            UserDefaultManager.isLoggedIn = true
+            UserDefaultManager.nickname = value.0
+            UserDefaultManager.startDate = value.1
+            
             // 유저디폴트
             showHome.accept(())
             

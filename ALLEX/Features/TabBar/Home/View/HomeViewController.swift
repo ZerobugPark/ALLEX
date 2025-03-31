@@ -17,7 +17,7 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .setAllexColor(.backGround)
         
     }
     
