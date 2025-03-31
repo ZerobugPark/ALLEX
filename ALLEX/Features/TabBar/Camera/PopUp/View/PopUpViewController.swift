@@ -49,8 +49,7 @@ final class PopUpViewController: UIViewController {
 
     
     deinit {
-        print(String(self.description) + " DeInit")
+        print(String(describing: self) + "Deinit")
     }
-    
   
 }

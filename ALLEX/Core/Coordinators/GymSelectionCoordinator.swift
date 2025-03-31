@@ -49,6 +49,10 @@ final class GymSelectionCoordinator: Coordinator {
     
     // ✅ 암장 선택 시 콜백 실행
     func didSelectGym() {
+        
+        navigationController.popViewController(animated: true)
+        
         onGymSelected?()
+        
     }
 }

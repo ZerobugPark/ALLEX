@@ -49,64 +49,55 @@ final class CameraCoordinator: Coordinator {
     
     // MARK: - GymSelectionCoordinator
     private func showGymSelection() {
-        
         if let navigationController = extractNavigationController(from: presentingController) {
             let gymSelectionCoordinator = GymSelectionCoordinator(navigationController: navigationController, sharedData: sharedData)
-            childCoordinators.append(gymSelectionCoordinator)
-            
-            
-            
+
+            gymSelectionCoordinator.onGymSelected = { [weak gymSelectionCoordinator] in
+       
+                guard let gymSelectionCoordinator = gymSelectionCoordinator else { return }
+                
+                self.handleGymSelection(gymSelectionCoordinator)
+            }
+
+            childCoordinators.append(gymSelectionCoordinator) // ✅ 여기에 올바르게 추가되었는지 확인
+            print("📌 childCoordinators 추가 후: \(childCoordinators.count)개")
+
             gymSelectionCoordinator.start()
         } else {
-            print("네비게이션 컨트롤러를 찾을 수 없습니다.")
+            print("🚨 네비게이션 컨트롤러를 찾을 수 없습니다.")
         }
     }
     
-    func showRecord() {
     
+    
+    
+    
+    func showRecord() {
         
-        presentingController.dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-
+        if let navigationController = extractNavigationController(from: presentingController) {
+            
             let vm = CameraViewModel(self.sharedData)
             let vc = CameraViewController(viewModel: vm)
-
-            //  presentingController의 네비게이션 컨트롤러
-            if let tabBarController = self.presentingController as? UITabBarController,
-               let navController = tabBarController.selectedViewController as? UINavigationController {
-                //  네비게이션 컨트롤러에서 푸시 (탭 한 뷰컨의 네비게이션 컨트롤러 사용)
-                navController.pushViewController(vc, animated: true)
-            } else if let navController = self.presentingController.navigationController {
-                // 만약 presentingController가 네비게이션 컨트롤러를 갖고 있다면 그대로 사용
-                navController.pushViewController(vc, animated: true)
-            } else {
-                print("네비게이션 컨트롤러를 찾을 수 없습니다.")
-            }
+            navigationController.pushViewController(vc, animated: true)
+            
+        } else {
+            print("네비게이션 컨트롤러를 찾을 수 없습니다.")
         }
-        
         
     }
     
     func showCamera() {
-    
         
-        presentingController.dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-
-            let vm = CameraViewModel(self.sharedData)
-            let vc = CameraViewController(viewModel: vm)
-
-            //  presentingController의 네비게이션 컨트롤러
-            if let tabBarController = self.presentingController as? UITabBarController,
-               let navController = tabBarController.selectedViewController as? UINavigationController {
-                //  네비게이션 컨트롤러에서 푸시 (탭 한 뷰컨의 네비게이션 컨트롤러 사용)
-                navController.pushViewController(vc, animated: true)
-            } else if let navController = self.presentingController.navigationController {
-                // 만약 presentingController가 네비게이션 컨트롤러를 갖고 있다면 그대로 사용
-                navController.pushViewController(vc, animated: true)
-            } else {
-                print("네비게이션 컨트롤러를 찾을 수 없습니다.")
-            }
+        if let navigationController = extractNavigationController(from: presentingController) {
+            
+            // let vm = CameraViewModel(self.sharedData)
+            //let vc = CameraViewController(viewModel: vm)
+            let vc = RecordViewController()
+            
+            navigationController.pushViewController(vc, animated: true)
+            
+        } else {
+            print("네비게이션 컨트롤러를 찾을 수 없습니다.")
         }
         
         
@@ -115,6 +106,11 @@ final class CameraCoordinator: Coordinator {
     func dismiss() {
         presentingController.dismiss(animated: true)
     }
+    
+    deinit {
+        print(String(describing: self) + "Deinit")
+    }
+    
     
 }
 
@@ -136,15 +132,27 @@ extension CameraCoordinator {
         }
     }
     
-    private func handleGymSelection(_ gym: Gym) {
-         guard let selectedCondition else { return }
-         
-         switch selectedCondition {
-         case .recordWrite:
-             showRecord()
-         case .recordVideo:
-             showCamera()
-         }
-     }
+    private func childDidFinish(_ coordinator: Coordinator) {
+        // === 객체가 같은 주소를 가리키는지 비교
+        if let index = childCoordinators.firstIndex(where: { $0 === coordinator }) {
+            childCoordinators.remove(at: index)
+        }
+        print(childCoordinators)
+    }
+    
+    private func handleGymSelection(_ coordinator: GymSelectionCoordinator) {
+        
+        print("dd")
+        childDidFinish(coordinator)
+        
+        guard let selectedCondition else { return }
+        
+        switch selectedCondition {
+        case .recordWrite:
+            showRecord()
+        case .recordVideo:
+            showCamera()
+        }
+    }
     
 }
