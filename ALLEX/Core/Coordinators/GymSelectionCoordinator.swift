@@ -33,15 +33,20 @@ final class GymSelectionCoordinator: Coordinator {
         let vm = GymListViewModel(sharedData)
         let vc = GymListViewController(viewModel: vm)
         vc.coordinator = self
-        if let sheet = vc.sheetPresentationController {
-            sheet.detents = [.large(), .medium()]
-            sheet.prefersGrabberVisible = true // grabber 추가
-            sheet.selectedDetentIdentifier = .medium //시작 크기
-        }
-        
+        configureSheetPresentation(for: vc)
         navigationController.present(vc, animated: true)
            
     }
+    
+    // MARK: - Private Methods
+    private func configureSheetPresentation(for viewController: UIViewController) {
+        if let sheet = viewController.sheetPresentationController {
+            sheet.detents = [.large(), .medium()]
+            sheet.prefersGrabberVisible = true
+            sheet.selectedDetentIdentifier = .medium
+        }
+    }
+    
     
     func dismiss() {
         navigationController.dismiss(animated: true)

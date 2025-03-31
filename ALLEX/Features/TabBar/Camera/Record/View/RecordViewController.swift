@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RecordViewController: UIViewController {
+class RecordViewController: BaseViewController<RecordView, RecordViewModel> {
 
     override func viewDidLoad() {
         super.viewDidLoad()

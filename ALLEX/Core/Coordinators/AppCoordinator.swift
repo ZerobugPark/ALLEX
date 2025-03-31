@@ -81,6 +81,7 @@ final class AppCoordinator: Coordinator {
         backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.clear] // 텍스트 숨김
         
         let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
         appearance.backButtonAppearance = backButtonAppearance
         
         appearance.backgroundColor = .setAllexColor(.backGround)
