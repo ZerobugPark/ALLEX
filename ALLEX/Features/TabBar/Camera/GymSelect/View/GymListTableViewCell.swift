@@ -33,7 +33,7 @@ final class GymListTableViewCell: BaseTableViewCell {
         }
         
         title.snp.makeConstraints { make in
-            make.centerY.equalTo(contentView.safeAreaLayoutGuide).offset(-24)
+            make.centerY.equalTo(contentView.safeAreaLayoutGuide).offset(-16)
             make.leading.equalTo(gymImage.snp.trailing).offset(24)
             make.trailing.equalTo(likeButton.snp.leading).offset(-32)
 
@@ -48,7 +48,7 @@ final class GymListTableViewCell: BaseTableViewCell {
         likeButton.snp.makeConstraints { make in
             make.centerY.equalTo(contentView.safeAreaLayoutGuide)
             make.trailing.equalToSuperview().inset(16)
-            make.size.equalTo(contentView.snp.height).multipliedBy(0.5)
+            make.size.equalTo(contentView.snp.height).multipliedBy(0.3)
             
         }
         
