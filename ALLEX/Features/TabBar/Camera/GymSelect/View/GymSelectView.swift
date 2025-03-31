@@ -49,7 +49,7 @@ final class GymSelectionView: BaseView {
         }
         
         startButton.snp.makeConstraints { make in
-            make.top.equalTo(spaceLabel.snp.bottom).offset(44)
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-120)
             make.horizontalEdges.equalToSuperview().inset(32)
         }
         
