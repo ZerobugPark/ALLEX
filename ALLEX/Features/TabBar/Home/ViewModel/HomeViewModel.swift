@@ -62,6 +62,10 @@ final class HomeViewModel: BaseViewModel {
         
         return Output()
     }
+    
+    deinit {
+        print(String(describing: self) + "Deinit")
+    }
 }
 
 

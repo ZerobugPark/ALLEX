@@ -12,7 +12,6 @@ class BaseTextField: UITextField {
     init() {
         super.init(frame: .zero)
         setupPaddingTextField()
-        
     }
     
     

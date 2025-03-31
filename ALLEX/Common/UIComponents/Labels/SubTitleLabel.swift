@@ -11,6 +11,7 @@ final class SubTitleLabel: UILabel {
 
     init() {
         super.init(frame: .zero)
+        textColor = .setAllexColor(.textSecondary)
     }
     
     convenience init(title: String) {
@@ -22,7 +23,6 @@ final class SubTitleLabel: UILabel {
         
         self.init()
         text = key.rawValue.localized(with: title)
-        textColor = .setAllexColor(.textSecondary)
  
     }
     

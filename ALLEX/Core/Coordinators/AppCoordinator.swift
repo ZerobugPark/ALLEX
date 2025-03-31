@@ -8,29 +8,30 @@
 import UIKit
 
 final class AppCoordinator: Coordinator {
-
-
+    
+    
     private let window: UIWindow
     private var navigationController: UINavigationController
-
+    
     var childCoordinators: [Coordinator] = []
     
     init(window: UIWindow) {
         self.window = window
         self.navigationController = UINavigationController()
+        setupNavigationBarAppearance()
     }
     
-
+    
     
     func start() {
         showHome()
         
         //userDefaults에서 저장
-//        if isLoggedIn {
-//            showHome()
-//        } else {
-//            showSignUp()
-//        }
+        //        if isLoggedIn {
+        //            showHome()
+        //        } else {
+        //            showSignUp()
+        //        }
     }
     
     private func showHome() {
@@ -39,7 +40,7 @@ final class AppCoordinator: Coordinator {
         let tabBarCoordinator = TabBarCoordinator(tabBarController: tabBarController)
         childCoordinators.append(tabBarCoordinator)
         tabBarCoordinator.start()
-     
+        
         
         window.rootViewController = tabBarCoordinator.tabBarController
         window.makeKeyAndVisible()
@@ -51,7 +52,7 @@ final class AppCoordinator: Coordinator {
         let signUpCoordinator = SignUpCoordinator(navigationController: navigationController)
         
         signUpCoordinator.onSignUpCompleted =  { [weak self, weak signUpCoordinator] in
-           
+            
             guard let self = self, let signUpCoordinator = signUpCoordinator else { return }
             
             //signUpCoordinator가 강하게 캡쳐되어서 메모리 누수 발생
@@ -73,6 +74,19 @@ final class AppCoordinator: Coordinator {
             childCoordinators.remove(at: index)
         }
         print(childCoordinators)
+    }
+    
+    private func setupNavigationBarAppearance() {
+        let backButtonAppearance = UIBarButtonItemAppearance()
+        backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.clear] // 텍스트 숨김
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.backButtonAppearance = backButtonAppearance
+        
+        appearance.backgroundColor = .setAllexColor(.backGround)
+        UINavigationBar.appearance().tintColor = .setAllexColor(.textPirmary)
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
     
     

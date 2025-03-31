@@ -125,6 +125,54 @@ final class NetworkManger: GoogleSheetRepository {
 
     }
     
+    func fetchAsycnAwait(url: String) async throws -> UIImage { // 오로지 성공 데이터
+        
+        let convertURL = (convertGoogleDriveURLToDownloadLink(url))!
+        let request = URLRequest(url: URL(string: convertURL)!, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 5)
+        
+        let (data, response) =  try await URLSession.shared.data(for: request)
+        
+        
+        
+        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+            throw NetworkError.unknown(statusCode: 0, message: "이미지 통신 실패")
+        }
+        
+        guard let image = UIImage(data: data) else {
+            throw NetworkError.unknown(statusCode: 0, message: "이미지 데이터 로드 실패")
+        }
+        
+        return image
+        
+        
+    }
+    
+    private func convertGoogleDriveURLToDownloadLink(_ url: String) -> String? {
+        let pattern = #"drive\.google\.com\/(?:file\/d\/|open\?id=)([a-zA-Z0-9_-]+)"#
+        
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
+            print("정규식 생성 실패")
+            return nil
+        }
+        
+        let nsRange = NSRange(url.startIndex..<url.endIndex, in: url)
+        
+        guard let match = regex.firstMatch(in: url, options: [], range: nsRange) else {
+            print("구글 드라이브 파일 ID를 찾을 수 없음")
+            return nil
+        }
+        
+        guard let range = Range(match.range(at: 1), in: url) else {
+            print("파일 ID 추출 실패")
+            return nil
+        }
+        
+        let fileID = String(url[range])
+        let downloadURL = "https://drive.google.com/uc?id=\(fileID)"
+        
+       // print("변환된 URL: \(downloadURL)")
+        return downloadURL
+    }
 }
 
 

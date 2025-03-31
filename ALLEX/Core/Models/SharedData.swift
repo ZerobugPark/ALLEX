@@ -12,8 +12,9 @@ final class SharedDataModel {
     private var gymData: [Gym] = []
     private var gymGradeData: [GymGrades] = []
     private var boulderingData: [Bouldering] = []
-    // 제네릭 메서드를 사용하여 데이터를 업데이트
+    var userSelectedGymID = ""
     
+    // 제네릭 메서드를 사용하여 데이터를 업데이트
     func updateData<T: Mappable>(data: [T], for type: T.Type) {
         switch type {
         case is Brand.Type:

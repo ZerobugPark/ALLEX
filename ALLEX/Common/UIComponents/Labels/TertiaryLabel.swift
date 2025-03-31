@@ -11,6 +11,7 @@ final class TertiaryLabel: UILabel {
 
     init() {
         super.init(frame: .zero)
+        textColor = .setAllexColor(.textTertiary)
     }
     
     convenience init(title: String) {
@@ -19,10 +20,8 @@ final class TertiaryLabel: UILabel {
     }
     
     convenience init(key: LocalizedKey, title: String) {
-        
         self.init()
         text = key.rawValue.localized(with: title)
-        textColor = .setAllexColor(.textTertiary)
  
     }
     

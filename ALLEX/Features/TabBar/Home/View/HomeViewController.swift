@@ -19,7 +19,6 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
         super.viewDidLoad()
         view.backgroundColor = .white
         
-      
     }
     
     override func bind() {
