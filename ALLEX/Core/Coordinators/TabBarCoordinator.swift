@@ -36,15 +36,8 @@ final class TabBarCoordinator: Coordinator {
         calendarNav.view.backgroundColor = .setAllexColor(.backGround)
         calendarCoordinator.start()
         
-        
         // 중앙에 빈 아이템 추가 (투명하게)
         let emptyVC = UIViewController()
-        
-        
-        //        let cameraNav = UINavigationController()
-        //        let cameraCoordinator = CameraCoordinator(navigationController: cameraNav, sharedData: sharedData)
-        //        cameraNav.view.backgroundColor = .setAllexColor(.backGround)
-        //        cameraCoordinator.start()
         
         let reportNav = UINavigationController()
         let reportCoordinator = ReportCoordinator(navigationController: reportNav, sharedData: sharedData)
@@ -56,19 +49,18 @@ final class TabBarCoordinator: Coordinator {
         profileNav.view.backgroundColor = .setAllexColor(.backGround)
         profileCoordinator.start()
         
-        
-        homeNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "house"), tag: 0)
-        calendarNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "calendar"), tag: 1)
+   
+        homeNav.tabBarItem = UITabBarItem(title: nil, image: .setAllexSymbol(.house), tag: 0)
+        calendarNav.tabBarItem = UITabBarItem(title: nil, image: .setAllexSymbol(.calendar), tag: 1)
         
         let emptyItem = UITabBarItem(title: "", image: nil, tag: 2)
         emptyItem.isEnabled = false // 선택 불가능하게 설정
         emptyVC.tabBarItem = emptyItem  // 빈 탭 아이템 설정
         
-        //cameraNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "camera"), tag: 2)
+            
+        reportNav.tabBarItem = UITabBarItem(title: nil, image: .setAllexSymbol(.chart), tag: 3)
         
-        reportNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "chart.xyaxis.line"), tag: 3)
-        
-        profileNav.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "person.crop.circle"), tag: 4)
+        profileNav.tabBarItem = UITabBarItem(title: nil, image: .setAllexSymbol(.person), tag: 4)
         
         
         tabBarController.setViewControllers([homeNav, calendarNav, emptyVC, reportNav, profileNav], animated: true)
@@ -102,27 +94,25 @@ final class TabBarCoordinator: Coordinator {
     private func addCameraButton() {
         
         // 이미지뷰 생성
-        let view = UIView()
-        //view.backgroundColor = .red
- 
+        let viewContainer = UIView()
         let cameraImageView = UIImageView()
         
-        view.addSubview(cameraImageView)
+        viewContainer.addSubview(cameraImageView)
         // 이미지 설정
-        cameraImageView.image = UIImage(systemName: "camera")
+        cameraImageView.image = .setAllexSymbol(.camera)//UIImage(systemName: "camera")
         cameraImageView.backgroundColor = .clear
         cameraImageView.tintColor = .setAllexColor(.pirmary)//.tabBarUnSelected
         
-        view.isUserInteractionEnabled = true // 탭 가능하도록 설정
+        viewContainer.isUserInteractionEnabled = true // 탭 가능하도록 설정
         
         // 탭 제스처 추가
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cameraButtonTapped))
-        view.addGestureRecognizer(tapGesture)
+        viewContainer.addGestureRecognizer(tapGesture)
         
         // 탭바에 이미지뷰 추가
-        tabBarController.tabBar.addSubview(view)
+        tabBarController.tabBar.addSubview(viewContainer)
         
-        view.snp.makeConstraints { make in
+        viewContainer.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
             make.width.equalTo(tabBarController.tabBar.snp.width).multipliedBy(0.2)

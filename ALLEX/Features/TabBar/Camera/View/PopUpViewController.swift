@@ -114,7 +114,7 @@ class PopUpViewController: UIViewController {
         
         
         // backButton 설정
-        backButton.setImage(UIImage(systemName: "xmark"), for: .normal)
+        backButton.setImage(.setAllexSymbol(.xmark), for: .normal)
   
         
         // 스택뷰 설정
