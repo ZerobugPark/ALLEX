@@ -38,7 +38,7 @@ final class GymSelectionViewModel: BaseViewModel {
             let languageCode = (Locale.preferredLanguages.first ?? "en").split(separator: "-").first ?? ""
             
             let id = sharedData.userSelectedGymID
-            let data = sharedData.getData(for: Gym.self)!.filter{ $0.brandID == id }
+            let data = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == id }
      
             
             if languageCode == "en" {

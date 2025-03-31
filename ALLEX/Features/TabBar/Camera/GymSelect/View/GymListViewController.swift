@@ -45,7 +45,7 @@ final class GymListViewController: BaseViewController<GymListView, GymListViewMo
         
         mainView.tableView.rx.modelSelected(Gym.self).bind(with: self) { owner, value in
             
-            selectedGym.accept(value.brandID)
+            selectedGym.accept(value.gymID)
             
             
         }.disposed(by: disposeBag)
