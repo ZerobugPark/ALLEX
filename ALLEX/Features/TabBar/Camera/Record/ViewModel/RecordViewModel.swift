@@ -1,8 +1,8 @@
 //
-//  CameraViewModel.swift
+//  RecordViewModel.swift
 //  ALLEX
 //
-//  Created by youngkyun park on 3/31/25.
+//  Created by youngkyun park on 4/1/25.
 //
 
 import Foundation
@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class CameraViewModel: BaseViewModel {
+final class RecordViewModel: BaseViewModel {
     
     var sharedData: SharedDataModel
     
