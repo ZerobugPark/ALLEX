@@ -124,6 +124,74 @@
           }
         }
       }
+    },
+    "Video_Record" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Real-time Recording"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실시간 영상"
+          }
+        }
+      }
+    },
+    "Video_RecordSub" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helps you shoot, save and edit climbing videos in real time"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실시간으로 클라이밍 영상을 촬영, 저장 및 편집까지!"
+          }
+        }
+      }
+    },
+    "Write_Record" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Real-time writing"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실시간 기록"
+          }
+        }
+      }
+    },
+    "Write_RecordSub" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can register climbing records in real time I'll measure my workout time!"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실시간으로 등반 기록해요! 운동 시간은 제가 측정할게요"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

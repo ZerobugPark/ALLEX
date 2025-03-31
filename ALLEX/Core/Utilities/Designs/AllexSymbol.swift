@@ -16,6 +16,9 @@ extension UIImage {
         case chart = "chart.xyaxis.line"
         case person = "person.crop.circle"
         case xmark = "xmark"
+        case list = "list.bullet.clipboard"
+        case video = "video"
+        
     }
 
     

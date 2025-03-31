@@ -15,4 +15,12 @@ enum LocalizedKey: String {
     case startDate = "Start_Date"
     case space = "Space"
     case start = "Start_Button"
+    case writeRecord = "Write_Record"
+    case writeRecordSub = "Write_RecordSub"
+    case videoRecord = "Video_Record "
+    case videoRecordSub = "Video_RecordSub"
+    
 }
+
+
+

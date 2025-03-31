@@ -14,13 +14,11 @@ final class CameraCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     
     private let sharedData: SharedDataModel
-    private let navigationController: UINavigationController
     private let presentingController: UIViewController
     
     init(presentingController: UIViewController, sharedData: SharedDataModel) {
         self.sharedData = sharedData
         self.presentingController = presentingController
-        self.navigationController = UINavigationController()
     }
     
     func start() {
@@ -31,20 +29,58 @@ final class CameraCoordinator: Coordinator {
         presentingController.present(vc, animated: true, completion: nil)
     }
     
+    func showRecord() {
+    
+        
+        presentingController.dismiss(animated: true) { [weak self] in
+            guard let self = self else { return }
+
+            let vm = CameraViewModel(self.sharedData)
+            let vc = CameraViewController(viewModel: vm)
+
+            //  presentingController의 네비게이션 컨트롤러
+            if let tabBarController = self.presentingController as? UITabBarController,
+               let navController = tabBarController.selectedViewController as? UINavigationController {
+                //  네비게이션 컨트롤러에서 푸시 (탭 한 뷰컨의 네비게이션 컨트롤러 사용)
+                navController.pushViewController(vc, animated: true)
+            } else if let navController = self.presentingController.navigationController {
+                // 만약 presentingController가 네비게이션 컨트롤러를 갖고 있다면 그대로 사용
+                navController.pushViewController(vc, animated: true)
+            } else {
+                print("네비게이션 컨트롤러를 찾을 수 없습니다.")
+            }
+        }
+        
+        
+    }
+    
     func showCamera() {
+    
         
-        
-        let vm = CameraViewModel(sharedData)
-        let vc = CameraViewController(viewModel: vm)
-        presentingController.present(vc, animated: true, completion: nil)
-        //navigationController.pushViewController(vc, animated: true)
+        presentingController.dismiss(animated: true) { [weak self] in
+            guard let self = self else { return }
+
+            let vm = CameraViewModel(self.sharedData)
+            let vc = CameraViewController(viewModel: vm)
+
+            //  presentingController의 네비게이션 컨트롤러
+            if let tabBarController = self.presentingController as? UITabBarController,
+               let navController = tabBarController.selectedViewController as? UINavigationController {
+                //  네비게이션 컨트롤러에서 푸시 (탭 한 뷰컨의 네비게이션 컨트롤러 사용)
+                navController.pushViewController(vc, animated: true)
+            } else if let navController = self.presentingController.navigationController {
+                // 만약 presentingController가 네비게이션 컨트롤러를 갖고 있다면 그대로 사용
+                navController.pushViewController(vc, animated: true)
+            } else {
+                print("네비게이션 컨트롤러를 찾을 수 없습니다.")
+            }
+        }
         
         
     }
     
     func dismiss() {
         presentingController.dismiss(animated: true)
-        showCamera()
     }
     
 }
