@@ -25,6 +25,7 @@ final class PopUpViewController: UIViewController {
         super.viewDidLoad()
 
         
+        mainView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         
         let writedRecordTapGesture = UITapGestureRecognizer(target: self, action: #selector(showWriteRecord))
         mainView.writeRecord.addGestureRecognizer(writedRecordTapGesture)
@@ -35,11 +36,15 @@ final class PopUpViewController: UIViewController {
     
     
     @objc private func showWriteRecord() {
-        coordinator?.showRecord()
+        coordinator?.didSelectCondition(.recordWrite)
     }
     
     @objc private func showVidoRecord() {
-        coordinator?.showCamera()
+        coordinator?.didSelectCondition(.recordVideo)
+    }
+    
+    @objc private func backButtonTapped() {
+        coordinator?.dismiss()
     }
 
     

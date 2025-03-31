@@ -12,7 +12,7 @@ import SnapKit
 final class PopUpView: BaseView {
     
     
-    private let viewContainer = UIView()
+    private let viewContainer = CustomView(radius: 10, bgColor: .setAllexColor(.backGroundSecondary))
 
     private let imageView = UIImageView(image: .setAllexSymbol(.list))
     private let writeTitle = SubTitleLabel(key: .writeRecord, title: "")
@@ -23,8 +23,8 @@ final class PopUpView: BaseView {
     private let subRecodeTitle = TertiaryLabel(key: .videoRecordSub, title: "")
     
     private let stackView = UIStackView()
-    let writeRecord = UIView()
-    let videoRecord = UIView()
+    let writeRecord = CustomView(radius: 20, bgColor: .setAllexColor(.backGroundTertiary))
+    let videoRecord = CustomView(radius: 20, bgColor: .setAllexColor(.backGroundTertiary))
 
     let backButton = BaseButton()
 
@@ -117,13 +117,8 @@ final class PopUpView: BaseView {
     
     override func configureView() {
         
-        // 둥근 사각형 뷰 스타일 설정
-        writeRecord.layer.cornerRadius = 20 // 둥근 사각형의 모서리 반지름
-        writeRecord.backgroundColor = .setAllexColor(.backGroundTertiary)
+        // 터치 가능하게
         writeRecord.isUserInteractionEnabled = true
-        
-        videoRecord.layer.cornerRadius = 20 // 둥근 사각형의 모서리 반지름
-        videoRecord.backgroundColor = .setAllexColor(.backGroundTertiary)
         videoRecord.isUserInteractionEnabled = true
         
         // 백그라운드가 컬러가 있으면, overCurrentContext기준으로 전체화면
@@ -134,17 +129,12 @@ final class PopUpView: BaseView {
         self.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         
         
-        viewContainer.layer.cornerRadius = 10
-        viewContainer.clipsToBounds = true
-        viewContainer.backgroundColor = .setAllexColor(.backGroundSecondary)
-        
         // backButton 설정
         backButton.setImage(.setAllexSymbol(.xmark), for: .normal)
         backButton.tintColor = .setAllexColor(.textSecondary)
   
         
         //레이블 설정
-        
         writeTitle.font = .setAllexFont(.bold_14)
         subWriteTitle.font = .setAllexFont(.regular_9)
         subWriteTitle.numberOfLines = 3

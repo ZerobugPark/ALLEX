@@ -1,6 +1,23 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Gym_Title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a Gym"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘의 클픽!"
+          }
+        }
+      }
+    },
     "Nickname_Title" : {
       "comment" : "닉네임 타이틀 레이블     *누리(세상)에서 널 부르는 특별한 이름",
       "extractionState" : "manual",

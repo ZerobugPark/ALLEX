@@ -18,6 +18,9 @@ extension UIImage {
         case xmark = "xmark"
         case list = "list.bullet.clipboard"
         case video = "video"
+        case location = "location"
+        case star = "star"
+        case starFill = "star.fill"
         
     }
 
