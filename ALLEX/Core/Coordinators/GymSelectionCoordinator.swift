@@ -42,6 +42,7 @@ final class GymSelectionCoordinator: Coordinator {
     private func configureSheetPresentation(for viewController: UIViewController) {
         if let sheet = viewController.sheetPresentationController {
             sheet.detents = [.large(), .medium()]
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = false  // Medium 크기 유지
             sheet.prefersGrabberVisible = true
             sheet.selectedDetentIdentifier = .medium
         }

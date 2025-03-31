@@ -91,6 +91,7 @@ final class SignUpView: BaseView {
         nicknameLabel.font = .setAllexFont(.regular_16)
         dateLabel.font = .setAllexFont(.regular_16)
       
+        nicknameTextField.autocorrectionType = .no
             
         infoLabel.textAlignment = .right
         infoLabel.textColor = .setAllexColor(.unvalid)

@@ -21,14 +21,14 @@ final class GymListView: BaseView {
     
     override func configureLayout() {
         searchBar.snp.makeConstraints { make in
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(8)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(16)
             make.horizontalEdges.equalToSuperview()
             make.height.equalTo(50)
         }
         
         
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(4)
+            make.top.equalTo(searchBar.snp.bottom).offset(8)
             make.horizontalEdges.bottom.equalTo(self.safeAreaLayoutGuide)
             
         }

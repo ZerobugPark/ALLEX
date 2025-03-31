@@ -41,7 +41,6 @@ final class GymSelectionViewController: BaseViewController<GymSelectionView, Gym
     }
     
     @objc private func showGymList() {
-        print("heddre")
         coordinator?.showGymlist()
     }
     

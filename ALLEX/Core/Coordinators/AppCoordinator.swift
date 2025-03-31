@@ -24,14 +24,12 @@ final class AppCoordinator: Coordinator {
     
     
     func start() {
-        showHome()
         
-        //userDefaults에서 저장
-        //        if isLoggedIn {
-        //            showHome()
-        //        } else {
-        //            showSignUp()
-        //        }
+        if UserDefaultManager.isLoggedIn == true {
+            showHome()
+        } else {
+            showSignUp()
+        }
     }
     
     private func showHome() {

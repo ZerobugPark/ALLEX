@@ -52,7 +52,6 @@ final class GymListViewController: BaseViewController<GymListView, GymListViewMo
         
         
         output.dismiss.drive(with: self) { owner, _ in
-            print("heress")
             owner.coordinator?.dismiss()
             
         }.disposed(by: disposeBag)
