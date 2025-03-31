@@ -18,7 +18,7 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .setAllexColor(.backGround)
-        
+        //tabBarController?.tabBar.isUserInteractionEnabled = false // 탭전환 비활성화
     }
     
     override func bind() {
