@@ -8,10 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		D02E5D9C2D95096500534F24 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = D02E5D9B2D95096500534F24 /* .gitignore */; };
-		D06FB0E32D9BD6B90082149D /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D06FB0E22D9BD6B90082149D /* SnapKit */; };
-		D06FB0E62D9BD6CC0082149D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = D06FB0E52D9BD6CC0082149D /* RxCocoa */; };
-		D06FB0E82D9BD6CC0082149D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D06FB0E72D9BD6CC0082149D /* RxSwift */; };
-		D06FB0EB2D9BD6FE0082149D /* JTAppleCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = D06FB0EA2D9BD6FE0082149D /* JTAppleCalendar */; };
+		D0387C7B2D9BDA0600C70894 /* JTAppleCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = D0387C7A2D9BDA0600C70894 /* JTAppleCalendar */; };
+		D0387C7E2D9BDA1500C70894 /* RxGesture in Frameworks */ = {isa = PBXBuildFile; productRef = D0387C7D2D9BDA1500C70894 /* RxGesture */; };
+		D0387C812D9BDA2500C70894 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = D0387C802D9BDA2500C70894 /* RxCocoa */; };
+		D0387C832D9BDA2500C70894 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D0387C822D9BDA2500C70894 /* RxSwift */; };
+		D0387C862D9BDA3000C70894 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D0387C852D9BDA3000C70894 /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,10 +46,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D06FB0E82D9BD6CC0082149D /* RxSwift in Frameworks */,
-				D06FB0EB2D9BD6FE0082149D /* JTAppleCalendar in Frameworks */,
-				D06FB0E62D9BD6CC0082149D /* RxCocoa in Frameworks */,
-				D06FB0E32D9BD6B90082149D /* SnapKit in Frameworks */,
+				D0387C812D9BDA2500C70894 /* RxCocoa in Frameworks */,
+				D0387C7E2D9BDA1500C70894 /* RxGesture in Frameworks */,
+				D0387C832D9BDA2500C70894 /* RxSwift in Frameworks */,
+				D0387C7B2D9BDA0600C70894 /* JTAppleCalendar in Frameworks */,
+				D0387C862D9BDA3000C70894 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,10 +94,11 @@
 			);
 			name = ALLEX;
 			packageProductDependencies = (
-				D06FB0E22D9BD6B90082149D /* SnapKit */,
-				D06FB0E52D9BD6CC0082149D /* RxCocoa */,
-				D06FB0E72D9BD6CC0082149D /* RxSwift */,
-				D06FB0EA2D9BD6FE0082149D /* JTAppleCalendar */,
+				D0387C7A2D9BDA0600C70894 /* JTAppleCalendar */,
+				D0387C7D2D9BDA1500C70894 /* RxGesture */,
+				D0387C802D9BDA2500C70894 /* RxCocoa */,
+				D0387C822D9BDA2500C70894 /* RxSwift */,
+				D0387C852D9BDA3000C70894 /* SnapKit */,
 			);
 			productName = ALLEX;
 			productReference = D02E5D832D95094600534F24 /* ALLEX.app */;
@@ -127,9 +130,10 @@
 			mainGroup = D02E5D7A2D95094600534F24;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				D06FB0E12D9BD6B90082149D /* XCRemoteSwiftPackageReference "SnapKit" */,
-				D06FB0E42D9BD6CC0082149D /* XCRemoteSwiftPackageReference "RxSwift" */,
-				D06FB0E92D9BD6FE0082149D /* XCRemoteSwiftPackageReference "JTAppleCalendar" */,
+				D0387C792D9BDA0600C70894 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */,
+				D0387C7C2D9BDA1500C70894 /* XCRemoteSwiftPackageReference "RxGesture" */,
+				D0387C7F2D9BDA2500C70894 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				D0387C842D9BDA3000C70894 /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D02E5D842D95094600534F24 /* Products */;
@@ -374,23 +378,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		D06FB0E12D9BD6B90082149D /* XCRemoteSwiftPackageReference "SnapKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.7.1;
-			};
-		};
-		D06FB0E42D9BD6CC0082149D /* XCRemoteSwiftPackageReference "RxSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ReactiveX/RxSwift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.9.0;
-			};
-		};
-		D06FB0E92D9BD6FE0082149D /* XCRemoteSwiftPackageReference "JTAppleCalendar" */ = {
+		D0387C792D9BDA0600C70894 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/patchthecode/JTAppleCalendar.git";
 			requirement = {
@@ -398,28 +386,57 @@
 				minimumVersion = 8.0.5;
 			};
 		};
+		D0387C7C2D9BDA1500C70894 /* XCRemoteSwiftPackageReference "RxGesture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxGesture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.4;
+			};
+		};
+		D0387C7F2D9BDA2500C70894 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.9.0;
+			};
+		};
+		D0387C842D9BDA3000C70894 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		D06FB0E22D9BD6B90082149D /* SnapKit */ = {
+		D0387C7A2D9BDA0600C70894 /* JTAppleCalendar */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D06FB0E12D9BD6B90082149D /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = SnapKit;
+			package = D0387C792D9BDA0600C70894 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */;
+			productName = JTAppleCalendar;
 		};
-		D06FB0E52D9BD6CC0082149D /* RxCocoa */ = {
+		D0387C7D2D9BDA1500C70894 /* RxGesture */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D06FB0E42D9BD6CC0082149D /* XCRemoteSwiftPackageReference "RxSwift" */;
+			package = D0387C7C2D9BDA1500C70894 /* XCRemoteSwiftPackageReference "RxGesture" */;
+			productName = RxGesture;
+		};
+		D0387C802D9BDA2500C70894 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D0387C7F2D9BDA2500C70894 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxCocoa;
 		};
-		D06FB0E72D9BD6CC0082149D /* RxSwift */ = {
+		D0387C822D9BDA2500C70894 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D06FB0E42D9BD6CC0082149D /* XCRemoteSwiftPackageReference "RxSwift" */;
+			package = D0387C7F2D9BDA2500C70894 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
 		};
-		D06FB0EA2D9BD6FE0082149D /* JTAppleCalendar */ = {
+		D0387C852D9BDA3000C70894 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D06FB0E92D9BD6FE0082149D /* XCRemoteSwiftPackageReference "JTAppleCalendar" */;
-			productName = JTAppleCalendar;
+			package = D0387C842D9BDA3000C70894 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

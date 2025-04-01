@@ -1,5 +1,5 @@
 {
-  "originHash" : "01a126e04ca878e29be7457847799e0a1114f402ae17b2f9fa35ef4efae6ab40",
+  "originHash" : "52ced0bc068939ce2a8e2e58afec5d519a031e0ad96f3d0ff32acaae5e227c07",
   "pins" : [
     {
       "identity" : "jtapplecalendar",
@@ -11,9 +11,18 @@
       }
     },
     {
+      "identity" : "rxgesture",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RxSwiftCommunity/RxGesture",
+      "state" : {
+        "revision" : "1b137c576b4aaaab949235752278956697c9e4a0",
+        "version" : "4.0.4"
+      }
+    },
+    {
       "identity" : "rxswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ReactiveX/RxSwift",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
       "state" : {
         "revision" : "5dd1907d64f0d36f158f61a466bab75067224893",
         "version" : "6.9.0"
