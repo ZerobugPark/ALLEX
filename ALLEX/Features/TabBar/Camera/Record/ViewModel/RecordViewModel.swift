@@ -42,18 +42,16 @@ final class RecordViewModel: BaseViewModel {
         self.toggleTimer(isSelected: isSelected)
         getGymTitle()
         
-        let id = self.sharedData.userSelectedGymID
+        let info = self.sharedData.getData(for: String.self)!
         
-        data = self.sharedData.getData(for: Bouldering.self)!.filter{  $0. == id
-            
-        }
+        data = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[1] }
+        print(data)
         
     }
     
     
     func transform(input: Input) -> Output {
         let buttonStatus = PublishRelay<Bool>()
-        
         
         input.toggleTimerTrigger.bind(with: self, onNext: { owner, _ in
             
@@ -63,7 +61,6 @@ final class RecordViewModel: BaseViewModel {
         }).disposed(by: disposeBag)
         
         
-        
         return Output(timerString: timerSubject.asObservable(), buttonStatus: buttonStatus.asDriver(onErrorJustReturn: (false)), updateTitle: Observable.just(gymTitle))
     }
     
@@ -71,8 +68,8 @@ final class RecordViewModel: BaseViewModel {
     private func getGymTitle() {
         let languageCode = (Locale.preferredLanguages.first ?? "en").split(separator: "-").first ?? ""
         
-        let id = sharedData.userSelectedGymID
-        let data = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == id }
+        let info = sharedData.getData(for: String.self)!
+        let data = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == info[1] }
  
         gymTitle = languageCode == "en" ? data[0].nameEn : data[0].nameKo
         

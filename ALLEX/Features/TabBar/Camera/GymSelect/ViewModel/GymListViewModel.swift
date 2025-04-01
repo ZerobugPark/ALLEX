@@ -17,7 +17,7 @@ final class GymListViewModel: BaseViewModel {
     struct Input {
         let viewDidLoad: Observable<Void>
         let searchText: Observable<ControlProperty<String>.Element>
-        let selectedGym : Driver<String>
+        let selectedGym : Driver<[String]>
     }
     
     struct Output {
@@ -58,7 +58,7 @@ final class GymListViewModel: BaseViewModel {
         }.disposed(by: disposeBag)
         
         input.selectedGym.drive(with: self) { owner, value in
-            owner.sharedData.userSelectedGymID = value
+            owner.sharedData.updateData(data: value, for: String.self)
             
             NotificationCenterManager.isSelected.post()
             
