@@ -22,6 +22,7 @@ final class RecordViewModel: BaseViewModel {
         let timerString: Observable<String> // 포맷된 타이머 문자열
         let buttonStatus: Driver<Bool>
         let updateTitle: Observable<String>
+        let gymGrade: Driver<[Bouldering]>
     }
     
     
@@ -35,43 +36,49 @@ final class RecordViewModel: BaseViewModel {
     
     private var gymTitle = ""
     
-    private var data: [Bouldering] = []
+    private var gymGradeList: [Bouldering] = []
+    
+    private lazy var gymGrade = BehaviorRelay(value: gymGradeList)
     
     init(_ sharedData: SharedDataModel) {
         self.sharedData = sharedData
         self.toggleTimer(isSelected: isSelected)
-        getGymTitle()
         
-        let info = self.sharedData.getData(for: String.self)!
-        
-        data = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[1] }
-        print(data)
+        getGymInfo()
+
         
     }
     
-    
     func transform(input: Input) -> Output {
         let buttonStatus = PublishRelay<Bool>()
-        
+            
         input.toggleTimerTrigger.bind(with: self, onNext: { owner, _ in
             
             owner.isSelected.toggle()
             owner.toggleTimer(isSelected: owner.isSelected)
             buttonStatus.accept((owner.isSelected))
+            
+            
         }).disposed(by: disposeBag)
         
         
-        return Output(timerString: timerSubject.asObservable(), buttonStatus: buttonStatus.asDriver(onErrorJustReturn: (false)), updateTitle: Observable.just(gymTitle))
+        return Output(timerString: timerSubject.asObservable(), buttonStatus: buttonStatus.asDriver(onErrorJustReturn: (false)), updateTitle: Observable.just(gymTitle), gymGrade: gymGrade.asDriver(onErrorJustReturn: []))
     }
     
 
-    private func getGymTitle() {
+    private func getGymInfo() {
         let languageCode = (Locale.preferredLanguages.first ?? "en").split(separator: "-").first ?? ""
         
         let info = sharedData.getData(for: String.self)!
         let data = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == info[1] }
  
         gymTitle = languageCode == "en" ? data[0].nameEn : data[0].nameKo
+        
+        
+        gymGradeList = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[1] }
+        print(data)
+        
+        
         
     }
     
