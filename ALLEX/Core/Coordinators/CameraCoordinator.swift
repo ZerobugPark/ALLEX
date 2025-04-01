@@ -83,7 +83,10 @@ final class CameraCoordinator: Coordinator {
         
         let vm = RecordViewModel(sharedData)
         let vc = RecordViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+        vc.modalPresentationStyle = .fullScreen
+        //vc.modalTransitionStyle = .flipHorizontal
+        vc.coordinator = self
+        navigationController.present(vc, animated: true)
     }
     
     private func showCamera() {
