@@ -21,6 +21,8 @@ extension UIImage {
         case location = "location"
         case star = "star"
         case starFill = "star.fill"
+        case play = "play.fill"
+        case paues = "pause.fill"
         
     }
 

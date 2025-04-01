@@ -16,6 +16,7 @@ class BaseTableViewCell: UITableViewCell {
         configureHierarchy()
         configureLayout()
         configureView()
+        self.selectionStyle = .none
      
     }
 

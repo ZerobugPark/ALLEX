@@ -25,13 +25,13 @@ final class GymListViewController: BaseViewController<GymListView, GymListViewMo
     
     override func bind() {
         
-        let selectedGym = PublishRelay<String>()
+        let selectedGym = PublishRelay<[String]>()
         
         let searchText =  mainView.searchBar.rx.text.orEmpty.distinctUntilChanged().debounce(.milliseconds(500), scheduler: MainScheduler.instance)
         
         
         let input = GymListViewModel.Input(viewDidLoad: Observable.just(()),
-                                           searchText: searchText, selectedGym: selectedGym.asDriver(onErrorJustReturn: ""))
+                                           searchText: searchText, selectedGym: selectedGym.asDriver(onErrorJustReturn: []))
         let output = viewModel.transform(input: input)
         
         output.list.drive(mainView.tableView.rx.items(cellIdentifier: GymListTableViewCell.id, cellType: GymListTableViewCell.self)) { row, element , cell in
@@ -45,7 +45,7 @@ final class GymListViewController: BaseViewController<GymListView, GymListViewMo
         
         mainView.tableView.rx.modelSelected(Gym.self).bind(with: self) { owner, value in
             
-            selectedGym.accept(value.gymID)
+            selectedGym.accept([value.brandID, value.gymID])
             
             
         }.disposed(by: disposeBag)
