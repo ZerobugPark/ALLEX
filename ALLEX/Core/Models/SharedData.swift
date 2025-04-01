@@ -12,7 +12,7 @@ final class SharedDataModel {
     private var gymData: [Gym] = []
     private var gymGradeData: [GymGrades] = []
     private var boulderingData: [Bouldering] = []
-    var userSelectedGymID = ""
+    var userSelectedGymID = "" // 이거 배열로 변경 고민해볼 것
     
     // 제네릭 메서드를 사용하여 데이터를 업데이트
     func updateData<T: Mappable>(data: [T], for type: T.Type) {
