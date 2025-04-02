@@ -9,8 +9,8 @@ import Foundation
 
 struct Brand: Mappable {
     
-    var brandID: String
-    var brandName: String
+    let brandID: String
+    let brandName: String
 
     // Gym 객체 초기화하는 메서드
     init(from data: [String]) {
@@ -21,17 +21,17 @@ struct Brand: Mappable {
 
 
 struct Gym: Mappable {
-    var gymID: String
-    var brandID: String
-    var nameKo: String
-    var nameEn: String
-    var countryKo: String
-    var countryEn: String
-    var cityKo: String
-    var cityEn: String
-    var addressKo: String
-    var addressEn: String
-    var imageURL: String
+    let gymID: String
+    let brandID: String
+    let nameKo: String
+    let nameEn: String
+    let countryKo: String
+    let countryEn: String
+    let cityKo: String
+    let cityEn: String
+    let addressKo: String
+    let addressEn: String
+    let imageURL: String
     
     // Gym 객체 초기화하는 메서드
     init(from data: [String]) {
@@ -51,10 +51,10 @@ struct Gym: Mappable {
 
 
 struct GymGrades: Mappable {
-    var brandID: String
-    var type: String
-    var minDifficulty : String?
-    var maxDifficulty: String?
+    let brandID: String
+    let type: String
+    let minDifficulty : String?
+    let maxDifficulty: String?
 
     // Gym 객체 초기화하는 메서드
     init(from data: [String]) {
@@ -67,16 +67,18 @@ struct GymGrades: Mappable {
 }
 
 struct Bouldering: Mappable {
-    var brandID: String
-    var Color: String
-    var Difficulty : String
+    let brandID: String
+    let GradeLevel: String
+    let Color: String
+    let Difficulty : String
     
 
     // Gym 객체 초기화하는 메서드
     init(from data: [String]) {
         self.brandID = data[0]
-        self.Color = data[1]
-        self.Difficulty = data[2]
+        self.GradeLevel = data[1]
+        self.Color = data[2]
+        self.Difficulty = data[3]
 
     }
 }

@@ -61,7 +61,7 @@ final class RecordTableView: BaseView {
 
     override func configureView() {
         stackView.axis = .horizontal
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fill
         stackView.backgroundColor = .setAllexColor(.backGroundSecondary)  
         
         hiddendLabel.font = .setAllexFont(.bold_16)
@@ -78,7 +78,7 @@ final class RecordTableView: BaseView {
         tableView.backgroundColor = .setAllexColor(.backGround)
         tableView.separatorStyle = .none
         tableView.rowHeight = 70
-        
+        tableView.showsVerticalScrollIndicator = false
     }
 
 }

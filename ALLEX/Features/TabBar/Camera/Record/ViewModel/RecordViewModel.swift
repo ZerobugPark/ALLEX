@@ -16,15 +16,25 @@ final class RecordViewModel: BaseViewModel {
     
     struct Input {
         let toggleTimerTrigger: ControlEvent<Void> // 타이머 토글 트리거
+        let tryButtonEvent: Driver<(TryButtonAction, Int)>
+        let successButtonEvent:  Driver<(SuccessButtonAction, Int)>
+        let eyeButtonEvent:  Driver<(Int)>
+        let eveHiddenButtonEvent:  Driver<(Int)>
+        let saveButtonTapped: ControlEvent<Void>
     }
+    
     
     struct Output {
         let timerString: Observable<String> // 포맷된 타이머 문자열
         let buttonStatus: Driver<Bool>
         let updateTitle: Observable<String>
-        let gymGrade: Driver<[Bouldering]>
+        let gymGrade: Driver<[BoulderingAttempt]>
+        let hiddenData: Driver<[BoulderingAttempt]>
+        let updateUI: Driver<Void>
+        let dismissView: Driver<Void>
     }
     
+
     
     var disposeBag =  DisposeBag()
     
@@ -36,22 +46,26 @@ final class RecordViewModel: BaseViewModel {
     
     private var gymTitle = ""
     
-    private var gymGradeList: [Bouldering] = []
-    
-    private lazy var gymGrade = BehaviorRelay(value: gymGradeList)
+    private var gymGradeList: [BoulderingAttempt] = []
+    private var hiddenData: [BoulderingAttempt] = []
+
     
     init(_ sharedData: SharedDataModel) {
         self.sharedData = sharedData
         self.toggleTimer(isSelected: isSelected)
         
         getGymInfo()
-
         
     }
     
     func transform(input: Input) -> Output {
+   
         let buttonStatus = PublishRelay<Bool>()
-            
+        let gymGrade = BehaviorRelay(value: gymGradeList)
+        let hiddenData =  BehaviorRelay(value: hiddenData)
+        let updateUI = PublishRelay<Void>()
+        let dismissView = PublishRelay<Void>()
+        
         input.toggleTimerTrigger.bind(with: self, onNext: { owner, _ in
             
             owner.isSelected.toggle()
@@ -62,7 +76,95 @@ final class RecordViewModel: BaseViewModel {
         }).disposed(by: disposeBag)
         
         
-        return Output(timerString: timerSubject.asObservable(), buttonStatus: buttonStatus.asDriver(onErrorJustReturn: (false)), updateTitle: Observable.just(gymTitle), gymGrade: gymGrade.asDriver(onErrorJustReturn: []))
+        // 숨길 때
+        input.eyeButtonEvent.drive(with: self) { owner, value in
+  
+            
+            if let data = owner.gymGradeList.first(where: { $0.gradeLevel == value }) {
+                owner.hiddenData.append(data)
+                owner.gymGradeList.removeAll { $0.gradeLevel == value }
+            }
+            
+
+            owner.hiddenData.sort { $0.gradeLevel < $1.gradeLevel}
+        
+            
+            gymGrade.accept(owner.gymGradeList)
+            hiddenData.accept(owner.hiddenData)
+            
+            
+        }.disposed(by: disposeBag)
+        
+        
+        // 히든 화면에서 탭
+        input.eveHiddenButtonEvent.drive(with: self) { owner, value in
+            
+            if let data = owner.hiddenData.first(where: { $0.gradeLevel == value }) {
+                owner.gymGradeList.append(data)
+                owner.hiddenData.removeAll { $0.gradeLevel == value }
+            }
+            
+            owner.gymGradeList.sort { $0.gradeLevel < $1.gradeLevel}
+            
+            
+            gymGrade.accept(owner.gymGradeList)
+            hiddenData.accept(owner.hiddenData)
+            updateUI.accept(())
+            
+        }.disposed(by: disposeBag)
+        
+      
+        
+        
+        input.tryButtonEvent.drive(with: self) { owner, value in
+            
+            switch value.0 {
+            case .tryButtonTap:
+                owner.gymGradeList[value.1].tryCount += 1
+            case .tryButtonLongTap:
+                owner.gymGradeList[value.1].tryCount = max(0, owner.gymGradeList[value.1].tryCount - 1)
+            }
+            
+            gymGrade.accept(owner.gymGradeList)
+
+        }.disposed(by: disposeBag)
+        
+        input.successButtonEvent.drive(with: self) { owner, value in
+            
+            switch value.0 {
+            case .successButtonTap:
+                owner.gymGradeList[value.1].tryCount += 1
+                owner.gymGradeList[value.1].successCount += 1
+            case .successButtonLongTap:
+                owner.gymGradeList[value.1].successCount = max(0, owner.gymGradeList[value.1].successCount - 1)
+            }
+           
+            gymGrade.accept(owner.gymGradeList)
+            
+        }.disposed(by: disposeBag)
+        
+        input.saveButtonTapped.bind(with: self) { owner, _ in
+            
+            
+            // 클라이밍장 정보, 현재날짜, 운동시간, 결과 저장
+            
+            if !owner.hiddenData.isEmpty {
+                owner.gymGradeList.append(contentsOf: owner.hiddenData)
+                owner.hiddenData.removeAll()
+            }
+            
+            dump(owner.timeCount)
+            dump(owner.gymGradeList)
+            
+            //렘 저장 코드 추가
+        
+            dismissView.accept(())
+            
+        }.disposed(by: disposeBag)
+        
+        
+        
+        return Output(timerString: timerSubject.asObservable(), buttonStatus: buttonStatus.asDriver(onErrorJustReturn: (false)), updateTitle: Observable.just(gymTitle), gymGrade: gymGrade.asDriver(onErrorJustReturn: []), hiddenData: hiddenData.asDriver(onErrorJustReturn: []), updateUI: updateUI.asDriver(onErrorJustReturn: ()), dismissView: dismissView.asDriver(onErrorJustReturn: ()))
     }
     
 
@@ -75,11 +177,12 @@ final class RecordViewModel: BaseViewModel {
         gymTitle = languageCode == "en" ? data[0].nameEn : data[0].nameKo
         
         
-        gymGradeList = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[1] }
-        print(data)
+        let gradeInfo = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[0] }
         
-        
-        
+        gymGradeList.append(contentsOf: gradeInfo.map {
+            BoulderingAttempt(gradeLevel: Int($0.GradeLevel) ?? 0, color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0)
+        })
+    
     }
     
     

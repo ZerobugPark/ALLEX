@@ -32,7 +32,7 @@ final class GymSelectionViewModel: BaseViewModel {
     init(_ sharedData: SharedDataModel) {
         self.sharedData = sharedData
         
-        NotificationCenterManager.isSelected.addObserver().bind(with: self) { owner, _ in
+        NotificationCenterManager.isSelected.addObserverVoid().bind(with: self) { owner, _ in
             
             
             let languageCode = (Locale.preferredLanguages.first ?? "en").split(separator: "-").first ?? ""
