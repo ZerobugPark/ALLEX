@@ -16,32 +16,16 @@ final class RecordView: BaseView {
     let timeRecord = TimeRecordView()
     let recordView = RecordTableView()
     
-    let saveButton = BaseButton(key: .start)
+    let saveButton = BaseButton(key: .saveRecord)
+    let eyeButton = BaseButton()
+    
     
     var isHiddenViewVisible = false
-    let hiddenView = UIView()
+    let hiddenView = HiddenTableView()
     var hiddenViewHeightConstraint: Constraint?
     
     override func configureHierarchy() {
-        self.addSubviews(backButton, titleLable, timeRecord, recordView, saveButton)
-        
-//        hiddenView.backgroundColor = .darkGray
-//        hiddenView.layer.cornerRadius = 10
-//        hiddenView.clipsToBounds = true
-//        hiddenView.isHidden = true
-//        self.addSubview(hiddenView)
-//        
-//        // Add content to hidden view (예: 레이블)
-//        let label = UILabel()
-//        label.text = "숨긴 난이도 (3)"
-//        label.textColor = .white
-//        label.textAlignment = .center
-//        hiddenView.addSubview(label)
-//        
-//        label.snp.makeConstraints { make in
-//            make.center.equalToSuperview()
-//        }
-        
+        self.addSubviews(backButton, titleLable, timeRecord, recordView, eyeButton, saveButton, hiddenView)
     }
     
     override func configureLayout() {
@@ -71,6 +55,12 @@ final class RecordView: BaseView {
             make.bottom.equalTo(self.saveButton.snp.top).offset(-16)
         }
         
+        eyeButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(16)
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-16)
+            make.size.equalTo(44)
+        }
+        
         saveButton.snp.makeConstraints { make in
             make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-16)
             make.width.equalToSuperview().multipliedBy(0.7)
@@ -78,11 +68,11 @@ final class RecordView: BaseView {
             make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-16)
         }
         
-//        hiddenView.snp.makeConstraints { make in
-//            make.leading.trailing.equalToSuperview().inset(20)
-//            make.bottom.equalTo(self.safeAreaLayoutGuide)
-//            hiddenViewHeightConstraint = make.height.equalTo(0).constraint
-//        }
+        hiddenView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.8)
+            hiddenViewHeightConstraint = make.height.equalTo(0).constraint
+        }
     }
     
     override func configureView() {
@@ -91,23 +81,42 @@ final class RecordView: BaseView {
         
         titleLable.font = .setAllexFont(.bold_14)
         
+        hiddenView.layer.cornerRadius = 20
+        hiddenView.clipsToBounds = true
+        hiddenView.isHidden = true
         
+        eyeButton.setImage(.setAllexSymbol(.eye), for: .normal)
+        eyeButton.tintColor = .systemGray2
         
     }
     
     // MARK: - Public Methods
-//    func toggleHiddenView(isHidden: Bool) {
-//        // 히든 뷰의 상태 업데이트
-//        hiddenView.isHidden = !isHidden
-//        
-//        // 높이 변경 애니메이션
-//        UIView.animate(withDuration: 0.3) {
-//            // 높이 제약 업데이트
-//            self.hiddenViewHeightConstraint?.update(offset: isHidden ? 60 : 0)
-//            self.layoutIfNeeded()  // 이 부분이 중요합니다
-//        }
-//    }
-//    
-    
-    
+    func toggleHiddenView(isHidden: Bool) {
+        // 히든 뷰의 상태 업데이트
+        hiddenView.isHidden = !isHidden
+        
+        let rowCount = hiddenView.tableView.numberOfRows(inSection: 0)
+        
+        var height = rowCount * 70
+        
+        if rowCount >= 5 {
+            height = 350
+        }
+        
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: [.curveEaseInOut]) {
+            self.hiddenView.transform = isHidden ? .identity : CGAffineTransform(scaleX: 1.05, y: 1.05)
+            self.hiddenView.alpha = isHidden ? 1 : 0
+            self.hiddenViewHeightConstraint?.update(offset: isHidden ? height : 0)
+            self.layoutIfNeeded()
+        } completion: { _ in
+            UIView.animate(withDuration: 0.2) {
+                self.hiddenView.transform = .identity
+            }
+        }
+        
+    }
 }
+                       
+                       
+                       

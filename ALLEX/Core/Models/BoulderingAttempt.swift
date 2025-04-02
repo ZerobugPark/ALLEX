@@ -10,6 +10,7 @@ import Foundation
 
 struct BoulderingAttempt {
     
+    let gradeLevel: Int
     let color: String
     let difficulty: String
     var tryCount: Int

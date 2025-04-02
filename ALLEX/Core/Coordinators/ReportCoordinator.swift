@@ -21,7 +21,7 @@ final class ReportCoordinator: Coordinator {
     
     func start() {
         //let vm = HomeView()
-        let vc = ReportViewController()
+        let vc = SearchViewController()
         navigationController.pushViewController(vc, animated: true)
     
     }

@@ -12,6 +12,7 @@ final class CustomView: UIView {
     
     init() {
         super.init(frame: .zero)
+        backgroundColor = .backGround
     }
     
     convenience init(radius: CGFloat, bgColor: UIColor) {

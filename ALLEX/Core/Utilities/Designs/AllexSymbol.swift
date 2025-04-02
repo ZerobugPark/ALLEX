@@ -13,7 +13,7 @@ extension UIImage {
         case house = "house"
         case calendar = "calendar"
         case camera = "camera"
-        case chart = "chart.xyaxis.line"
+        case search = "magnifyingglass"
         case person = "person.crop.circle"
         case xmark = "xmark"
         case list = "list.bullet.clipboard"
@@ -23,7 +23,8 @@ extension UIImage {
         case starFill = "star.fill"
         case play = "play.fill"
         case paues = "pause.fill"
-        
+        case eye = "eye"
+        case eyeSlash = "eye.slash"
     }
 
     

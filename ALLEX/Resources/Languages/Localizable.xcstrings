@@ -54,6 +54,23 @@
         }
       }
     },
+    "Save_Record" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장하기"
+          }
+        }
+      }
+    },
     "Space" : {
       "comment" : "자주가는 클라이밍",
       "extractionState" : "manual",

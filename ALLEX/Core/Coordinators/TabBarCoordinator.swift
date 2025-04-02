@@ -58,7 +58,7 @@ final class TabBarCoordinator: Coordinator {
         emptyVC.tabBarItem = emptyItem  // 빈 탭 아이템 설정
         
             
-        reportNav.tabBarItem = UITabBarItem(title: nil, image: .setAllexSymbol(.chart), tag: 3)
+        reportNav.tabBarItem = UITabBarItem(title: nil, image: .setAllexSymbol(.search), tag: 3)
         
         profileNav.tabBarItem = UITabBarItem(title: nil, image: .setAllexSymbol(.person), tag: 4)
         

@@ -78,7 +78,7 @@ final class RecordTableView: BaseView {
         tableView.backgroundColor = .setAllexColor(.backGround)
         tableView.separatorStyle = .none
         tableView.rowHeight = 70
-        
+        tableView.showsVerticalScrollIndicator = false
     }
 
 }

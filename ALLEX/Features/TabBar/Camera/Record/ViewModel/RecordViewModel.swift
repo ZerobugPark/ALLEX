@@ -19,20 +19,22 @@ final class RecordViewModel: BaseViewModel {
         let tryButtonEvent: Driver<(TryButtonAction, Int)>
         let successButtonEvent:  Driver<(SuccessButtonAction, Int)>
         let eyeButtonEvent:  Driver<(Int)>
+        let eveHiddenButtonEvent:  Driver<(Int)>
+        let saveButtonTapped: ControlEvent<Void>
     }
+    
     
     struct Output {
         let timerString: Observable<String> // 포맷된 타이머 문자열
         let buttonStatus: Driver<Bool>
         let updateTitle: Observable<String>
         let gymGrade: Driver<[BoulderingAttempt]>
+        let hiddenData: Driver<[BoulderingAttempt]>
+        let updateUI: Driver<Void>
+        let dismissView: Driver<Void>
     }
     
-    struct HiddenBouldering {
-        let gymGrade: BoulderingAttempt
-        let index: Int
-    }
-    
+
     
     var disposeBag =  DisposeBag()
     
@@ -45,7 +47,7 @@ final class RecordViewModel: BaseViewModel {
     private var gymTitle = ""
     
     private var gymGradeList: [BoulderingAttempt] = []
-    private var hiddenData: [HiddenBouldering] = []
+    private var hiddenData: [BoulderingAttempt] = []
 
     
     init(_ sharedData: SharedDataModel) {
@@ -60,6 +62,9 @@ final class RecordViewModel: BaseViewModel {
    
         let buttonStatus = PublishRelay<Bool>()
         let gymGrade = BehaviorRelay(value: gymGradeList)
+        let hiddenData =  BehaviorRelay(value: hiddenData)
+        let updateUI = PublishRelay<Void>()
+        let dismissView = PublishRelay<Void>()
         
         input.toggleTimerTrigger.bind(with: self, onNext: { owner, _ in
             
@@ -70,15 +75,45 @@ final class RecordViewModel: BaseViewModel {
             
         }).disposed(by: disposeBag)
         
+        
+        // 숨길 때
         input.eyeButtonEvent.drive(with: self) { owner, value in
+  
             
-            let data = HiddenBouldering(gymGrade: owner.gymGradeList[value], index: value)
+            if let data = owner.gymGradeList.first(where: { $0.gradeLevel == value }) {
+                owner.hiddenData.append(data)
+                owner.gymGradeList.removeAll { $0.gradeLevel == value }
+            }
             
-            owner.gymGradeList.remove(at: value)
-            owner.hiddenData.append(data)
+
+            owner.hiddenData.sort { $0.gradeLevel < $1.gradeLevel}
+        
             
             gymGrade.accept(owner.gymGradeList)
+            hiddenData.accept(owner.hiddenData)
+            
+            
         }.disposed(by: disposeBag)
+        
+        
+        // 히든 화면에서 탭
+        input.eveHiddenButtonEvent.drive(with: self) { owner, value in
+            
+            if let data = owner.hiddenData.first(where: { $0.gradeLevel == value }) {
+                owner.gymGradeList.append(data)
+                owner.hiddenData.removeAll { $0.gradeLevel == value }
+            }
+            
+            owner.gymGradeList.sort { $0.gradeLevel < $1.gradeLevel}
+            
+            
+            gymGrade.accept(owner.gymGradeList)
+            hiddenData.accept(owner.hiddenData)
+            updateUI.accept(())
+            
+        }.disposed(by: disposeBag)
+        
+      
         
         
         input.tryButtonEvent.drive(with: self) { owner, value in
@@ -91,7 +126,7 @@ final class RecordViewModel: BaseViewModel {
             }
             
             gymGrade.accept(owner.gymGradeList)
-            
+
         }.disposed(by: disposeBag)
         
         input.successButtonEvent.drive(with: self) { owner, value in
@@ -108,9 +143,28 @@ final class RecordViewModel: BaseViewModel {
             
         }.disposed(by: disposeBag)
         
+        input.saveButtonTapped.bind(with: self) { owner, _ in
+            
+            
+            // 클라이밍장 정보, 현재날짜, 운동시간, 결과 저장
+            
+            if !owner.hiddenData.isEmpty {
+                owner.gymGradeList.append(contentsOf: owner.hiddenData)
+                owner.hiddenData.removeAll()
+            }
+            
+            dump(owner.timeCount)
+            dump(owner.gymGradeList)
+            
+            //렘 저장 코드 추가
+        
+            dismissView.accept(())
+            
+        }.disposed(by: disposeBag)
         
         
-        return Output(timerString: timerSubject.asObservable(), buttonStatus: buttonStatus.asDriver(onErrorJustReturn: (false)), updateTitle: Observable.just(gymTitle), gymGrade: gymGrade.asDriver(onErrorJustReturn: []))
+        
+        return Output(timerString: timerSubject.asObservable(), buttonStatus: buttonStatus.asDriver(onErrorJustReturn: (false)), updateTitle: Observable.just(gymTitle), gymGrade: gymGrade.asDriver(onErrorJustReturn: []), hiddenData: hiddenData.asDriver(onErrorJustReturn: []), updateUI: updateUI.asDriver(onErrorJustReturn: ()), dismissView: dismissView.asDriver(onErrorJustReturn: ()))
     }
     
 
@@ -126,7 +180,7 @@ final class RecordViewModel: BaseViewModel {
         let gradeInfo = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[0] }
         
         gymGradeList.append(contentsOf: gradeInfo.map {
-            BoulderingAttempt(color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0)
+            BoulderingAttempt(gradeLevel: Int($0.GradeLevel) ?? 0, color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0)
         })
     
     }

@@ -18,42 +18,65 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
     private let tryButtonEvent = PublishRelay<(TryButtonAction, Int)>()
     private let successButtonEvent =  PublishRelay<(SuccessButtonAction, Int)>()
     private let eveButtonEvent =  PublishRelay<(Int)>()
+    private let eveHiddenButtonEvent =  PublishRelay<(Int)>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         mainView.recordView.tableView.register(RecordTableViewCell.self, forCellReuseIdentifier: RecordTableViewCell.id)
+        
+        mainView.hiddenView.tableView.register(HiddenTableViewCell.self, forCellReuseIdentifier: HiddenTableViewCell.id)
+        
+        
 
     }
     
     override func bind() {
-
-       
-        let input = RecordViewModel.Input(toggleTimerTrigger: mainView.timeRecord.timeButton.rx.tap, tryButtonEvent: tryButtonEvent.asDriver(onErrorJustReturn: (.tryButtonTap,0)), successButtonEvent: successButtonEvent.asDriver(onErrorJustReturn: (.successButtonTap,0)), eyeButtonEvent: eveButtonEvent.asDriver(onErrorJustReturn: (0)))
+        
+        
+        let input = RecordViewModel.Input(toggleTimerTrigger: mainView.timeRecord.timeButton.rx.tap, tryButtonEvent: tryButtonEvent.asDriver(onErrorJustReturn: (.tryButtonTap,0)), successButtonEvent: successButtonEvent.asDriver(onErrorJustReturn: (.successButtonTap,0)), eyeButtonEvent: eveButtonEvent.asDriver(onErrorJustReturn: 0), eveHiddenButtonEvent: eveHiddenButtonEvent.asDriver(onErrorJustReturn: 0), saveButtonTapped: mainView.saveButton.rx.tap)
+        
+    
         
         let output = viewModel.transform(input: input)
         
         output.gymGrade.drive(mainView.recordView.tableView.rx.items(cellIdentifier: RecordTableViewCell.id, cellType: RecordTableViewCell.self)){  [weak self] row, element, cell in
             
             guard let self = self else { return }
-        
+            
             cell.setupData(element)
             
-         
-                
+            
+            
             cell.successButtonEvent.bind(with: self) { owner, type in
-                owner.successButtonEvent.accept((type, row))
+                owner.successButtonEvent.accept((type, element.gradeLevel))
             }.disposed(by: cell.disposeBag)
             
             cell.tryButtonEvent.bind(with: self) { owner, type in
-                owner.tryButtonEvent.accept((type, row))
+                owner.tryButtonEvent.accept((type, element.gradeLevel))
             }.disposed(by: cell.disposeBag)
             
-            cell.eyeButton.rx.tap.bind(with: self) { owner, _ in
-                owner.eveButtonEvent.accept(row)
+            cell.bouldering.eyeButton.rx.tap.bind(with: self) { owner, _ in
+                owner.eveButtonEvent.accept(element.gradeLevel)
             }.disposed(by: cell.disposeBag)
+            
             
         }.disposed(by: disposeBag)
+        
+        output.hiddenData.drive(mainView.hiddenView.tableView.rx.items(cellIdentifier: HiddenTableViewCell.id, cellType: HiddenTableViewCell.self)) { [weak self] row, element, cell in
+            
+            guard let self = self else { return }
+            cell.setupData(element)
+            
+            cell.bouldering.eyeButton.rx.tap.bind(with: self) { owner, _ in
+                
+                owner.eveHiddenButtonEvent.accept(element.gradeLevel)
+                
+            }.disposed(by: cell.disposeBag)
+            
+            
+        }.disposed(by: disposeBag)
+        
         
         
         output.buttonStatus.drive(mainView.timeRecord.timeButton.rx.isSelected).disposed(by: disposeBag)
@@ -66,54 +89,35 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         
         output.updateTitle.bind(to: mainView.titleLable.rx.text).disposed(by: disposeBag)
     
+        output.updateUI.drive(with: self) { owner, _ in
+            
+            let isHidden =  owner.mainView.isHiddenViewVisible
+            owner.mainView.toggleHiddenView(isHidden: isHidden)
+            
+        }.disposed(by: disposeBag)
+        
+        
+        output.dismissView.drive(with: self) { owner, _ in
+            
+            owner.coordinator?.dismiss()
+            
+        }.disposed(by: disposeBag)
+        
+        
         mainView.backButton.rx.tap.bind(with: self) { owner, _ in
             owner.coordinator?.dismiss()
         }.disposed(by: disposeBag)
         
+        mainView.eyeButton.rx.tap.bind(with: self) { owner, _ in
+
+            owner.mainView.isHiddenViewVisible.toggle()
+            let isHidden =  owner.mainView.isHiddenViewVisible
+            
+            owner.mainView.toggleHiddenView(isHidden: isHidden)
+        }.disposed(by: disposeBag)
         
     }
     
 
 }
 
-//extension RecordViewController: UITableViewDataSource {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return activities.count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: RecordTableViewCell.id, for: indexPath) as? RecordTableViewCell else {
-//            return UITableViewCell()
-//        }
-//        
-//        let activity = activities[indexPath.row]
-//        cell.configure(
-//            with: activity.color,
-//            leftValue: activity.leftValue,
-//            rightValue: activity.rightValue,
-//            isHidden: activity.isHidden
-//        )
-//        
-//        // 히든 버튼 액션 설정
-//        cell.eyeButtonAction = { [weak self] isHidden in
-//           
-//            self?.handleEyeButtonTap(isHidden: isHidden, at: i)
-//            
-//           
-//            
-//            // 데이터 업데이트
-//            self?.activities[indexPath.row].isHidden = isHidden
-//        }
-//        
-//        return cell
-//    }
-//    
-//    func handleEyeButtonTap(isHidden: Bool, at indexPath: IndexPath) {
-//          // 데이터 업데이트
-//          activities[indexPath.row].isHidden = isHidden
-//          
-//          // 베이스뷰의 메서드 호출
-//        mainView.toggleHiddenView(isHidden: isHidden)
-//      }
-//  
-//}
