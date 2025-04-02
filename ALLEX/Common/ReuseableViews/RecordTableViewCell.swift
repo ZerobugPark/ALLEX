@@ -96,10 +96,7 @@ final class RecordTableViewCell: BaseTableViewCell {
         
         stackView.axis = .horizontal
         stackView.distribution = .fillProportionally
-        //stackView.alignment = .center
     
-        
-        
         // Eye button
         eyeButton.setImage(UIImage(systemName: "eye"), for: .normal)
         eyeButton.tintColor = .gray
@@ -117,7 +114,7 @@ final class RecordTableViewCell: BaseTableViewCell {
     
     
     func setupData(_ data: Bouldering) {
-
+        print(data.Color)
         colorIndicator.backgroundColor = .setBoulderColor(from: data.Color)
         gradeLabel.text = data.Difficulty
       

@@ -11,17 +11,19 @@ import SnapKit
 
 final class RecordView: BaseView {
     
-    let backButton = UIButton()
+    let backButton = BaseButton()
     let titleLable = TitleLabel()
     let timeRecord = TimeRecordView()
     let recordView = RecordTableView()
+    
+    let saveButton = BaseButton(key: .start)
     
     var isHiddenViewVisible = false
     let hiddenView = UIView()
     var hiddenViewHeightConstraint: Constraint?
     
     override func configureHierarchy() {
-        self.addSubviews(backButton, titleLable, timeRecord, recordView)
+        self.addSubviews(backButton, titleLable, timeRecord, recordView, saveButton)
         
 //        hiddenView.backgroundColor = .darkGray
 //        hiddenView.layer.cornerRadius = 10
@@ -66,7 +68,14 @@ final class RecordView: BaseView {
         recordView.snp.makeConstraints { make in
             make.top.equalTo(timeRecord.snp.bottom).offset(16)
             make.horizontalEdges.equalTo(self.safeAreaLayoutGuide)
-            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-100)
+            make.bottom.equalTo(self.saveButton.snp.top).offset(-16)
+        }
+        
+        saveButton.snp.makeConstraints { make in
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-16)
+            make.width.equalToSuperview().multipliedBy(0.7)
+            make.trailing.equalToSuperview().offset(-16)
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-16)
         }
         
 //        hiddenView.snp.makeConstraints { make in

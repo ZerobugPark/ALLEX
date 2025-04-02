@@ -75,7 +75,7 @@ final class RecordViewModel: BaseViewModel {
         gymTitle = languageCode == "en" ? data[0].nameEn : data[0].nameKo
         
         
-        gymGradeList = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[1] }
+        gymGradeList = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[0] }
         print(data)
         
         

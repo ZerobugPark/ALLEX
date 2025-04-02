@@ -12,7 +12,7 @@ final class SharedDataModel {
     private var gymData: [Gym] = []
     private var gymGradeData: [GymGrades] = []
     private var boulderingData: [Bouldering] = []
-    private var userSelectedGymInfo: [String] = []
+    private var userSelectedGymInfo: [String] = [] // [0]: [brandID // [1]: gymID
     
     // 제네릭 메서드를 사용하여 데이터를 업데이트
     // 업데이트 메서드 네트워크 통신부분은 감출 수 있으면 감추도록 수정해볼 것
