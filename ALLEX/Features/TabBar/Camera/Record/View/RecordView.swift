@@ -91,6 +91,8 @@ final class RecordView: BaseView {
         
         titleLable.font = .setAllexFont(.bold_14)
         
+        
+        
     }
     
     // MARK: - Public Methods

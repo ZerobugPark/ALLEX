@@ -22,7 +22,7 @@ final class RecordViewModel: BaseViewModel {
         let timerString: Observable<String> // 포맷된 타이머 문자열
         let buttonStatus: Driver<Bool>
         let updateTitle: Observable<String>
-        let gymGrade: Driver<[Bouldering]>
+        let gymGrade: Driver<[BoulderingAttempt]>
     }
     
     
@@ -36,7 +36,7 @@ final class RecordViewModel: BaseViewModel {
     
     private var gymTitle = ""
     
-    private var gymGradeList: [Bouldering] = []
+    private var gymGradeList: [BoulderingAttempt] = []
     
     private lazy var gymGrade = BehaviorRelay(value: gymGradeList)
     
@@ -75,10 +75,22 @@ final class RecordViewModel: BaseViewModel {
         gymTitle = languageCode == "en" ? data[0].nameEn : data[0].nameKo
         
         
-        gymGradeList = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[0] }
-        print(data)
+        let gradeInfo = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[0] }
         
+        gymGradeList.append(contentsOf: gradeInfo.map {
+            BoulderingAttempt(color: $0.Color, difficulty: $0.Difficulty, tryCount: 1, successCount: 1)
+        })
         
+//        gymGradeList.append(contentsOf: gymGradeList)
+//        gymGradeList.append(contentsOf: gymGradeList)
+//        gymGradeList.append(contentsOf: gymGradeList)
+//        gymGradeList.append(contentsOf: gymGradeList)
+//        gymGradeList.append(contentsOf: gymGradeList)
+//        gymGradeList.append(contentsOf: gymGradeList)
+//        gymGradeList.append(contentsOf: gymGradeList)
+//        gymGradeList.append(contentsOf: gymGradeList)
+//        gymGradeList.append(contentsOf: gymGradeList)
+//        gymGradeList.append(contentsOf: gymGradeList)
         
     }
     

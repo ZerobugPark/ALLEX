@@ -9,6 +9,9 @@ import UIKit
 
 import SnapKit
 
+import RxSwift
+import RxCocoa
+
 final class RecordTableViewCell: BaseTableViewCell {
     
     // MARK: - Properties
@@ -21,14 +24,16 @@ final class RecordTableViewCell: BaseTableViewCell {
     private let colorIndicatorContainer = UIView()
     private let colorIndicator = UIView()
     
-    let tryCountButton = CountButton()
-    let successCountButton = CountButton()
+    private let tryCountButton = CountButton()
+    private let successCountButton = CountButton()
     
-
+    
     private let gradeLabel = TertiaryLabel(title: "")
     
-    var eyeButtonAction: ((Bool) -> Void)?
     private var isEyeHidden = false
+    
+    private let viewModel = RecordTableCellViewModel()
+    private let disposeBag = DisposeBag()
     
     
     override func configureHierarchy() {
@@ -43,7 +48,6 @@ final class RecordTableViewCell: BaseTableViewCell {
     }
     
     override func configureLayout() {
-        
         
         stackView.snp.makeConstraints { make in
             make.horizontalEdges.equalTo(contentView.self.safeAreaLayoutGuide)
@@ -69,7 +73,7 @@ final class RecordTableViewCell: BaseTableViewCell {
         
         // 2. Color indicator constraints
         colorIndicator.snp.makeConstraints { make in
-
+            
             make.center.equalTo(colorIndicatorContainer)
             make.size.equalTo(40)
         }
@@ -88,15 +92,13 @@ final class RecordTableViewCell: BaseTableViewCell {
             make.height.equalTo(70)
         }
         
-  
-        
     }
     
     override func configureView() {
         
         stackView.axis = .horizontal
-        stackView.distribution = .fillProportionally
-    
+        stackView.distribution = .fill
+        
         // Eye button
         eyeButton.setImage(UIImage(systemName: "eye"), for: .normal)
         eyeButton.tintColor = .gray
@@ -104,20 +106,22 @@ final class RecordTableViewCell: BaseTableViewCell {
         
         // Color indicator
         colorIndicator.clipsToBounds = true
-
+        
         gradeLabel.font = .setAllexFont(.bold_12)
         gradeLabel.textAlignment = .center
         
+        bind()
+        
     }
     
-    
-    
-    
-    func setupData(_ data: Bouldering) {
-        print(data.Color)
-        colorIndicator.backgroundColor = .setBoulderColor(from: data.Color)
-        gradeLabel.text = data.Difficulty
-      
+    func setupData(_ data: BoulderingAttempt) {
+        
+        colorIndicator.backgroundColor = .setBoulderColor(from: data.color)
+        gradeLabel.text = data.difficulty
+        
+        tryCountButton.countLabel.text = "\(data.tryCount)"
+        successCountButton.countLabel.text = "\(data.successCount)"
+        
     }
     
     override func layoutSubviews() {
@@ -126,61 +130,81 @@ final class RecordTableViewCell: BaseTableViewCell {
         guard contentView.bounds.width > 0 else { return }
         
         colorIndicator.layer.cornerRadius = colorIndicator.frame.width / 2
-    
-
+        
+        
     }
     
     
-//    // MARK: - Actions
+    
+    
+    // MARK: - Actions
     @objc private func eyeButtonTapped() {
         print("butotn Tapped")
-//        isHidden.toggle()
-//        let eyeImage = isHidden ? UIImage(systemName: "eye.slash") : UIImage(systemName: "eye")
-//        eyeButton.setImage(eyeImage, for: .normal)
-//        
-//        // 콜백 호출
-//        eyeButtonAction?(isHidden)
+        
     }
-//    
-//    // MARK: - Configure Cell
-//    func configure(with color: UIColor, leftValue: String, rightValue: String, isHidden: Bool = false) {
-//        colorIndicator.backgroundColor = color
-//        leftValueLabel.text = leftValue
-//        rightValueLabel.text = rightValue
-//        
-//        self.isHidden = isHidden
-//        let eyeImage = isHidden ? UIImage(systemName: "eye.slash") : UIImage(systemName: "eye")
-//        eyeButton.setImage(eyeImage, for: .normal)
-//    }
-    
     
 }
 
+extension RecordTableViewCell {
+    
+    private func bind() {
+        
+        
+        // MARK: - tryButton
+        let tryTapGesture = UITapGestureRecognizer()
+        tryCountButton.addGestureRecognizer(tryTapGesture)
+        
+        let successTapGesture = UITapGestureRecognizer()
+        successCountButton.addGestureRecognizer(successTapGesture)
 
-// 3. Left value container constraints
-//tryValueContainer.snp.makeConstraints { make in
-//    make.leading.equalTo(colorIndicator.snp.trailing).offset(12)
-//    make.centerY.equalToSuperview()
-//    //make.width.equalTo(120)
-//    make.width.equalToSuperview().multipliedBy(0.25)
-//    make.height.equalTo(50)
-//}
-//
-//// 4. Right value container constraints
-//sucessValueContainer.snp.makeConstraints { make in
-//    make.leading.equalTo(tryValueContainer.snp.trailing).offset(12)
-//    make.centerY.equalToSuperview()
-//    make.width.equalTo(120)
-//   // make.width.equalToSuperview().multipliedBy(0.25)
-//    make.height.equalTo(50)
-//    make.trailing.equalToSuperview().offset(-12)
-//}
-//
-//// 5. Value labels constraints
-//tryValueLabel.snp.makeConstraints { make in
-//    make.center.equalToSuperview()
-//}
-//
-//sucessValueLabel.snp.makeConstraints { make in
-//    make.center.equalToSuperview()
-//}
+        //일반타입과 롱 타입, 두개의 타입이 다르기 때문에, map을 사용해 String 타입으로 맞춤
+        let tryTapObservable = tryTapGesture.rx.event .map { _ in TryButtonAction.tryButtonTap }
+        let successTapObservable = successTapGesture.rx.event .map { _ in SuccessButtonAction.successButtonTap }
+        
+        let tryLongPressGesture = UILongPressGestureRecognizer()
+        tryLongPressGesture.minimumPressDuration = 0.5
+        tryCountButton.addGestureRecognizer(tryLongPressGesture)
+
+        let successLongPressGesture = UILongPressGestureRecognizer()
+        successLongPressGesture.minimumPressDuration = 0.5
+        successCountButton.addGestureRecognizer(successLongPressGesture)
+        
+        
+        let tryLongTapObservable = createLongPressObservable(for: tryLongPressGesture, action: TryButtonAction.tryButtonLongTap)
+        let successLongTapObservable = createLongPressObservable(for: successLongPressGesture, action: SuccessButtonAction.successButtonLongTap)
+        
+        
+        let tryButtonEvent = Observable.merge(tryTapObservable, tryLongTapObservable)
+        let successButtonEvent = Observable.merge(successTapObservable, successLongTapObservable)
+        
+        
+        let input = RecordTableCellViewModel.Input(tryButtonEvent: tryButtonEvent, successButtonEvent: successButtonEvent)
+        
+        let output = viewModel.transform(input: input)
+        
+        output.tryCount.drive(tryCountButton.countLabel.rx.text).disposed(by: disposeBag)
+        output.successCount.drive(successCountButton.countLabel.rx.text).disposed(by: disposeBag)
+        
+        
+        
+    }
+    
+    
+    private func createLongPressObservable<T>(for gesture: UILongPressGestureRecognizer, action: T) -> Observable<T> {
+        return gesture.rx.event
+            .flatMapLatest { gesture -> Observable<T> in
+                if gesture.state == .began {
+                    return Observable.concat(
+                        Observable.just(action), // 처음 눌렀을 때 한 번 방출
+                        Observable<Int>.interval(.milliseconds(500), scheduler: MainScheduler.instance) // 이후 0.5초마다 방출
+                            .map { _ in action }
+                    )
+                } else if gesture.state == .ended || gesture.state == .cancelled {
+                    return Observable.empty() // 손을 떼면 이벤트 중지
+                } else {
+                    return Observable.never()
+                }
+            }
+    }
+    
+}
