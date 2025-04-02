@@ -16,6 +16,9 @@ final class RecordViewModel: BaseViewModel {
     
     struct Input {
         let toggleTimerTrigger: ControlEvent<Void> // 타이머 토글 트리거
+        let tryButtonEvent: Driver<(TryButtonAction, Int)>
+        let successButtonEvent:  Driver<(SuccessButtonAction, Int)>
+        let eyeButtonEvent:  Driver<(Int)>
     }
     
     struct Output {
@@ -23,6 +26,11 @@ final class RecordViewModel: BaseViewModel {
         let buttonStatus: Driver<Bool>
         let updateTitle: Observable<String>
         let gymGrade: Driver<[BoulderingAttempt]>
+    }
+    
+    struct HiddenBouldering {
+        let gymGrade: BoulderingAttempt
+        let index: Int
     }
     
     
@@ -37,21 +45,22 @@ final class RecordViewModel: BaseViewModel {
     private var gymTitle = ""
     
     private var gymGradeList: [BoulderingAttempt] = []
-    
-    private lazy var gymGrade = BehaviorRelay(value: gymGradeList)
+    private var hiddenData: [HiddenBouldering] = []
+
     
     init(_ sharedData: SharedDataModel) {
         self.sharedData = sharedData
         self.toggleTimer(isSelected: isSelected)
         
         getGymInfo()
-
         
     }
     
     func transform(input: Input) -> Output {
+   
         let buttonStatus = PublishRelay<Bool>()
-            
+        let gymGrade = BehaviorRelay(value: gymGradeList)
+        
         input.toggleTimerTrigger.bind(with: self, onNext: { owner, _ in
             
             owner.isSelected.toggle()
@@ -60,6 +69,45 @@ final class RecordViewModel: BaseViewModel {
             
             
         }).disposed(by: disposeBag)
+        
+        input.eyeButtonEvent.drive(with: self) { owner, value in
+            
+            let data = HiddenBouldering(gymGrade: owner.gymGradeList[value], index: value)
+            
+            owner.gymGradeList.remove(at: value)
+            owner.hiddenData.append(data)
+            
+            gymGrade.accept(owner.gymGradeList)
+        }.disposed(by: disposeBag)
+        
+        
+        input.tryButtonEvent.drive(with: self) { owner, value in
+            
+            switch value.0 {
+            case .tryButtonTap:
+                owner.gymGradeList[value.1].tryCount += 1
+            case .tryButtonLongTap:
+                owner.gymGradeList[value.1].tryCount = max(0, owner.gymGradeList[value.1].tryCount - 1)
+            }
+            
+            gymGrade.accept(owner.gymGradeList)
+            
+        }.disposed(by: disposeBag)
+        
+        input.successButtonEvent.drive(with: self) { owner, value in
+            
+            switch value.0 {
+            case .successButtonTap:
+                owner.gymGradeList[value.1].tryCount += 1
+                owner.gymGradeList[value.1].successCount += 1
+            case .successButtonLongTap:
+                owner.gymGradeList[value.1].successCount = max(0, owner.gymGradeList[value.1].successCount - 1)
+            }
+           
+            gymGrade.accept(owner.gymGradeList)
+            
+        }.disposed(by: disposeBag)
+        
         
         
         return Output(timerString: timerSubject.asObservable(), buttonStatus: buttonStatus.asDriver(onErrorJustReturn: (false)), updateTitle: Observable.just(gymTitle), gymGrade: gymGrade.asDriver(onErrorJustReturn: []))
@@ -78,20 +126,9 @@ final class RecordViewModel: BaseViewModel {
         let gradeInfo = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[0] }
         
         gymGradeList.append(contentsOf: gradeInfo.map {
-            BoulderingAttempt(color: $0.Color, difficulty: $0.Difficulty, tryCount: 1, successCount: 1)
+            BoulderingAttempt(color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0)
         })
-        
-//        gymGradeList.append(contentsOf: gymGradeList)
-//        gymGradeList.append(contentsOf: gymGradeList)
-//        gymGradeList.append(contentsOf: gymGradeList)
-//        gymGradeList.append(contentsOf: gymGradeList)
-//        gymGradeList.append(contentsOf: gymGradeList)
-//        gymGradeList.append(contentsOf: gymGradeList)
-//        gymGradeList.append(contentsOf: gymGradeList)
-//        gymGradeList.append(contentsOf: gymGradeList)
-//        gymGradeList.append(contentsOf: gymGradeList)
-//        gymGradeList.append(contentsOf: gymGradeList)
-        
+    
     }
     
     

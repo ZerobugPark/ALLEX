@@ -15,6 +15,10 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
     
     var coordinator: CameraCoordinator?
     
+    private let tryButtonEvent = PublishRelay<(TryButtonAction, Int)>()
+    private let successButtonEvent =  PublishRelay<(SuccessButtonAction, Int)>()
+    private let eveButtonEvent =  PublishRelay<(Int)>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -25,13 +29,29 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
     override func bind() {
 
        
-        let input = RecordViewModel.Input(toggleTimerTrigger: mainView.timeRecord.timeButton.rx.tap)
+        let input = RecordViewModel.Input(toggleTimerTrigger: mainView.timeRecord.timeButton.rx.tap, tryButtonEvent: tryButtonEvent.asDriver(onErrorJustReturn: (.tryButtonTap,0)), successButtonEvent: successButtonEvent.asDriver(onErrorJustReturn: (.successButtonTap,0)), eyeButtonEvent: eveButtonEvent.asDriver(onErrorJustReturn: (0)))
         
         let output = viewModel.transform(input: input)
         
-        output.gymGrade.drive(mainView.recordView.tableView.rx.items(cellIdentifier: RecordTableViewCell.id, cellType: RecordTableViewCell.self)){ row, element, cell in
+        output.gymGrade.drive(mainView.recordView.tableView.rx.items(cellIdentifier: RecordTableViewCell.id, cellType: RecordTableViewCell.self)){  [weak self] row, element, cell in
             
+            guard let self = self else { return }
+        
             cell.setupData(element)
+            
+         
+                
+            cell.successButtonEvent.bind(with: self) { owner, type in
+                owner.successButtonEvent.accept((type, row))
+            }.disposed(by: cell.disposeBag)
+            
+            cell.tryButtonEvent.bind(with: self) { owner, type in
+                owner.tryButtonEvent.accept((type, row))
+            }.disposed(by: cell.disposeBag)
+            
+            cell.eyeButton.rx.tap.bind(with: self) { owner, _ in
+                owner.eveButtonEvent.accept(row)
+            }.disposed(by: cell.disposeBag)
             
         }.disposed(by: disposeBag)
         

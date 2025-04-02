@@ -15,9 +15,15 @@ protocol NotificationCenterHandler {
 }
 
 extension NotificationCenterHandler {
-    func addObserver() -> Observable<Any?> {
-        return NotificationCenter.default.rx.notification(name).map { $0.object }
+  
+    func addObserver<T>() -> Observable<T?> {
+        return NotificationCenter.default.rx.notification(name).map { $0.object as? T }
     }
+
+    func addObserverVoid() -> Observable<Void> {
+        return NotificationCenter.default.rx.notification(name).map { _ in () }
+    }
+
 
     func post(object: Any? = nil) {
         NotificationCenter.default.post(name: name, object: object)
@@ -31,7 +37,6 @@ enum NotificationCenterManager: NotificationCenterHandler {
         switch self {
         case .isSelected:
             return Notification.Name("Gym.Selected")
-        
         }
     }
     

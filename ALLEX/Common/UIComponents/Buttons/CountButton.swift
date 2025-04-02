@@ -12,7 +12,7 @@ import SnapKit
 final class CountButton: UIButton {
 
     // 커스텀 이미지 뷰로 버튼의 이미지를 설정
-    private let containerView = UIView()
+    private let containerView = CustomView(radius: 20, bgColor: .setAllexColor(.backGroundSecondary))
     let countLabel = SubTitleLabel(title: "0")
 
     
@@ -36,11 +36,7 @@ final class CountButton: UIButton {
         
         countLabel.textAlignment = .center
         countLabel.font = .setAllexFont(.bold_16)
-        
-        containerView.backgroundColor = .setAllexColor(.backGroundSecondary)
-        containerView.layer.cornerRadius = 20
-        containerView.clipsToBounds = true
-        
+   
     }
     
     required init?(coder: NSCoder) {
