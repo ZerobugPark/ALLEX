@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		D02E5D9C2D95096500534F24 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = D02E5D9B2D95096500534F24 /* .gitignore */; };
-		D0387C7B2D9BDA0600C70894 /* JTAppleCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = D0387C7A2D9BDA0600C70894 /* JTAppleCalendar */; };
 		D0387C7E2D9BDA1500C70894 /* RxGesture in Frameworks */ = {isa = PBXBuildFile; productRef = D0387C7D2D9BDA1500C70894 /* RxGesture */; };
 		D0387C812D9BDA2500C70894 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = D0387C802D9BDA2500C70894 /* RxCocoa */; };
 		D0387C832D9BDA2500C70894 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D0387C822D9BDA2500C70894 /* RxSwift */; };
@@ -49,7 +48,6 @@
 				D0387C812D9BDA2500C70894 /* RxCocoa in Frameworks */,
 				D0387C7E2D9BDA1500C70894 /* RxGesture in Frameworks */,
 				D0387C832D9BDA2500C70894 /* RxSwift in Frameworks */,
-				D0387C7B2D9BDA0600C70894 /* JTAppleCalendar in Frameworks */,
 				D0387C862D9BDA3000C70894 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,7 +92,6 @@
 			);
 			name = ALLEX;
 			packageProductDependencies = (
-				D0387C7A2D9BDA0600C70894 /* JTAppleCalendar */,
 				D0387C7D2D9BDA1500C70894 /* RxGesture */,
 				D0387C802D9BDA2500C70894 /* RxCocoa */,
 				D0387C822D9BDA2500C70894 /* RxSwift */,
@@ -130,7 +127,6 @@
 			mainGroup = D02E5D7A2D95094600534F24;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				D0387C792D9BDA0600C70894 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */,
 				D0387C7C2D9BDA1500C70894 /* XCRemoteSwiftPackageReference "RxGesture" */,
 				D0387C7F2D9BDA2500C70894 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				D0387C842D9BDA3000C70894 /* XCRemoteSwiftPackageReference "SnapKit" */,
@@ -378,14 +374,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		D0387C792D9BDA0600C70894 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/patchthecode/JTAppleCalendar.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.5;
-			};
-		};
 		D0387C7C2D9BDA1500C70894 /* XCRemoteSwiftPackageReference "RxGesture" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RxSwiftCommunity/RxGesture";
@@ -413,11 +401,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		D0387C7A2D9BDA0600C70894 /* JTAppleCalendar */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D0387C792D9BDA0600C70894 /* XCRemoteSwiftPackageReference "JTAppleCalendar" */;
-			productName = JTAppleCalendar;
-		};
 		D0387C7D2D9BDA1500C70894 /* RxGesture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D0387C7C2D9BDA1500C70894 /* XCRemoteSwiftPackageReference "RxGesture" */;
