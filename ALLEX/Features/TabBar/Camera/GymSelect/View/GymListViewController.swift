@@ -19,7 +19,7 @@ final class GymListViewController: BaseViewController<GymListView, GymListViewMo
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        mainView.tableView.register(GymListTableViewCell.self, forCellReuseIdentifier: GymListTableViewCell.id)
+        mainView.gymList.tableView.register(GymListTableViewCell.self, forCellReuseIdentifier: GymListTableViewCell.id)
 
     }
     
@@ -27,14 +27,14 @@ final class GymListViewController: BaseViewController<GymListView, GymListViewMo
         
         let selectedGym = PublishRelay<[String]>()
         
-        let searchText =  mainView.searchBar.rx.text.orEmpty.distinctUntilChanged().debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+        let searchText =  mainView.gymList.searchBar.rx.text.orEmpty.distinctUntilChanged().debounce(.milliseconds(500), scheduler: MainScheduler.instance)
         
         
         let input = GymListViewModel.Input(viewDidLoad: Observable.just(()),
                                            searchText: searchText, selectedGym: selectedGym.asDriver(onErrorJustReturn: []))
         let output = viewModel.transform(input: input)
         
-        output.list.drive(mainView.tableView.rx.items(cellIdentifier: GymListTableViewCell.id, cellType: GymListTableViewCell.self)) { row, element , cell in
+        output.list.drive(mainView.gymList.tableView.rx.items(cellIdentifier: GymListTableViewCell.id, cellType: GymListTableViewCell.self)) { row, element , cell in
             
             cell.setupUI(data: element)
             
@@ -43,7 +43,7 @@ final class GymListViewController: BaseViewController<GymListView, GymListViewMo
         
         
         
-        mainView.tableView.rx.modelSelected(Gym.self).bind(with: self) { owner, value in
+        mainView.gymList.tableView.rx.modelSelected(Gym.self).bind(with: self) { owner, value in
             
             selectedGym.accept([value.brandID, value.gymID])
             

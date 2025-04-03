@@ -38,7 +38,7 @@ extension UIColor {
             case .blue:
                     .systemBlue
             case .red:
-                    .systemYellow
+                    .systemRed
             case .purple:
                     .systemPurple
             case .gray:
