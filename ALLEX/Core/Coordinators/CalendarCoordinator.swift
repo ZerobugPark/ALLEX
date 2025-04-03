@@ -22,6 +22,7 @@ final class CalendarCoordinator: Coordinator {
     func start() {
         let vm = CalendarViewModel(sharedData)
         let vc = CalendarViewController(viewModel: vm)
+       
         navigationController.pushViewController(vc, animated: true)
     
     }

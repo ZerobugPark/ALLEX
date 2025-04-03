@@ -37,8 +37,6 @@ final class TimeButton: UIButton {
         // 초기 이미지 설정
         customImageView.image = .setAllexSymbol(.paues)
         
-        // 기본 tintColor 설정
-        //tintColor = .white
     }
     
     required init?(coder: NSCoder) {

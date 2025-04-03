@@ -22,6 +22,7 @@ final class BaseTableView: UITableView {
         rowHeight = 70
         bounces = false
         showsVerticalScrollIndicator = false
+        backgroundColor = .setAllexColor(.backGround)
     }
     
     required init?(coder: NSCoder) {

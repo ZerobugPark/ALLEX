@@ -81,9 +81,18 @@ final class RecordView: BaseView {
         
         titleLable.font = .setAllexFont(.bold_14)
         
-        hiddenView.layer.cornerRadius = 20
-        hiddenView.clipsToBounds = true
+        hiddenView.layer.cornerRadius = 10
+        //hiddenView.clipsToBounds = true
+        hiddenView.layer.masksToBounds = false
         hiddenView.isHidden = true
+        
+        hiddenView.layer.shadowColor = UIColor.setAllexColor(.textTertiary).cgColor
+        hiddenView.layer.shadowOpacity = 0.3
+        hiddenView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        hiddenView.layer.shadowRadius = 10
+        hiddenView.layer.masksToBounds = false
+        
+        
         
         eyeButton.setImage(.setAllexSymbol(.eye), for: .normal)
         eyeButton.tintColor = .systemGray2

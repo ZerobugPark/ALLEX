@@ -58,6 +58,9 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
             
             cell.bouldering.eyeButton.rx.tap.bind(with: self) { owner, _ in
                 owner.eveButtonEvent.accept(element.gradeLevel)
+                
+                owner.updateHiddenLayer()
+                
             }.disposed(by: cell.disposeBag)
             
             
@@ -91,8 +94,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
     
         output.updateUI.drive(with: self) { owner, _ in
             
-            let isHidden =  owner.mainView.isHiddenViewVisible
-            owner.mainView.toggleHiddenView(isHidden: isHidden)
+            owner.updateHiddenLayer()
             
         }.disposed(by: disposeBag)
         
@@ -109,11 +111,9 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         }.disposed(by: disposeBag)
         
         mainView.eyeButton.rx.tap.bind(with: self) { owner, _ in
-
+          
             owner.mainView.isHiddenViewVisible.toggle()
-            let isHidden =  owner.mainView.isHiddenViewVisible
-            
-            owner.mainView.toggleHiddenView(isHidden: isHidden)
+            owner.updateHiddenLayer()
         }.disposed(by: disposeBag)
         
     }
@@ -121,3 +121,13 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
 
 }
 
+
+extension RecordViewController {
+    
+    private func updateHiddenLayer() {
+        
+        let isHidden =  mainView.isHiddenViewVisible
+        
+        mainView.toggleHiddenView(isHidden: isHidden)
+    }
+}
