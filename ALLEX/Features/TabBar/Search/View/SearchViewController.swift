@@ -13,7 +13,7 @@ import RxSwift
 
 final class SearchViewController: BaseViewController<SearchListView, SearchListViewModel> {
     
-    private var searchBar: BaseSearchBar!
+    private lazy var searchBar =  BaseSearchBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 44.0))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,10 +23,13 @@ final class SearchViewController: BaseViewController<SearchListView, SearchListV
     
     override func bind() {
         
-        let input = SearchListViewModel.Input(viewdidLoad: Observable.just(()))
+        let searchText = searchBar.rx.text.orEmpty.skip(1).distinctUntilChanged().debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+        
+        let input = SearchListViewModel.Input(viewdidLoad: Observable.just(()), searchText: searchText)
         
         let output = viewModel.transform(input: input)
         
+      
         
         output.searchResult.drive(mainView.tableView.rx.items(cellIdentifier: SearchListTableViewCell.id, cellType: SearchListTableViewCell.self)) { row, element , cell in
             
@@ -44,8 +47,6 @@ final class SearchViewController: BaseViewController<SearchListView, SearchListV
         setupSearchController()
     }
     private func setupSearchController() {
-        searchBar = BaseSearchBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 44.0))
-       // print(mainView.frame.width)
         self.navigationItem.titleView = searchBar
     }
 
