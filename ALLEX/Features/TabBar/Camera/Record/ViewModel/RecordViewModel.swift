@@ -10,9 +10,10 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+import RealmSwift
+
 final class RecordViewModel: BaseViewModel {
-    
-    var sharedData: SharedDataModel
+
     
     struct Input {
         let toggleTimerTrigger: ControlEvent<Void> // 타이머 토글 트리거
@@ -34,11 +35,14 @@ final class RecordViewModel: BaseViewModel {
         let dismissView: Driver<Void>
     }
     
-
+    
+    var sharedData: SharedDataModel
     
     var disposeBag =  DisposeBag()
     
+    let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
     
+ 
     private let timerSubject = PublishSubject<String>()
     private var timerSubscription: Disposable?
     private var timeCount = 0
@@ -55,6 +59,7 @@ final class RecordViewModel: BaseViewModel {
         self.toggleTimer(isSelected: isSelected)
         
         getGymInfo()
+        
         
     }
     
@@ -74,6 +79,7 @@ final class RecordViewModel: BaseViewModel {
             
             
         }).disposed(by: disposeBag)
+        
         
         
         // 숨길 때
@@ -145,7 +151,7 @@ final class RecordViewModel: BaseViewModel {
         
         input.saveButtonTapped.bind(with: self) { owner, _ in
             
-            
+    
             // 클라이밍장 정보, 현재날짜, 운동시간, 결과 저장
             
             if !owner.hiddenData.isEmpty {
@@ -153,10 +159,12 @@ final class RecordViewModel: BaseViewModel {
                 owner.hiddenData.removeAll()
             }
             
+            owner.savedData()
             dump(owner.timeCount)
             dump(owner.gymGradeList)
             
             //렘 저장 코드 추가
+    
         
             dismissView.accept(())
             
@@ -191,6 +199,47 @@ final class RecordViewModel: BaseViewModel {
     }
     
 }
+
+// MARK: - Realm Data
+
+extension RecordViewModel {
+    
+    func savedData() {
+        
+        
+        var result: [RouteResult] = []
+        
+        for element in gymGradeList {
+            result.append(RouteResult(level: element.gradeLevel, totalClimbCount: element.tryCount, totalSuccessCount: element.successCount))
+        }
+        
+        let info = sharedData.getData(for: String.self)!
+        
+        
+        let highestGrade = gymGradeList
+            .filter({ $0.successCount > 0 }) // successCount가 1 이상인 항목만 필터링
+            .max(by: { $0.gradeLevel < $1.gradeLevel })
+        
+        
+        // info[0] = brand, info[1] = gymid
+        let timeMinute = timeCount / 60
+        let boulderingList = BoulderingList(brandId: info[0], gymId: info[1], climbTime: timeMinute, climbDate: Date(), bestGrade: highestGrade?.difficulty ?? "VB", routeResults: result)
+        
+        // List로 감싸서 전달
+        let boulderingListList = List<BoulderingList>()
+        boulderingListList.append(boulderingList)
+        
+        
+        let data = ClimbingResultTable(boulderingLists: [boulderingList])
+        
+        repository.create(data)
+        
+    }
+    
+    
+}
+
+
 
 extension RecordViewModel {
     

@@ -103,6 +103,24 @@ final class CameraCoordinator: Coordinator {
         
     }
     
+    func showResult() {
+        presentingController.dismiss(animated: true) { [weak self] in
+            guard let self = self else { return }
+            
+            guard let navigationController = extractNavigationController() else {
+                handleNavigationControllerMissing()
+                return
+            }
+            
+        
+            let vc = ResultViewController()
+            navigationController.pushViewController(vc, animated: true)
+            
+        }
+        
+        
+    }
+    
     func dismiss() {
         presentingController.dismiss(animated: true)
     }

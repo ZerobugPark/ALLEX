@@ -15,10 +15,17 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
 
     weak var coordinator: HomeCoordinator?
     
+    let repository: RealmRepository = RealmClimbingResultRepository()
+    
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .setAllexColor(.backGround)
         //tabBarController?.tabBar.isUserInteractionEnabled = false // 탭전환 비활성화
+        
+        repository.getFileURL()
     }
     
     override func bind() {
