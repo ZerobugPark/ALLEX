@@ -39,10 +39,10 @@ final class TabBarCoordinator: Coordinator {
         // 중앙에 빈 아이템 추가 (투명하게)
         let emptyVC = UIViewController()
         
-        let reportNav = UINavigationController()
-        let reportCoordinator = ReportCoordinator(navigationController: reportNav, sharedData: sharedData)
-        reportNav.view.backgroundColor = .setAllexColor(.backGround)
-        reportCoordinator.start()
+        let searchNav = UINavigationController()
+        let searchCoordinator = SearchCoordinator(navigationController: searchNav, sharedData: sharedData)
+        searchNav.view.backgroundColor = .setAllexColor(.backGround)
+        searchCoordinator.start()
         
         let profileNav = UINavigationController()
         let profileCoordinator = ProfileCoordinator(navigationController: profileNav, sharedData: sharedData)
@@ -58,12 +58,12 @@ final class TabBarCoordinator: Coordinator {
         emptyVC.tabBarItem = emptyItem  // 빈 탭 아이템 설정
         
             
-        reportNav.tabBarItem = UITabBarItem(title: nil, image: .setAllexSymbol(.search), tag: 3)
+        searchNav.tabBarItem = UITabBarItem(title: nil, image: .setAllexSymbol(.search), tag: 3)
         
         profileNav.tabBarItem = UITabBarItem(title: nil, image: .setAllexSymbol(.person), tag: 4)
         
         
-        tabBarController.setViewControllers([homeNav, calendarNav, emptyVC, reportNav, profileNav], animated: true)
+        tabBarController.setViewControllers([homeNav, calendarNav, emptyVC, searchNav, profileNav], animated: true)
         
         addCameraButton()
         

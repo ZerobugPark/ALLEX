@@ -1,23 +1,18 @@
 //
-//  GymListTableViewCell.swift
+//  SearchListTableViewCell.swift
 //  ALLEX
 //
-//  Created by youngkyun park on 3/31/25.
+//  Created by youngkyun park on 4/3/25.
 //
 
 import UIKit
 
-import SnapKit
-
-final class GymListTableViewCell: BaseTableViewCell {
-
+final class SearchListTableViewCell: BaseTableViewCell {
 
     private let gymImage = UIImageView(image: .setAllexSymbol(.starFill))
     private let title = SubTitleLabel()
     private let subTitle = TertiaryLabel()
-    private let likeButton = UIImageView(image: .setAllexSymbol(.star))
-
-    
+    private let likeButton = UIImageView(image: .setAllexSymbol(.star))    
 
     override func configureHierarchy() {
         contentView.addSubviews(gymImage, title, subTitle, likeButton)
@@ -92,6 +87,5 @@ final class GymListTableViewCell: BaseTableViewCell {
         
         
     }
-    
-    
+
 }

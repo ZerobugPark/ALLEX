@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ReportCoordinator: Coordinator {
+final class SearchCoordinator: Coordinator {
         
     var childCoordinators: [Coordinator] = []
 
@@ -20,8 +20,8 @@ final class ReportCoordinator: Coordinator {
     }
     
     func start() {
-        //let vm = HomeView()
-        let vc = SearchViewController()
+        let vm = SearchListViewModel(sharedData)
+        let vc = SearchViewController(viewModel: vm)
         navigationController.pushViewController(vc, animated: true)
     
     }

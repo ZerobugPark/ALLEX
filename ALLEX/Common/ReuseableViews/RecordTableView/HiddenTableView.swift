@@ -12,7 +12,7 @@ import SnapKit
 final class HiddenTableView: BaseView {
 
     
-    let tableView = UITableView()
+    let tableView = BaseTableView()
 
 
     override func configureHierarchy() {
@@ -29,10 +29,10 @@ final class HiddenTableView: BaseView {
 
     override func configureView() {
         
-        tableView.separatorStyle = .none
-        tableView.rowHeight = 70
-        tableView.bounces = false
-        tableView.showsVerticalScrollIndicator = false
+//        tableView.separatorStyle = .none
+//        tableView.rowHeight = 70
+//        tableView.bounces = false
+//        tableView.showsVerticalScrollIndicator = false
     }
 
 }

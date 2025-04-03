@@ -12,7 +12,7 @@ import SnapKit
 final class RecordTableView: BaseView {
 
     
-    let tableView = UITableView()
+    let tableView = BaseTableView()
     
     private let stackView = UIStackView()
     // 나중에 key로 변경
@@ -75,10 +75,10 @@ final class RecordTableView: BaseView {
         successLabel.textAlignment = .center
         
         
-        tableView.backgroundColor = .setAllexColor(.backGround)
-        tableView.separatorStyle = .none
-        tableView.rowHeight = 70
-        tableView.showsVerticalScrollIndicator = false
+//        tableView.backgroundColor = .setAllexColor(.backGround)
+//        tableView.separatorStyle = .none
+//        tableView.rowHeight = 70
+//        tableView.showsVerticalScrollIndicator = false
     }
 
 }
