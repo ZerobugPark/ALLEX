@@ -86,8 +86,6 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         
 
         mainView.updateTableViewHeight()
-        
-        //mainView.layoutIfNeeded()
     }
     
 }
