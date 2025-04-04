@@ -48,7 +48,7 @@ final class ResultViewController: BaseViewController<ResultView, ResultViewModel
                     
                     owner.mainView.problemViewArray[i].levelLabel.text = value.results[i].difficulty
                     owner.mainView.problemViewArray[i].levelCircle.backgroundColor = .setBoulderColor(from: value.results[i].color)
-                    owner.mainView.problemViewArray[i].progressView.progress = Float(value.results[i].totalSuccessCount / value.results[i].totalClimbCount)
+                    owner.mainView.problemViewArray[i].progressView.progress = Float(value.results[i].totalSuccessCount) / Float(value.results[i].totalClimbCount)
                     
                     owner.mainView.problemViewArray[i].countLabel.text =  "\(value.results[i].totalSuccessCount) / \(value.results[i].totalClimbCount)"
                 } else {
