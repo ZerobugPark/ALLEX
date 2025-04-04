@@ -210,7 +210,7 @@ extension RecordViewModel {
         var result: [RouteResult] = []
         
         for element in gymGradeList {
-            result.append(RouteResult(level: element.gradeLevel, totalClimbCount: element.tryCount, totalSuccessCount: element.successCount))
+            result.append(RouteResult(level: element.gradeLevel, color: element.color, difficulty: element.difficulty, totalClimbCount: element.tryCount, totalSuccessCount: element.successCount))
         }
         
         let info = sharedData.getData(for: String.self)!

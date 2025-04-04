@@ -112,8 +112,9 @@ final class CameraCoordinator: Coordinator {
                 return
             }
             
-        
-            let vc = ResultViewController()
+            let vm = ResultViewModel(sharedData)
+            let vc = ResultViewController(viewModel: vm)
+            vc.hidesBottomBarWhenPushed = true
             navigationController.pushViewController(vc, animated: true)
             
         }

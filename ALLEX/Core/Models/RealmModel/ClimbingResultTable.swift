@@ -33,6 +33,20 @@ class BoulderingList: Object {
     @Persisted var bestGrade: String // 등반 날짜
     @Persisted var routeResults: List<RouteResult> // 루트별 난이도 저장
     
+    var totalClimb: Int {
+        return routeResults.reduce(0) { $0 + $1.totalClimbCount }
+    }
+    
+    var totalSuccess: Int {
+        return routeResults.reduce(0) { $0 + $1.totalSuccessCount }
+    }
+    
+    // 전체 성공률(rate)을 계산 (0을 방지)
+    var successRate: Double {
+        // 0으로 나누는 것을 방지
+        return totalClimb == 0 ? 0 : (Double(totalSuccess) / Double(totalClimb)) * 100
+    }
+    
     convenience init(brandId: String, gymId: String, climbTime: Int, climbDate: Date, bestGrade: String, routeResults: [RouteResult]) {
         self.init()
         self.gymId = gymId
@@ -48,16 +62,21 @@ class BoulderingList: Object {
 // 루트별 결과
 class RouteResult: EmbeddedObject {
     @Persisted var level: Int  // "0 ~ 9"
+    @Persisted var color: String  // 해당 난이도의 총 성공 횟수
+    @Persisted var difficulty: String  // 해당 난이도의 총 성공 횟수
     @Persisted var totalClimbCount: Int  // 해당 난이도의 총 등반 횟수
     @Persisted var totalSuccessCount: Int  // 해당 난이도의 총 성공 횟수
     
+
     override required init() {
         super.init()  // 부모 클래스인 `EmbeddedObject`의 초기화 호출
     }
     
     
-    init(level: Int, totalClimbCount: Int, totalSuccessCount: Int) {
+    init(level: Int, color: String, difficulty: String, totalClimbCount: Int, totalSuccessCount: Int) {
         self.level = level
+        self.color = color
+        self.difficulty = difficulty
         self.totalClimbCount = totalClimbCount
         self.totalSuccessCount = totalSuccessCount
     }
