@@ -23,7 +23,7 @@ class VideoCaptureViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("촬영 시작", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
-        button.addTarget(VideoCaptureViewController.self, action: #selector(handleRecordButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleRecordButton), for: .touchUpInside)
         return button
     }()
     
