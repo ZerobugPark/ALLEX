@@ -51,8 +51,7 @@ final class SignUpViewModel: BaseViewModel {
             UserDefaultManager.isLoggedIn = true
             UserDefaultManager.nickname = value.0
             UserDefaultManager.startDate = value.1
-            
-            // 유저디폴트
+        
             showHome.accept(())
             
         }.disposed(by: disposeBag)

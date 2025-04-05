@@ -34,7 +34,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
     override func bind() {
         
         
-        let input = RecordViewModel.Input(toggleTimerTrigger: mainView.timeRecord.timeButton.rx.tap, tryButtonEvent: tryButtonEvent.asDriver(onErrorJustReturn: (.tryButtonTap,0)), successButtonEvent: successButtonEvent.asDriver(onErrorJustReturn: (.successButtonTap,0)), eyeButtonEvent: eveButtonEvent.debounce(.milliseconds(100), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: 0), eveHiddenButtonEvent: eveHiddenButtonEvent.debounce(.milliseconds(100), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: 0), saveButtonTapped: mainView.saveButton.rx.tap)
+        let input = RecordViewModel.Input(toggleTimerTrigger: mainView.timeRecord.timeButton.rx.tap, tryButtonEvent: tryButtonEvent.asDriver(onErrorJustReturn: (.tryButtonTap,0)), successButtonEvent: successButtonEvent.asDriver(onErrorJustReturn: (.successButtonTap,0)), eyeButtonEvent: eveButtonEvent.debounce(.milliseconds(250), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: 0), eveHiddenButtonEvent: eveHiddenButtonEvent.debounce(.milliseconds(250), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: 0), saveButtonTapped: mainView.saveButton.rx.tap)
         
         
         
@@ -49,11 +49,11 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
             
             
             cell.successButtonEvent.bind(with: self) { owner, type in
-                owner.successButtonEvent.accept((type, element.gradeLevel))
+                owner.successButtonEvent.accept((type, row))
             }.disposed(by: cell.disposeBag)
             
             cell.tryButtonEvent.bind(with: self) { owner, type in
-                owner.tryButtonEvent.accept((type, element.gradeLevel))
+                owner.tryButtonEvent.accept((type, row))
             }.disposed(by: cell.disposeBag)
             
             cell.bouldering.eyeButton.rx.tap.bind(with: self) { owner, _ in

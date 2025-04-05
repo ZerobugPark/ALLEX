@@ -91,7 +91,6 @@ final class RecordViewModel: BaseViewModel {
                 owner.gymGradeList.removeAll { $0.gradeLevel == value }
             }
             
-            
             owner.hiddenData.sort { $0.gradeLevel < $1.gradeLevel}
             
             
@@ -109,28 +108,26 @@ final class RecordViewModel: BaseViewModel {
                 owner.gymGradeList.append(data)
                 owner.hiddenData.removeAll { $0.gradeLevel == value }
             }
-            
             owner.gymGradeList.sort { $0.gradeLevel < $1.gradeLevel}
-            
-            
+        
             gymGrade.accept(owner.gymGradeList)
             
             hiddenData.accept(owner.hiddenData)
             
-            
             updateUI.accept(())
-            
-            
+        
             
         }.disposed(by: disposeBag)
         
-        
-        
-        
+  
         input.tryButtonEvent.drive(with: self) { owner, value in
             
+            
+           
             switch value.0 {
             case .tryButtonTap:
+                print(value.1)
+                print(owner.gymGradeList)
                 owner.gymGradeList[value.1].tryCount += 1
             case .tryButtonLongTap:
                 owner.gymGradeList[value.1].tryCount = max(0, owner.gymGradeList[value.1].tryCount - 1)
@@ -141,7 +138,6 @@ final class RecordViewModel: BaseViewModel {
         }.disposed(by: disposeBag)
         
         input.successButtonEvent.drive(with: self) { owner, value in
-            
             switch value.0 {
             case .successButtonTap:
                 owner.gymGradeList[value.1].tryCount += 1

@@ -13,7 +13,11 @@ final class AppCoordinator: Coordinator {
     private let window: UIWindow
     private var navigationController: UINavigationController
     
+    var tabBarCoordinator: TabBarCoordinator?
+    
     var childCoordinators: [Coordinator] = []
+    
+    private let repository = RealmRepository()
     
     init(window: UIWindow) {
         self.window = window
@@ -33,17 +37,22 @@ final class AppCoordinator: Coordinator {
     }
     
     private func showHome() {
-        
         let tabBarController = UITabBarController()
-        let tabBarCoordinator = TabBarCoordinator(tabBarController: tabBarController)
-        childCoordinators.append(tabBarCoordinator)
+        let tabBarCoordinator = TabBarCoordinator(tabBarController: tabBarController, appCoordinator: self)
+        self.tabBarCoordinator = tabBarCoordinator
         tabBarCoordinator.start()
-        
-        
-        window.rootViewController = tabBarCoordinator.tabBarController
+
+        window.rootViewController = tabBarController
         window.makeKeyAndVisible()
-        
     }
+    
+    func logout() {
+        resetUserDefatuls()
+        repository.removeAll()
+        
+        showSignUp() // 🔹 로그인 화면으로 전환
+    }
+    
     
     
     private func showSignUp() {
@@ -89,4 +98,14 @@ final class AppCoordinator: Coordinator {
     }
     
     
+}
+
+
+extension AppCoordinator {
+    private func resetUserDefatuls() {
+        for key in UserDefaults.standard.dictionaryRepresentation().keys {
+            UserDefaults.standard.removeObject(forKey: key.description)
+            print(key)
+        }
+    }
 }

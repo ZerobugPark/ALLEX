@@ -18,6 +18,7 @@ protocol Repository {
     func findById(_ id: Any) -> T?
     func update(_ item: T)
     func delete(_ item: T)
+    func removeAll()
 }
 
 class RealmRepository<T: Object>: Repository {
@@ -65,4 +66,17 @@ class RealmRepository<T: Object>: Repository {
             print("Realm delete fail")
         }
     }
+    
+    func removeAll() {
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.deleteAll() // ✅ 모든 데이터 삭제
+            }
+            print("✅ Realm 데이터 전부 삭제 완료")
+        } catch {
+            print("❌ Realm 데이터 삭제 실패: \(error.localizedDescription)")
+        }
+    }
+    
 }
