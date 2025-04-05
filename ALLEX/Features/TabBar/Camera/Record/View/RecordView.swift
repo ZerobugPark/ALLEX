@@ -107,7 +107,7 @@ final class RecordView: BaseView {
         let rowCount = hiddenView.tableView.numberOfRows(inSection: 0)
         
         var height = rowCount * 70
-        
+ 
         if rowCount >= 5 {
             height = 350
         }
