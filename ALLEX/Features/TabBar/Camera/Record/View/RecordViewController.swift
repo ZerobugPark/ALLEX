@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class RecordViewController: BaseViewController<RecordView, RecordViewModel> {
-
+    
     
     var coordinator: CameraCoordinator?
     
@@ -28,15 +28,15 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         mainView.hiddenView.tableView.register(HiddenTableViewCell.self, forCellReuseIdentifier: HiddenTableViewCell.id)
         
         
-
+        
     }
     
     override func bind() {
         
         
-        let input = RecordViewModel.Input(toggleTimerTrigger: mainView.timeRecord.timeButton.rx.tap, tryButtonEvent: tryButtonEvent.asDriver(onErrorJustReturn: (.tryButtonTap,0)), successButtonEvent: successButtonEvent.asDriver(onErrorJustReturn: (.successButtonTap,0)), eyeButtonEvent: eveButtonEvent.asDriver(onErrorJustReturn: 0), eveHiddenButtonEvent: eveHiddenButtonEvent.asDriver(onErrorJustReturn: 0), saveButtonTapped: mainView.saveButton.rx.tap)
+        let input = RecordViewModel.Input(toggleTimerTrigger: mainView.timeRecord.timeButton.rx.tap, tryButtonEvent: tryButtonEvent.asDriver(onErrorJustReturn: (.tryButtonTap,0)), successButtonEvent: successButtonEvent.asDriver(onErrorJustReturn: (.successButtonTap,0)), eyeButtonEvent: eveButtonEvent.debounce(.milliseconds(100), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: 0), eveHiddenButtonEvent: eveHiddenButtonEvent.debounce(.milliseconds(100), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: 0), saveButtonTapped: mainView.saveButton.rx.tap)
         
-    
+        
         
         let output = viewModel.transform(input: input)
         
@@ -49,11 +49,11 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
             
             
             cell.successButtonEvent.bind(with: self) { owner, type in
-                owner.successButtonEvent.accept((type, element.gradeLevel))
+                owner.successButtonEvent.accept((type, row))
             }.disposed(by: cell.disposeBag)
             
             cell.tryButtonEvent.bind(with: self) { owner, type in
-                owner.tryButtonEvent.accept((type, element.gradeLevel))
+                owner.tryButtonEvent.accept((type, row))
             }.disposed(by: cell.disposeBag)
             
             cell.bouldering.eyeButton.rx.tap.bind(with: self) { owner, _ in
@@ -73,6 +73,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
             
             cell.bouldering.eyeButton.rx.tap.bind(with: self) { owner, _ in
                 
+                
                 owner.eveHiddenButtonEvent.accept(element.gradeLevel)
                 
             }.disposed(by: cell.disposeBag)
@@ -91,7 +92,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
             .disposed(by: disposeBag)
         
         output.updateTitle.bind(to: mainView.titleLable.rx.text).disposed(by: disposeBag)
-    
+        
         output.updateUI.drive(with: self) { owner, _ in
             
             owner.updateHiddenLayer()
@@ -111,14 +112,14 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         }.disposed(by: disposeBag)
         
         mainView.eyeButton.rx.tap.bind(with: self) { owner, _ in
-          
+            
             owner.mainView.isHiddenViewVisible.toggle()
             owner.updateHiddenLayer()
         }.disposed(by: disposeBag)
         
     }
     
-
+    
 }
 
 
@@ -127,7 +128,9 @@ extension RecordViewController {
     private func updateHiddenLayer() {
         
         let isHidden =  mainView.isHiddenViewVisible
+        self.mainView.toggleHiddenView(isHidden: isHidden)
         
-        mainView.toggleHiddenView(isHidden: isHidden)
+        
+        
     }
 }

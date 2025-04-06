@@ -8,6 +8,7 @@
 
 // MARK: - 장소 상세보기 버튼
 import UIKit
+import SnapKit
 
 final class SpaceDetialButton: UIButton {
 

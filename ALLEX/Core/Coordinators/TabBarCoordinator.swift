@@ -13,11 +13,15 @@ final class TabBarCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
     
+    weak var appCoordinator: AppCoordinator?
+    
     let tabBarController: UITabBarController
+    
     private let sharedData = SharedDataModel()
     
-    init(tabBarController: UITabBarController) {
+    init(tabBarController: UITabBarController, appCoordinator: AppCoordinator?) {
         self.tabBarController = tabBarController
+        self.appCoordinator = appCoordinator
         configureApperance()
     }
     
@@ -45,7 +49,7 @@ final class TabBarCoordinator: Coordinator {
         searchCoordinator.start()
         
         let profileNav = UINavigationController()
-        let profileCoordinator = ProfileCoordinator(navigationController: profileNav, sharedData: sharedData)
+        let profileCoordinator = ProfileCoordinator(navigationController: profileNav, sharedData: sharedData, parentCoordinator: self)
         profileNav.view.backgroundColor = .setAllexColor(.backGround)
         profileCoordinator.start()
         
@@ -141,3 +145,8 @@ final class TabBarCoordinator: Coordinator {
     
 }
 
+extension TabBarCoordinator {
+    func logout() {
+        appCoordinator?.logout() // 🔹 AppCoordinator에게 로그아웃 요청
+    }
+}

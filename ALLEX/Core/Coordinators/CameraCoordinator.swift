@@ -95,8 +95,9 @@ final class CameraCoordinator: Coordinator {
             return
         }
         
-        let vm = VideoViewModel(sharedData)
-        let vc = VideoViewController(viewModel: vm)
+        
+        //let vm = VideoViewModel(sharedData)
+        let vc = VideoCaptureViewController()// VideoViewController(viewModel: vm)
         vc.modalPresentationStyle = .pageSheet // 풀스크린으로 변경할 것
         navigationController.present(vc, animated: true)
         
@@ -111,6 +112,7 @@ final class CameraCoordinator: Coordinator {
                 handleNavigationControllerMissing()
                 return
             }
+            //print("✅ 네비게이션 컨트롤러 찾음: \(navigationController)")
             
             let vm = ResultViewModel(sharedData)
             let vc = ResultViewController(viewModel: vm)

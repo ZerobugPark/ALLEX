@@ -12,26 +12,6 @@ import RxCocoa
 import RealmSwift
 
 
-struct ResultData {
-    var space: String
-    var date: String
-    var totalTryCount: String
-    var totalSuccessCount: String
-    var totalSuccessRate: String
-    var bestGrade: String
-    var excersieTime: String
-    
-    var results: [LatestResult]
-}
-
-
-struct LatestResult {
-    var level: Int  // "0 ~ 9"
-    var color: String  // 해당 난이도의 총 성공 횟수
-    var difficulty: String  // 해당 난이도의 총 성공 횟수
-    var totalClimbCount: Int  // 해당 난이도의 총 등반 횟수
-    var totalSuccessCount: Int  // 해당 난이도의 총 성공 횟수
-}
 
 final class ResultViewModel: BaseViewModel {
     
@@ -43,6 +23,28 @@ final class ResultViewModel: BaseViewModel {
         let setupUI: Driver<ResultData>
         
     }
+    
+    struct ResultData {
+        var space: String
+        var date: String
+        var totalTryCount: String
+        var totalSuccessCount: String
+        var totalSuccessRate: String
+        var bestGrade: String
+        var excersieTime: String
+        
+        var results: [LatestResult]
+    }
+
+
+    struct LatestResult {
+        var level: Int  // "0 ~ 9"
+        var color: String  // 해당 난이도의 총 성공 횟수
+        var difficulty: String  // 해당 난이도의 총 성공 횟수
+        var totalClimbCount: Int  // 해당 난이도의 총 등반 횟수
+        var totalSuccessCount: Int  // 해당 난이도의 총 성공 횟수
+    }
+
     
     var disposeBag = DisposeBag()
     
@@ -61,6 +63,8 @@ final class ResultViewModel: BaseViewModel {
         
         self.result = empty
         self.result = formatData()
+        
+        NotificationCenterManager.isUpdatedRecored.post()
     }
     
     
@@ -70,7 +74,7 @@ final class ResultViewModel: BaseViewModel {
         
         let setupUI = BehaviorRelay<ResultData>(value: result)
         
-    
+        
         
         return Output(setupUI: setupUI.asDriver(onErrorJustReturn: empty))
     }

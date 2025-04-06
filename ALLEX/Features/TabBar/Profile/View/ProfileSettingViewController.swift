@@ -1,24 +1,22 @@
 //
-//  SignUpViewController.swift
+//  ProfileSettingViewController.swift
 //  ALLEX
 //
-//  Created by youngkyun park on 3/27/25.
+//  Created by youngkyun park on 4/5/25.
 //
 
 import UIKit
 
-import RxCocoa
 import RxSwift
+import RxCocoa
 
-
-
-final class SignUpViewController: BaseViewController<SignUpView, SignUpViewModel> {
+final class ProfileSettingViewController: BaseViewController<SignUpView, SignUpViewModel> {
     
-    
-    weak var coordinator: SignUpCoordinator?
+    weak var coordinator: ProfileCoordinator?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
         mainView.profile.nicknameTextField.delegate = self
     }
     
@@ -58,8 +56,8 @@ final class SignUpViewController: BaseViewController<SignUpView, SignUpViewModel
         
         output.showHome.drive(with: self) { owner, _ in
 
-            owner.coordinator?.didFinishShighUp()
-            
+            NotificationCenterManager.isChangedUserName.post()
+            owner.coordinator?.popView()
         }.disposed(by: disposeBag)
         
         mainView.profile.dateTextField.rx.controlEvent(.touchDown)
@@ -69,6 +67,10 @@ final class SignUpViewController: BaseViewController<SignUpView, SignUpViewModel
             }.disposed(by: disposeBag)
         
    
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = false
     }
     
     
@@ -81,7 +83,7 @@ final class SignUpViewController: BaseViewController<SignUpView, SignUpViewModel
 }
 
 // MARK: - UITextFieldDelegate
-extension SignUpViewController: UITextFieldDelegate {
+extension ProfileSettingViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         

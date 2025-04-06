@@ -13,7 +13,7 @@ import RxCocoa
 import RealmSwift
 
 final class RecordViewModel: BaseViewModel {
-
+    
     
     struct Input {
         let toggleTimerTrigger: ControlEvent<Void> // 타이머 토글 트리거
@@ -41,8 +41,9 @@ final class RecordViewModel: BaseViewModel {
     var disposeBag =  DisposeBag()
     
     let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
+    let monthlyRepository: any MonthlyClimbingStatisticsRepository = RealmMonthlyClimbingStatisticsRepository()
     
- 
+    
     private let timerSubject = PublishSubject<String>()
     private var timerSubscription: Disposable?
     private var timeCount = 0
@@ -52,7 +53,7 @@ final class RecordViewModel: BaseViewModel {
     
     private var gymGradeList: [BoulderingAttempt] = []
     private var hiddenData: [BoulderingAttempt] = []
-
+    
     
     init(_ sharedData: SharedDataModel) {
         self.sharedData = sharedData
@@ -64,7 +65,7 @@ final class RecordViewModel: BaseViewModel {
     }
     
     func transform(input: Input) -> Output {
-   
+        
         let buttonStatus = PublishRelay<Bool>()
         let gymGrade = BehaviorRelay(value: gymGradeList)
         let hiddenData =  BehaviorRelay(value: hiddenData)
@@ -84,16 +85,15 @@ final class RecordViewModel: BaseViewModel {
         
         // 숨길 때
         input.eyeButtonEvent.drive(with: self) { owner, value in
-  
+            
             
             if let data = owner.gymGradeList.first(where: { $0.gradeLevel == value }) {
                 owner.hiddenData.append(data)
                 owner.gymGradeList.removeAll { $0.gradeLevel == value }
             }
             
-
             owner.hiddenData.sort { $0.gradeLevel < $1.gradeLevel}
-        
+            
             
             gymGrade.accept(owner.gymGradeList)
             hiddenData.accept(owner.hiddenData)
@@ -109,21 +109,20 @@ final class RecordViewModel: BaseViewModel {
                 owner.gymGradeList.append(data)
                 owner.hiddenData.removeAll { $0.gradeLevel == value }
             }
-            
             owner.gymGradeList.sort { $0.gradeLevel < $1.gradeLevel}
-            
-            
+        
             gymGrade.accept(owner.gymGradeList)
+            
             hiddenData.accept(owner.hiddenData)
+            
             updateUI.accept(())
+        
             
         }.disposed(by: disposeBag)
         
-      
-        
-        
+  
         input.tryButtonEvent.drive(with: self) { owner, value in
-            
+              
             switch value.0 {
             case .tryButtonTap:
                 owner.gymGradeList[value.1].tryCount += 1
@@ -132,11 +131,10 @@ final class RecordViewModel: BaseViewModel {
             }
             
             gymGrade.accept(owner.gymGradeList)
-
+            
         }.disposed(by: disposeBag)
         
         input.successButtonEvent.drive(with: self) { owner, value in
-            
             switch value.0 {
             case .successButtonTap:
                 owner.gymGradeList[value.1].tryCount += 1
@@ -144,15 +142,13 @@ final class RecordViewModel: BaseViewModel {
             case .successButtonLongTap:
                 owner.gymGradeList[value.1].successCount = max(0, owner.gymGradeList[value.1].successCount - 1)
             }
-           
+            
             gymGrade.accept(owner.gymGradeList)
             
         }.disposed(by: disposeBag)
         
         input.saveButtonTapped.bind(with: self) { owner, _ in
             
-    
-            // 클라이밍장 정보, 현재날짜, 운동시간, 결과 저장
             
             if !owner.hiddenData.isEmpty {
                 owner.gymGradeList.append(contentsOf: owner.hiddenData)
@@ -160,12 +156,6 @@ final class RecordViewModel: BaseViewModel {
             }
             
             owner.savedData()
-            dump(owner.timeCount)
-            dump(owner.gymGradeList)
-            
-            //렘 저장 코드 추가
-    
-        
             dismissView.accept(())
             
         }.disposed(by: disposeBag)
@@ -175,13 +165,13 @@ final class RecordViewModel: BaseViewModel {
         return Output(timerString: timerSubject.asObservable(), buttonStatus: buttonStatus.asDriver(onErrorJustReturn: (false)), updateTitle: Observable.just(gymTitle), gymGrade: gymGrade.asDriver(onErrorJustReturn: []), hiddenData: hiddenData.asDriver(onErrorJustReturn: []), updateUI: updateUI.asDriver(onErrorJustReturn: ()), dismissView: dismissView.asDriver(onErrorJustReturn: ()))
     }
     
-
+    
     private func getGymInfo() {
         let languageCode = (Locale.preferredLanguages.first ?? "en").split(separator: "-").first ?? ""
         
         let info = sharedData.getData(for: String.self)!
         let data = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == info[1] }
- 
+        
         gymTitle = languageCode == "en" ? data[0].nameEn : data[0].nameKo
         
         
@@ -190,7 +180,7 @@ final class RecordViewModel: BaseViewModel {
         gymGradeList.append(contentsOf: gradeInfo.map {
             BoulderingAttempt(gradeLevel: Int($0.GradeLevel) ?? 0, color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0)
         })
-    
+        
     }
     
     
@@ -233,6 +223,21 @@ extension RecordViewModel {
         let data = ClimbingResultTable(boulderingLists: [boulderingList])
         
         repository.create(data)
+        
+        
+        let totalClimbCount = gymGradeList
+            .filter { $0.tryCount > 0 }
+            .reduce(0) { $0 + $1.tryCount }
+        
+        let totalSuccessCount = gymGradeList
+            .filter { $0.successCount > 0 }
+            .reduce(0) { $0 + $1.successCount }
+
+    
+        monthlyRepository.updateMonthlyStatistics(climbCount: totalClimbCount, successCount: totalSuccessCount, climbTime: timeMinute, lastGrade: highestGrade?.difficulty ?? "VB")
+        
+        
+        
         
     }
     

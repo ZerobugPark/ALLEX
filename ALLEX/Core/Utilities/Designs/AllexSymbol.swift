@@ -25,6 +25,7 @@ extension UIImage {
         case paues = "pause.fill"
         case eye = "eye"
         case eyeSlash = "eye.slash"
+        case chevronRight = "chevron.right"
     }
 
     

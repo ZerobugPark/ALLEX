@@ -50,9 +50,15 @@ final class SignUpViewModel: BaseViewModel {
             
             UserDefaultManager.isLoggedIn = true
             UserDefaultManager.nickname = value.0
-            UserDefaultManager.startDate = value.1
             
-            // 유저디폴트
+            if value.1.isEmpty {
+                UserDefaultManager.startDate = owner.getCurrentDateString()
+            } else {
+                UserDefaultManager.startDate = value.1
+            }
+            
+            
+        
             showHome.accept(())
             
         }.disposed(by: disposeBag)
@@ -69,6 +75,14 @@ final class SignUpViewModel: BaseViewModel {
 
 
 extension SignUpViewModel {
+    
+    private func getCurrentDateString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone.current
+        return formatter.string(from: Date())
+    }
+
  
     private func vaildString(_ str: String) -> Bool {
         
