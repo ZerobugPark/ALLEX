@@ -17,12 +17,16 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
     // 선택된 날짜를 저장하는 속성 추가
     var selectedDate: DateComponents? = nil
     
-    var locations: [BowlingLocation] = []
+    var coordinator: CalendarCoordinator?
+
     
     private var eventDates: Set<DateComponents> = [] // ✅ 이벤트가 있는 날짜 저장
     
+    private let currentDate = PublishRelay<Date>()
+    private let changedMonth = PublishRelay<(Int,Int)>()
     
     override func viewDidLoad() {
+       
         super.viewDidLoad()
         
         // 캘린더 설정
@@ -35,11 +39,9 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         
         configureInitialDate()
         restrictDateRange()
-        
-        mainView.tableView.separatorStyle = .none
-        mainView.tableView.delegate = self
-        mainView.tableView.dataSource = self
-        setupData()
+      
+      
+      
    
     }
     
@@ -49,64 +51,49 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
     override func bind() {
         
         
+        let input = CalendarViewModel.Input(viewDidLoad: Observable.just(()), changedMonth: changedMonth, currentDate: currentDate)
+        let output = viewModel.transform(input: input)
+        
+        output.setupList.drive(mainView.tableView.rx.items(cellIdentifier: ResultTableViewCell.id, cellType: ResultTableViewCell.self)) { row, element, cell in
+            
+            cell.configure(with: element)
+            
+        }.disposed(by: disposeBag)
+        
+        output.setupList.drive(with: self) { owner, _ in
+            owner.mainView.updateTableViewHeight()
+        }.disposed(by: disposeBag)
+        
+        output.eventList.drive(with: self) { owner, data in
+            owner.loadEventDates(for: data.newYear, month: data.newMonth, eventData: data.list)
+        }.disposed(by: disposeBag)
+        
+        
+        mainView.tableView.rx.modelSelected(ClimbingInfo.self).bind(with: self) { owner, value in
+            
+            print(owner.coordinator)
+            owner.coordinator?.showDetail(id: value.id)
+            
+            
+        }.disposed(by: disposeBag)
+        
     }
-    
-    
-    
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = true
-        
-
     }
     
-    func setupData() {
-        // Example data similar to your screenshot
-        locations = [
-            BowlingLocation(
-                name: "더클라임 서울대점",
-                time: "1h 0m",
-                games: [
-                    BowlingGame(name: "검정", score: "2완등", frames: "2무제", percentage: 100),
-                    BowlingGame(name: "갈색", score: "2완등", frames: "2무제", percentage: 100)
-                ]
-            ),
-            BowlingLocation(
-                name: "더클라임 B 홍대점",
-                time: "1h 1m",
-                games: [
-                    BowlingGame(name: "9", score: "0완등", frames: "2무제", percentage: 0),
-                    BowlingGame(name: "8", score: "0완등", frames: "2무제", percentage: 0)
-                ]
-            )
-        ]
-        
-        
-
-        mainView.updateTableViewHeight()
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.navigationController?.navigationBar.isHidden = false
     }
+    
+
     
 }
 
-extension CalendarViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return locations.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.id, for: indexPath) as! ResultTableViewCell
-        cell.configure(with: locations[indexPath.row])
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        // Dynamic height based on number of games
-        return CGFloat(120 + (locations[indexPath.row].games.count * 30))
-    }
-    
-}
 
 
 extension CalendarViewController {
@@ -210,20 +197,19 @@ extension CalendarViewController: UICalendarViewDelegate {
         guard let newMonth = calendarView.visibleDateComponents.month,
               let newYear = calendarView.visibleDateComponents.year else { return }
         
-        print("🗓️ 새로운 월로 변경됨: \(newYear)-\(newMonth)")
-        
         // ✅ 변경된 월의 데이터를 다시 불러옴
-        loadEventDates(for: newYear, month: newMonth)
+        changedMonth.accept((newYear,newMonth))
+     
     }
     
-    func loadEventDates(for year: Int, month: Int) {
+    func loadEventDates(for year: Int, month: Int, eventData: [String]) {
         // ✅ 테이블뷰의 데이터에서 해당 월의 이벤트만 필터링 (예제 데이터)
-        let sampleEventDates = ["2025-04-03", "2025-04-10", "2025-04-15", "2025-05-02"]
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let calendar = Calendar.current
         
-        eventDates = Set(sampleEventDates.compactMap { dateString in
+        eventDates = Set(eventData.compactMap { dateString in
             guard let date = dateFormatter.date(from: dateString) else { return nil }
             let components = calendar.dateComponents([.year, .month, .day], from: date)
             
@@ -243,9 +229,11 @@ extension CalendarViewController: UICalendarViewDelegate {
                 
                 // 기존 캘린더의 설정 유지 (필요한 속성 복사)
                 newCalendarView.frame = oldCalendarView.frame
-                newCalendarView.delegate = self
+                weak var weakSelf = self
+                newCalendarView.delegate = weakSelf
                 
                 // 기존 캘린더 제거 후 새 캘린더 추가
+                oldCalendarView.delegate = nil
                 oldCalendarView.removeFromSuperview()
                 mainView.addSubview(newCalendarView)
                 
@@ -265,9 +253,17 @@ extension CalendarViewController: UICalendarSelectionSingleDateDelegate {
         if let dateComponents = dateComponents {
             mainView.calendarView.reloadDecorations(forDateComponents: [dateComponents], animated: true)
         }
-        // 선택된 날짜 처리
-        if let date = Calendar.current.date(from: dateComponents ?? DateComponents()) {
-            print("Selected date: \(date)")
+        
+        print("현재 TimeZone: \(TimeZone.current.identifier)")
+        
+        // DateComponents에 시간대 정보 추가
+        if var fullDateComponents = dateComponents {
+            fullDateComponents.timeZone = TimeZone.current
+            fullDateComponents.hour = 12  // 정오로 설정하여 날짜 변경 방지
+            
+            if let date = Calendar.current.date(from: fullDateComponents) {
+                currentDate.accept(date)
+            }
         }
     }
 }

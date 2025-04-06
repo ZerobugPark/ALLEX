@@ -54,6 +54,23 @@
         }
       }
     },
+    "Record_Button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록하기"
+          }
+        }
+      }
+    },
     "Save_Record" : {
       "extractionState" : "manual",
       "localizations" : {

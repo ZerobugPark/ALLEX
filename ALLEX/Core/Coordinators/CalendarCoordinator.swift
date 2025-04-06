@@ -7,6 +7,8 @@
 
 import UIKit
 
+import RealmSwift
+
 final class CalendarCoordinator: Coordinator {
         
     var childCoordinators: [Coordinator] = []
@@ -22,9 +24,17 @@ final class CalendarCoordinator: Coordinator {
     func start() {
         let vm = CalendarViewModel(sharedData)
         let vc = CalendarViewController(viewModel: vm)
-       
+        vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
     
+    }
+    
+    func showDetail(id: ObjectId) {
+        let vm = DetailInfoViewModel(sharedData, id)
+        let vc = DetailInfoViewController(viewModel: vm)
+       
+        navigationController.pushViewController(vc, animated: true)
+        
     }
     
     

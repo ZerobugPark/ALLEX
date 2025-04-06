@@ -28,10 +28,10 @@ final class ResultView: BaseView {
         
     
     // 상단 통계 영역 - 2x2 그리드
-    let attemptView = StatView(title: "시도", value: "9")
-    let completionView = StatView(title: "성공", value: "7")
-    let rateView = StatView(title: "완등률", value: "78%")
-    let maxLevelView = StatView(title: "최고난이도", value: "V5")
+    let attemptView = StatView(title: "시도")
+    let completionView = StatView(title: "성공")
+    let rateView = StatView(title: "완등률")
+    let maxLevelView = StatView(title: "최고난이도")
     
     
     private let exerciseTimeLabel = TertiaryLabel(title: "운동시간")

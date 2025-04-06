@@ -21,7 +21,7 @@ enum LocalizedKey: String {
     case videoRecordSub = "Video_RecordSub"
     case gymTitle = "Gym_Title"
     case saveRecord = "Save_Record"
-    
+    case recordButton = "Record_Button"
 }
 
 

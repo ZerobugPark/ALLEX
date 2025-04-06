@@ -61,8 +61,7 @@ final class HomeViewModel: BaseViewModel {
             NetworkManger.shared.callRequest()
             
         }.observe(on: MainScheduler.instance).bind(with: self) { owner, response in
-            
-            print(Thread.isMainThread)
+        
             switch response {
             case .success(let value):
                 
@@ -88,22 +87,22 @@ final class HomeViewModel: BaseViewModel {
             
         }.disposed(by: disposeBag)
         
-        NotificationCenterManager.isChangedUserName.addObserverVoid().bind(with: self) { owner, _ in
-            
-            let name = UserDefaultManager.nickname
-            
-            isChangedName.accept(name)
-            
-        }.disposed(by: disposeBag)
-        
-        
-        NotificationCenterManager.isUpdatedRecored.addObserverVoid().bind(with: self) { owner, _ in
-            
-            let data = owner.getUIData()
-            setupUI.accept(data)
-            
-        }.disposed(by: disposeBag)
-        
+//        NotificationCenterManager.isChangedUserName.addObserverVoid().bind(with: self) { owner, _ in
+//            
+//            let name = UserDefaultManager.nickname
+//            
+//            isChangedName.accept(name)
+//            
+//        }.disposed(by: disposeBag)
+//        
+//        
+//        NotificationCenterManager.isUpdatedRecored.addObserverVoid().bind(with: self) { owner, _ in
+//            
+//            let data = owner.getUIData()
+//            setupUI.accept(data)
+//            
+//        }.disposed(by: disposeBag)
+//        
     
         
         return Output(setupUI: setupUI.asDriver(onErrorJustReturn: emptyData), stopIndicator: stopIndicator.asDriver(onErrorJustReturn: ()), isChangedName: isChangedName.asDriver(onErrorJustReturn: ""))
@@ -128,7 +127,7 @@ extension HomeViewModel {
         let date = "클라이밍과 함께 한지 \(daysBetween(startDate, Date()) + 1) 일 째"
    
         
-        return HomeData(nickName: UserDefaultManager.nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: String(format: "%.0f", data?.sucessRate ?? 0) + "%", totalTime: convertToTimeFormat(data?.totalClimbTime ?? 0), bestGrade: data?.lastGrade ?? "")
+        return HomeData(nickName: UserDefaultManager.nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: String(format: "%.0f%%", data?.sucessRate ?? 0), totalTime: convertToTimeFormat(data?.totalClimbTime ?? 0), bestGrade: data?.lastGrade ?? "")
     }
     
     func convertToGyms<T: Mappable>(from googleSheetData: GoogleSheetData, type: T.Type) -> [T] {
