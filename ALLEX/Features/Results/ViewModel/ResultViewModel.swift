@@ -63,6 +63,8 @@ final class ResultViewModel: BaseViewModel {
         
         self.result = empty
         self.result = formatData()
+        
+        NotificationCenterManager.isUpdatedRecored.post()
     }
     
     
@@ -72,7 +74,7 @@ final class ResultViewModel: BaseViewModel {
         
         let setupUI = BehaviorRelay<ResultData>(value: result)
         
-    
+        
         
         return Output(setupUI: setupUI.asDriver(onErrorJustReturn: empty))
     }

@@ -19,9 +19,10 @@ class HomeView: BaseView {
     // MARK: - Properties
     private let scrollView = UIScrollView()
     private let contentView = CustomView()
+    let indicator = UIActivityIndicatorView()
     
-    private let greetingLabel = TitleLabel()
-    private let statusLabel = SubTitleLabel()
+    let greetingLabel = TitleLabel()
+    let statusLabel = SubTitleLabel()
     
     private let statsContainerView = CustomView(radius: 12, bgColor: .setAllexColor(.backGroundSecondary))
     private let problemsView = CustomView(radius: 0, bgColor: .setAllexColor(.backGroundSecondary))
@@ -30,15 +31,15 @@ class HomeView: BaseView {
     
     private let problemsIcon = UIImageView()
     private let problemsLabel = TertiaryLabel()
-    private let problemsCountLabel = TertiaryLabel()
+    let problemsCountLabel = TertiaryLabel()
     
     private let attemptsIcon = UIImageView()
     private let attemptsLabel = TertiaryLabel()
-    private let attemptsCountLabel = TertiaryLabel()
+    let attemptsCountLabel = TertiaryLabel()
     
     private let completionIcon = UIImageView()
     private let completionLabel = TertiaryLabel()
-    private let completionRateLabel = TertiaryLabel()
+    let completionRateLabel = TertiaryLabel()
     
     private let timeContainerView = CustomView(radius: 12, bgColor: .setAllexColor(.backGroundSecondary))
     private let timeView = CustomView(radius: 0, bgColor: .setAllexColor(.backGroundSecondary))
@@ -46,11 +47,11 @@ class HomeView: BaseView {
     
     private let timeIcon = UIImageView()
     private let timeLabel = TertiaryLabel()
-    private let timeValueLabel = TertiaryLabel()
+    let timeValueLabel = TertiaryLabel()
     
     private let difficultyIcon = UIImageView()
     private let difficultyLabel = TertiaryLabel()
-    private let difficultyValueLabel = TertiaryLabel()
+    let difficultyValueLabel = TertiaryLabel()
     
     private let challengesContainerView = CustomView()
     private let challengeTitleLabel = TertiaryLabel()
@@ -63,7 +64,7 @@ class HomeView: BaseView {
     
     override func configureHierarchy() {
         
-        self.addSubview(scrollView)
+        self.addSubviews(scrollView, indicator)
         scrollView.addSubview(contentView)
         
         contentView.addSubviews(greetingLabel, statusLabel, statsContainerView)
@@ -97,6 +98,10 @@ class HomeView: BaseView {
     override func configureLayout() {
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+        
+        indicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
         
         contentView.snp.makeConstraints { make in
@@ -311,7 +316,7 @@ class HomeView: BaseView {
         difficultyIcon.tintColor = .setAllexColor(.textSecondary)
         difficultyIcon.contentMode = .scaleAspectFit
         
-        difficultyLabel.text = "이번달 최고 난이도"
+        difficultyLabel.text = "최근 최고 난이도"
         difficultyLabel.font = .setAllexFont(.regular_12)
         
        

@@ -12,9 +12,7 @@ import SnapKit
 final class GymSelectionView: BaseView {
 
   
-    
-    // 나중에 Lottie로 변경
-    private let lottie = UIImageView(image: UIImage(systemName: "tortoise"))
+    private let mainImage = UIImageView(image: UIImage(resource: .launchScreen))
     private let imageView = UIImageView(image: .setAllexSymbol(.location))
     
     let spaceLabel = TitleLabel(key: .gymTitle, title: "")
@@ -24,13 +22,13 @@ final class GymSelectionView: BaseView {
     
     
     override func configureHierarchy() {
-        self.addSubviews(lottie, imageView, spaceLabel, startButton)
+        self.addSubviews(mainImage, imageView, spaceLabel, startButton)
  
         
     }
     
     override func configureLayout() {
-        lottie.snp.makeConstraints { make in
+        mainImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-80)
             make.size.equalTo(100)
@@ -38,13 +36,13 @@ final class GymSelectionView: BaseView {
         
         
         imageView.snp.makeConstraints { make in
-            make.top.equalTo(lottie.snp.bottom).offset(12)
+            make.top.equalTo(mainImage.snp.bottom).offset(24)
             make.trailing.equalTo(spaceLabel.snp.leading).offset(-4)
             make.size.equalTo(24)
         }
         
         spaceLabel.snp.makeConstraints { make in
-            make.top.equalTo(lottie.snp.bottom).offset(16)
+            make.top.equalTo(mainImage.snp.bottom).offset(24)
             make.centerX.equalToSuperview()
         }
         
