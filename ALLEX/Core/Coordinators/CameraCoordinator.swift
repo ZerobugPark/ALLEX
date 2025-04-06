@@ -112,6 +112,7 @@ final class CameraCoordinator: Coordinator {
                 handleNavigationControllerMissing()
                 return
             }
+            //print("✅ 네비게이션 컨트롤러 찾음: \(navigationController)")
             
             let vm = ResultViewModel(sharedData)
             let vc = ResultViewController(viewModel: vm)

@@ -41,6 +41,7 @@ final class RecordViewModel: BaseViewModel {
     var disposeBag =  DisposeBag()
     
     let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
+    let monthlyRepository: any MonthlyClimbingStatisticsRepository = RealmMonthlyClimbingStatisticsRepository()
     
     
     private let timerSubject = PublishSubject<String>()
@@ -121,13 +122,9 @@ final class RecordViewModel: BaseViewModel {
         
   
         input.tryButtonEvent.drive(with: self) { owner, value in
-            
-            
-           
+              
             switch value.0 {
             case .tryButtonTap:
-                print(value.1)
-                print(owner.gymGradeList)
                 owner.gymGradeList[value.1].tryCount += 1
             case .tryButtonLongTap:
                 owner.gymGradeList[value.1].tryCount = max(0, owner.gymGradeList[value.1].tryCount - 1)
@@ -226,6 +223,21 @@ extension RecordViewModel {
         let data = ClimbingResultTable(boulderingLists: [boulderingList])
         
         repository.create(data)
+        
+        
+        let totalClimbCount = gymGradeList
+            .filter { $0.tryCount > 0 }
+            .reduce(0) { $0 + $1.tryCount }
+        
+        let totalSuccessCount = gymGradeList
+            .filter { $0.successCount > 0 }
+            .reduce(0) { $0 + $1.successCount }
+
+    
+        monthlyRepository.updateMonthlyStatistics(climbCount: totalClimbCount, successCount: totalSuccessCount, climbTime: timeMinute, lastGrade: highestGrade?.difficulty ?? "VB")
+        
+        
+        
         
     }
     

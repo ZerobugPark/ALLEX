@@ -9,13 +9,15 @@ import UIKit
 import AVFoundation
 import AVKit
 
+
 class VideoCaptureViewController: UIViewController {
     
     // MARK: - Properties
     private let captureSession = AVCaptureSession()
     private var videoPreviewLayer: AVCaptureVideoPreviewLayer!
     private var videoOutput: AVCaptureMovieFileOutput!
-    private var recordedVideos: [URL] = [] // 저장된 동영상 URL 배열
+    private var recordedVideos: [URL] = []
+    private var currentQuality: AVCaptureSession.Preset = .high
     
     // MARK: - UI Elements
     private let recordButton: UIButton = {
@@ -29,9 +31,15 @@ class VideoCaptureViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "folder"), for: .normal)
         button.tintColor = .white
-        button.isHidden = true // 처음에는 숨김
+        button.isHidden = true
         button.addTarget(self, action: #selector(showFolder), for: .touchUpInside)
         return button
+    }()
+    
+    private let settingsView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white.withAlphaComponent(0.9)
+        return view
     }()
     
     // MARK: - Lifecycle
@@ -66,6 +74,7 @@ class VideoCaptureViewController: UIViewController {
             videoPreviewLayer.frame = view.bounds
             view.layer.addSublayer(videoPreviewLayer)
             
+            captureSession.sessionPreset = currentQuality
             captureSession.startRunning()
         } catch {
             print("Camera setup error: \(error)")
@@ -75,6 +84,24 @@ class VideoCaptureViewController: UIViewController {
     // MARK: - UI Setup
     private func setupUI() {
         view.backgroundColor = .black
+        
+        // 설정 뷰
+        view.addSubview(settingsView)
+        settingsView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            settingsView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            settingsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            settingsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            settingsView.heightAnchor.constraint(equalToConstant: 80)
+        ])
+        
+        let qualityStack = createQualityButtons()
+        settingsView.addSubview(qualityStack)
+        qualityStack.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            qualityStack.centerXAnchor.constraint(equalTo: settingsView.centerXAnchor),
+            qualityStack.topAnchor.constraint(equalTo: settingsView.topAnchor, constant: 10)
+        ])
         
         // 촬영 버튼
         view.addSubview(recordButton)
@@ -96,6 +123,27 @@ class VideoCaptureViewController: UIViewController {
         ])
     }
     
+    private func createQualityButtons() -> UIStackView {
+        let qualities: [(String, AVCaptureSession.Preset)] = [
+            ("HD", .high),
+            ("4K", .hd4K3840x2160),
+            ("Low", .low)
+        ]
+        
+        let buttons = qualities.map { title, preset in
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
+            button.addTarget(self, action: #selector(changeQuality(_:)), for: .touchUpInside)
+            button.tag = qualities.firstIndex(where: { $1 == preset }) ?? 0
+            return button
+        }
+        
+        let stack = UIStackView(arrangedSubviews: buttons)
+        stack.axis = .horizontal
+        stack.spacing = 20
+        return stack
+    }
+    
     // MARK: - Actions
     @objc private func handleRecordButton() {
         if videoOutput.isRecording {
@@ -109,6 +157,14 @@ class VideoCaptureViewController: UIViewController {
             videoOutput.startRecording(to: fileURL, recordingDelegate: self)
             recordButton.setTitle("촬영 중지", for: .normal)
         }
+    }
+    
+    @objc private func changeQuality(_ sender: UIButton) {
+        let qualities: [AVCaptureSession.Preset] = [.high, .hd4K3840x2160, .low]
+        currentQuality = qualities[sender.tag]
+        captureSession.beginConfiguration()
+        captureSession.sessionPreset = currentQuality
+        captureSession.commitConfiguration()
     }
     
     @objc private func showFolder() {
@@ -152,11 +208,8 @@ extension VideoCaptureViewController: AVCaptureFileOutputRecordingDelegate {
             return
         }
         
-        // 동영상 URL을 배열에 추가
         recordedVideos.append(outputFileURL)
         print("Video saved at: \(outputFileURL)")
-        
-        // 폴더 버튼 표시
         folderButton.isHidden = recordedVideos.isEmpty
     }
 }
@@ -198,7 +251,6 @@ class VideoListViewController: UIViewController, UITableViewDataSource, UITableV
         ])
     }
     
-    // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return videoURLs.count
     }
@@ -210,7 +262,6 @@ class VideoListViewController: UIViewController, UITableViewDataSource, UITableV
         return cell
     }
     
-    // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let videoURL = videoURLs[indexPath.row]
         let player = AVPlayer(url: videoURL)

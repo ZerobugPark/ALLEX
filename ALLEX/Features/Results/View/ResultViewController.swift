@@ -18,7 +18,7 @@ final class ResultViewController: BaseViewController<ResultView, ResultViewModel
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "weqe"
+        navigationItem.title = "Result"
        
     }
     
