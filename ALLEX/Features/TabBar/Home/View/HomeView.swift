@@ -272,32 +272,30 @@ class HomeView: BaseView {
   
         
         // Greeting
-        greetingLabel.text = "차밍별님,"
         greetingLabel.textColor = .setAllexColor(.pirmary)
         greetingLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         
         
         // Status
-        statusLabel.text = "최근 3개월동안 6일 클라이밍했어요"
         statusLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
         
         // Problems View
-        setupStatView(iconView: problemsIcon, iconName: "key.fill",
+        setupStatView(iconView: problemsIcon, iconName: "pin.fill",
                      titleLabel: problemsLabel, title: "푼 문제",
-                     valueLabel: problemsCountLabel, value: "5",
+                     valueLabel: problemsCountLabel, value: "",
                      containerView: problemsView, color: UIColor(red: 0.4, green: 0.5, blue: 0.9, alpha: 1.0))
         
         // Attempts View
-        setupStatView(iconView: attemptsIcon, iconName: "lock.fill",
+        setupStatView(iconView: attemptsIcon, iconName: "hand.thumbsup",
                      titleLabel: attemptsLabel, title: "시도 횟수",
-                     valueLabel: attemptsCountLabel, value: "6",
+                     valueLabel: attemptsCountLabel, value: "",
                      containerView: attemptsView, color: UIColor(red: 0.9, green: 0.4, blue: 0.4, alpha: 1.0))
         
         // Completion Rate View
-        setupStatView(iconView: completionIcon, iconName: "chart.bar.fill",
+        setupStatView(iconView: completionIcon, iconName: "flag.pattern.checkered",
                      titleLabel: completionLabel, title: "완등률",
-                     valueLabel: completionRateLabel, value: "83%",
+                     valueLabel: completionRateLabel, value: "",
                      containerView: completionRateView, color: UIColor(red: 0.7, green: 0.9, blue: 0.4, alpha: 1.0))
         
         // Time Section

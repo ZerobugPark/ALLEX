@@ -25,7 +25,7 @@ class ClimbingResultTable: Object {
 
 // 개별 등반 기록
 class BoulderingList: Object {
-    @Persisted var id: ObjectId
+    @Persisted(primaryKey: true) var id: ObjectId
     @Persisted var brandId: String
     @Persisted var gymId: String
     @Persisted var climbTime: Int

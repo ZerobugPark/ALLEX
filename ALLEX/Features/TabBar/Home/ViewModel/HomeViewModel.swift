@@ -23,7 +23,7 @@ final class HomeViewModel: BaseViewModel {
     struct Output {
         let setupUI: Driver<HomeData>
         let stopIndicator: Driver<Void>
-        let isChangedName: Driver<String>
+        let isChangedName: Driver<(String, String)>
     }
     
     
@@ -53,7 +53,7 @@ final class HomeViewModel: BaseViewModel {
         
         let stopIndicator = PublishRelay<Void>()
         let setupUI = PublishRelay<HomeData>()
-        let isChangedName = PublishRelay<String>()
+        let isChangedName = PublishRelay<(String, String)>()
         
         let emptyData = HomeData(nickName: "", date: "", tryCount: "", successCount: "", successRate: "", totalTime: "", bestGrade: "")
         
@@ -61,8 +61,7 @@ final class HomeViewModel: BaseViewModel {
             NetworkManger.shared.callRequest()
             
         }.observe(on: MainScheduler.instance).bind(with: self) { owner, response in
-            
-            print(Thread.isMainThread)
+        
             switch response {
             case .success(let value):
                 
@@ -88,15 +87,18 @@ final class HomeViewModel: BaseViewModel {
             
         }.disposed(by: disposeBag)
         
-        NotificationCenterManager.isChangedUserName.addObserverVoid().bind(with: self) { owner, _ in
+        NotificationCenterManager.isChangedUserInfo.addObserverVoid().bind(with: self) { owner, _ in
             
             let name = UserDefaultManager.nickname
-            
-            isChangedName.accept(name)
+            print(UserDefaultManager.startDate)
+            let startDate = owner.convertStringToDate(UserDefaultManager.startDate)
+            let date = LocalizedKey.userId.rawValue.localized(with: (owner.daysBetween(startDate, Date()) + 1))
+            isChangedName.accept((name,date))
             
         }.disposed(by: disposeBag)
         
         
+//        상세기록화면이후 화면 업데이트
         NotificationCenterManager.isUpdatedRecored.addObserverVoid().bind(with: self) { owner, _ in
             
             let data = owner.getUIData()
@@ -106,7 +108,7 @@ final class HomeViewModel: BaseViewModel {
         
     
         
-        return Output(setupUI: setupUI.asDriver(onErrorJustReturn: emptyData), stopIndicator: stopIndicator.asDriver(onErrorJustReturn: ()), isChangedName: isChangedName.asDriver(onErrorJustReturn: ""))
+        return Output(setupUI: setupUI.asDriver(onErrorJustReturn: emptyData), stopIndicator: stopIndicator.asDriver(onErrorJustReturn: ()), isChangedName: isChangedName.asDriver(onErrorJustReturn: (("",""))))
     }
     
     deinit {
@@ -120,15 +122,12 @@ extension HomeViewModel {
     
     func getUIData() -> HomeData {
         
-        
         let data = repository.getCurrentMonthStatistics()
-        
-    
         let startDate = convertStringToDate(UserDefaultManager.startDate)
-        let date = "클라이밍과 함께 한지 \(daysBetween(startDate, Date()) + 1) 일 째"
-   
-        
-        return HomeData(nickName: UserDefaultManager.nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: String(format: "%.0f", data?.sucessRate ?? 0) + "%", totalTime: convertToTimeFormat(data?.totalClimbTime ?? 0), bestGrade: data?.lastGrade ?? "")
+        let date = LocalizedKey.userId.rawValue.localized(with: (daysBetween(startDate, Date()) + 1))
+        let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)
+    
+        return HomeData(nickName: nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: String(format: "%.0f%%", data?.sucessRate ?? 0), totalTime: convertToTimeFormat(data?.totalClimbTime ?? 0), bestGrade: data?.lastGrade ?? "")
     }
     
     func convertToGyms<T: Mappable>(from googleSheetData: GoogleSheetData, type: T.Type) -> [T] {
@@ -139,7 +138,8 @@ extension HomeViewModel {
     func convertStringToDate(_ dateString: String) -> Date? {
         let formats = [
             "yyyy-MM-dd", // 2025-04-06 형식
-            "MMM d, yyyy" // Apr 6, 2025 형식
+            "MMM d, yyyy",// Apr 6, 2025 형식
+            "yyyy. M. d." // 2025. 4. 6
         ]
         
         let formatter = DateFormatter()
@@ -148,6 +148,7 @@ extension HomeViewModel {
         for format in formats {
             formatter.dateFormat = format
             if let date = formatter.date(from: dateString) {
+                print(date)
                 return date
             }
         }

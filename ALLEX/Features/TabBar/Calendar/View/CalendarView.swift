@@ -18,7 +18,7 @@ final class CalendarView: BaseView {
     
     let tableView = UITableView()
     
-    let recordButton = BaseButton(key: .start)
+    let recordButton = BaseButton(key: .recordButton)
     
     private let gregorianCalendar = Calendar(identifier: .gregorian)
     
@@ -77,11 +77,12 @@ final class CalendarView: BaseView {
         
         
         //    tableView.separatorInset = .zero
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 120
+        tableView.rowHeight = 170
+       
         tableView.isScrollEnabled = false // 스크롤뷰 내에서는 테이블뷰 스크롤 비활성화
+        tableView.separatorStyle = .none
         
-        
+        recordButton.isHidden = true
     }
     
     
@@ -103,11 +104,14 @@ final class CalendarView: BaseView {
                 
         let totalHeight: CGFloat = calendarHeight + tableHeight + 40.0
         
-        print("📏  tableView.rowHeight ",  tableView.contentSize.height)
-        print("📏 TableView Height:", tableHeight)
-        print("📏 CalendarView Height:", calendarHeight) // 🔥 디버깅용
-        print("📏 Total Container Height:", totalHeight)
-
+//        print("📏  tableView.rowHeight ",  tableView.contentSize.height)
+//        print("📏 TableView Height:", tableHeight)
+//        print("📏 CalendarView Height:", calendarHeight) // 🔥 디버깅용
+//        print("📏 Total Container Height:", totalHeight)
+//
+//        print("📏 Number of Rows:", tableView.numberOfRows(inSection: 0))
+//        print("📏 Content Size Height:", tableView.contentSize.height)
+        
         tableViewHeightConstraint?.update(offset: tableHeight)
         
         containerView.snp.remakeConstraints { make in

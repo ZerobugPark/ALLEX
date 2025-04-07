@@ -30,6 +30,8 @@ final class ProfileViewController: BaseViewController<ProfileView, ProfileViewMo
 
     override func bind() {
         
+            
+        
         let input = ProfileViewModel.Input()
         
         let output = viewModel.transform(input: input)
@@ -37,16 +39,20 @@ final class ProfileViewController: BaseViewController<ProfileView, ProfileViewMo
         output.isChangedName.drive(mainView.profileButton.title.rx.text).disposed(by: disposeBag)
         
         mainView.profileButton.rx.tap.bind(with: self) { owner, _ in
-            print("Here")
             owner.coordinator?.showProfileSetting()
         }.disposed(by: disposeBag)
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.isHidden = true
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.isHidden = false
+    }
 }
 
 // MARK: - UITableViewDataSource

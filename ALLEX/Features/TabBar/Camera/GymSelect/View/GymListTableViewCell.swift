@@ -11,8 +11,6 @@ import SnapKit
 
 final class GymListTableViewCell: BaseTableViewCell {
 
-
-    private let gymImage = UIImageView(image: .setAllexSymbol(.starFill))
     private let title = SubTitleLabel()
     private let subTitle = TertiaryLabel()
     private let likeButton = UIImageView(image: .setAllexSymbol(.star))
@@ -20,28 +18,22 @@ final class GymListTableViewCell: BaseTableViewCell {
     
 
     override func configureHierarchy() {
-        contentView.addSubviews(gymImage, title, subTitle, likeButton)
+        contentView.addSubviews(title, subTitle, likeButton)
     }
     
     override func configureLayout() {
     
-        gymImage.snp.makeConstraints { make in
-            make.centerY.equalTo(contentView.safeAreaLayoutGuide)
-            make.leading.equalToSuperview().offset(16)
-            make.size.equalTo(contentView.snp.height).multipliedBy(0.5)
-            
-        }
         
         title.snp.makeConstraints { make in
             make.centerY.equalTo(contentView.safeAreaLayoutGuide).offset(-16)
-            make.leading.equalTo(gymImage.snp.trailing).offset(24)
+            make.leading.equalTo(contentView.safeAreaLayoutGuide).offset(16)
             make.trailing.equalTo(likeButton.snp.leading).offset(-32)
 
         }
         
         subTitle.snp.makeConstraints { make in
             make.top.equalTo(title.snp.bottom).offset(8)
-            make.leading.equalTo(gymImage.snp.trailing).offset(24)
+            make.leading.equalTo(contentView.safeAreaLayoutGuide).offset(16)
             make.trailing.equalTo(likeButton.snp.leading).offset(-32)
         }
         
@@ -78,19 +70,8 @@ final class GymListTableViewCell: BaseTableViewCell {
             subTitle.text = data.addressKo
             subTitle.setLineSpacing(4)
         }
-    
-        Task {
-            do {
-                let data = try await NetworkManger.shared.fetchAsycnAwait(url: data.imageURL)
-                gymImage.image = data
-            } catch {
-                gymImage.image = .setAllexSymbol(.star)
-            }
-            
-        }
-        
-        
-        
+
+  
     }
     
     

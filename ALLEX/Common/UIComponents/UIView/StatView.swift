@@ -33,10 +33,9 @@ final class StatView: UIView {
         return view
     }()
     
-    init(title: String, value: String) {
+    init(title: String) {
         super.init(frame: .zero)
         
-        valueLabel.text = value
         titleLabel.text = title //나중에 키값으로 변경
         
         addSubview(containerView)

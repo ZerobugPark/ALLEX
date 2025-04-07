@@ -1,6 +1,40 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Delete_Info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press and hold the button to delete it."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "버튼을 길게 눌러 삭제하세요"
+          }
+        }
+      }
+    },
+    "Greeting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hello  %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안녕하세요 %@"
+          }
+        }
+      }
+    },
     "Gym_Title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -50,6 +84,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Allex 프로필 설정"
+          }
+        }
+      }
+    },
+    "Record_Button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록하기"
           }
         }
       }
@@ -142,6 +193,23 @@
         }
       }
     },
+    "User_ID" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It's been %d days with climbing!"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클라이밍과 함께한 지 %d일 째!"
+          }
+        }
+      }
+    },
     "Verified_NickName" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -182,13 +250,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Helps you shoot, save and edit climbing videos in real time"
+            "value" : "Helps you shoot, save videos in real time"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "실시간으로 클라이밍 영상을 촬영, 저장 및 편집까지!"
+            "value" : "실시간으로 비디오를 촬영 및 저장"
           }
         }
       }

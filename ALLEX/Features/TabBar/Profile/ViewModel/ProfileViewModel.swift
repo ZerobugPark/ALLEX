@@ -38,7 +38,7 @@ final class ProfileViewModel: BaseViewModel {
         
         let isChangedName = PublishRelay<String>()
         
-        NotificationCenterManager.isChangedUserName.addObserverVoid().bind(with: self) { owner, _ in
+        NotificationCenterManager.isChangedUserInfo.addObserverVoid().bind(with: self) { owner, _ in
             
             let name = UserDefaultManager.nickname
             

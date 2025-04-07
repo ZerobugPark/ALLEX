@@ -1,34 +1,26 @@
 //
-//  ResultViewController.swift
+//  DetailInfoViewController.swift
 //  ALLEX
 //
-//  Created by youngkyun park on 4/4/25.
+//  Created by youngkyun park on 4/7/25.
 //
 
 import UIKit
 
-import RxCocoa
-import RxSwift
-
-
-final class ResultViewController: BaseViewController<ResultView, ResultViewModel> {
-    
-    
+class DetailInfoViewController: BaseViewController<ResultView, DetailInfoViewModel> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationItem.title = "Result"
-       
+
+     
     }
-    
-    
     
     override func bind() {
         
-        let input = ResultViewModel.Input()
+        let input = DetailInfoViewModel.Input()
         
         let output = viewModel.transform(input: input)
+        
         output.setupUI.drive(with: self) { owner, value in
         
         
@@ -58,7 +50,5 @@ final class ResultViewController: BaseViewController<ResultView, ResultViewModel
         }.disposed(by: disposeBag)
         
     }
-    
-
 }
 

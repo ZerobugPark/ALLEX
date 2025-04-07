@@ -56,7 +56,7 @@ final class ProfileSettingViewController: BaseViewController<SignUpView, SignUpV
         
         output.showHome.drive(with: self) { owner, _ in
 
-            NotificationCenterManager.isChangedUserName.post()
+            NotificationCenterManager.isChangedUserInfo.post()
             owner.coordinator?.popView()
         }.disposed(by: disposeBag)
         

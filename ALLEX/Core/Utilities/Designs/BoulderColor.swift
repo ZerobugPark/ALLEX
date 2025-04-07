@@ -22,6 +22,10 @@ extension UIColor {
         case gray
         case brown
         case black
+        case pink
+        case cyan
+        case indigo
+        
 
         
         var color: UIColor {
@@ -47,6 +51,12 @@ extension UIColor {
                     .systemBrown
             case .black:
                     .black
+            case .pink:
+                    .systemPink
+            case .cyan:
+                    .systemCyan
+            case .indigo:
+                    .systemIndigo
             }
         }
     }
