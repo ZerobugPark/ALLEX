@@ -50,8 +50,8 @@ final class PopUpView: BaseView {
         // viewContainer (중앙 뷰) 제약 설정
         viewContainer.snp.makeConstraints { make in
             make.center.equalTo(self.safeAreaLayoutGuide)
-            make.width.equalTo(self.snp.width).multipliedBy(0.6)
-            make.height.equalTo(self.snp.height).multipliedBy(0.40)
+            make.width.equalTo(250)
+            make.height.equalTo(250)
         }
         
         // backButton (X 버튼) 제약 설정
@@ -69,7 +69,7 @@ final class PopUpView: BaseView {
         // 첫 번째 둥근 사각형 뷰 (roundRectView1) 제약 설정
         writeRecord.snp.makeConstraints { make in
             make.width.equalTo(stackView.snp.width) // stackView 너비에 맞춤
-            make.height.equalTo(viewContainer.snp.height).multipliedBy(0.385) // 원하는 높이 설정
+            make.height.equalTo(100)
         }
         
         
@@ -93,7 +93,7 @@ final class PopUpView: BaseView {
         // 두 번째 둥근 사각형 뷰 (roundRectView2) 제약 설정
         videoRecord.snp.makeConstraints { make in
             make.width.equalTo(stackView.snp.width) // stackView 너비에 맞춤
-            make.height.equalTo(viewContainer.snp.height).multipliedBy(0.385)
+            make.height.equalTo(100)
         }
         
         imageView2.snp.makeConstraints { make in

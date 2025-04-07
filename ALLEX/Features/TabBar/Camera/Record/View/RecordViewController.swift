@@ -119,6 +119,12 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         
     }
     
+    deinit {
+        print("Deinit")
+        
+        coordinator = nil
+    }
+    
     
 }
 

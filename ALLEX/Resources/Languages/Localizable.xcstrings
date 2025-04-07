@@ -1,6 +1,40 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Delete_Info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press and hold the button to delete it."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "버튼을 길게 눌러 삭제하세요"
+          }
+        }
+      }
+    },
+    "Greeting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hello  %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안녕하세요 %@"
+          }
+        }
+      }
+    },
     "Gym_Title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -155,6 +189,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "두 글자 이상 입력해주세요"
+          }
+        }
+      }
+    },
+    "User_ID" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It's been %d days with climbing!"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클라이밍과 함께한 지 %d일 째!"
           }
         }
       }

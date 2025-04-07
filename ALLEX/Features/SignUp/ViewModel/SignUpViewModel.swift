@@ -55,6 +55,7 @@ final class SignUpViewModel: BaseViewModel {
                 UserDefaultManager.startDate = owner.getCurrentDateString()
             } else {
                 UserDefaultManager.startDate = value.1
+                print(value.1)
             }
             
             

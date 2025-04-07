@@ -30,6 +30,8 @@ final class ProfileViewController: BaseViewController<ProfileView, ProfileViewMo
 
     override func bind() {
         
+            
+        
         let input = ProfileViewModel.Input()
         
         let output = viewModel.transform(input: input)
@@ -37,7 +39,6 @@ final class ProfileViewController: BaseViewController<ProfileView, ProfileViewMo
         output.isChangedName.drive(mainView.profileButton.title.rx.text).disposed(by: disposeBag)
         
         mainView.profileButton.rx.tap.bind(with: self) { owner, _ in
-            print("Here")
             owner.coordinator?.showProfileSetting()
         }.disposed(by: disposeBag)
         

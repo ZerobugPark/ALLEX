@@ -32,15 +32,15 @@ extension NotificationCenterHandler {
 
 enum NotificationCenterManager: NotificationCenterHandler {
     case isSelected
-    case isChangedUserName
+    case isChangedUserInfo
     case isUpdatedRecored
     
     var name: Notification.Name {
         switch self {
         case .isSelected:
             return Notification.Name("Gym.Selected")
-        case .isChangedUserName:
-            return Notification.Name("UserName.Changed")
+        case .isChangedUserInfo:
+            return Notification.Name("UserInfo.Changed")
         case .isUpdatedRecored:
             return Notification.Name("Updated.record")
         }

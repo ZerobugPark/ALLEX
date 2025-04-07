@@ -40,6 +40,7 @@ final class HiddenTableViewCell: BaseTableViewCell {
     func setupData(_ data: BoulderingAttempt) {
         bouldering.colorIndicator.backgroundColor = .setBoulderColor(from: data.color)
         bouldering.gradeLabel.text = data.difficulty
+        bouldering.gradeLabel.textColor = .setAllexColor(.routeColor)
         
         bouldering.tryCountButton.countLabel.text = "\(data.tryCount)"
         bouldering.successCountButton.countLabel.text = "\(data.successCount)"

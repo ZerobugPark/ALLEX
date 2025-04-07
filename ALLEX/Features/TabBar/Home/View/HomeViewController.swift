@@ -38,7 +38,7 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
         
         output.setupUI.drive(with: self) { owner, data in
             
-            owner.mainView.greetingLabel.text = "안녕하세요" + data.nickName
+            owner.mainView.greetingLabel.text = data.nickName
             owner.mainView.statusLabel.text = data.date
             owner.mainView.problemsCountLabel.text = data.successCount
             owner.mainView.attemptsCountLabel.text = data.tryCount
@@ -59,8 +59,9 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
             
         }.disposed(by: disposeBag)
         
-        output.isChangedName.drive(with: self) { owner, name in
-            owner.mainView.greetingLabel.text = "안녕하세요" + name
+        output.isChangedName.drive(with: self) { owner, value in
+            owner.mainView.greetingLabel.text = value.0
+            owner.mainView.statusLabel.text = value.1
         }.disposed(by: disposeBag)
     }
 

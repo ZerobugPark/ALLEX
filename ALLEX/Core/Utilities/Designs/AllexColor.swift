@@ -22,6 +22,7 @@ extension UIColor {
         case valid
         case tabBarSelected
         case tabBarUnSelected
+        case routeColor
         
         var color: UIColor {
             switch self {
@@ -49,6 +50,8 @@ extension UIColor {
                     .tabBarSelected
             case .tabBarUnSelected:
                     .tabBarUnSelected
+            case .routeColor:
+                    .route
             }
         }
     }

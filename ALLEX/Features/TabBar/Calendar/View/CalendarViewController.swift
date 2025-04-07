@@ -85,11 +85,12 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         self.navigationController?.navigationBar.isHidden = true
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         self.navigationController?.navigationBar.isHidden = false
     }
     
+
 
     
 }

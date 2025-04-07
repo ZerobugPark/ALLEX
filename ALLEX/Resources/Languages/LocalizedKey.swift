@@ -22,6 +22,9 @@ enum LocalizedKey: String {
     case gymTitle = "Gym_Title"
     case saveRecord = "Save_Record"
     case recordButton = "Record_Button"
+    case userId = "User_ID"
+    case greeting = "Greeting"
+    case deleteInfo = "Delete_Info"
 }
 
 

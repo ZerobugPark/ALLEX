@@ -9,7 +9,7 @@ import UIKit
 
 final class GymSelectionViewController: BaseViewController<GymSelectionView, GymSelectionViewModel> {
 
-    var coordinator :GymSelectionCoordinator?
+    weak var coordinator :GymSelectionCoordinator?
   
     override func viewDidLoad() {
         super.viewDidLoad()
