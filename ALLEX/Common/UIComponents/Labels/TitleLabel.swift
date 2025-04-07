@@ -11,6 +11,7 @@ final class TitleLabel: UILabel {
 
     init() {
         super.init(frame: .zero)
+        textColor = .setAllexColor(.textPirmary)
     }
     
     convenience init(title: String) {
@@ -22,7 +23,6 @@ final class TitleLabel: UILabel {
         
         self.init()
         text = key.rawValue.localized(with: title)
- 
     }
     
     required init?(coder: NSCoder) {

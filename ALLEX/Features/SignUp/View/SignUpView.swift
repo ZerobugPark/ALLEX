@@ -11,22 +11,19 @@ import SnapKit
 
 final class SignUpView: BaseView {
 
-    let titleLabel = TitleLabel(key: .profileTitle , title: "")
+    let profile = ProfileSettingView()
     
     override func configureHierarchy() {
-        self.addSubview(titleLabel)
+        self.addSubview(profile)
+        
     }
     
     override func configureLayout() {
         
-        titleLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+        profile.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
-    
-    override func configureView() {
-        titleLabel.font = .setAllexFont(.bold_16)
-        titleLabel.textColor = .setAllexColor(.textPirmary)
-         
-    }
+        
+
 }

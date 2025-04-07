@@ -10,16 +10,19 @@ import UIKit
 extension UIFont {
     enum FontName {
         case bold_24
+        case bold_20
         case bold_16
         case bold_14
         case bold_12
         case bold_9
         case regular_24
+        case regular_20
         case regular_16
         case regular_14
         case regular_12
         case regular_9
         case light_24
+        case light_20
         case light_16
         case light_14
         case light_12
@@ -28,11 +31,11 @@ extension UIFont {
    
         var font: String {
             switch self {
-            case .bold_24, .bold_16, .bold_14, .bold_12, .bold_9:
+            case .bold_24, .bold_20, .bold_16, .bold_14, .bold_12, .bold_9:
                 return "ONEMobileOTFBold"
-            case .regular_24, .regular_16, .regular_14, .regular_12, .regular_9:
+            case .regular_24, .regular_20, .regular_16, .regular_14, .regular_12, .regular_9:
                 return "ONEMobileOTFRegular"
-            case .light_24, .light_16, .light_14, .light_12, .light_9:
+            case .light_24, .light_20, .light_16, .light_14, .light_12, .light_9:
                 return "ONEMobileOTFLight"
             }
         }
@@ -41,6 +44,8 @@ extension UIFont {
             switch self {
             case .bold_24, .regular_24, .light_24:
                 return 24
+            case .bold_20, .regular_20, .light_20:
+                return 20
             case .bold_16, .regular_16, .light_16:
                 return 16
             case .bold_14, .regular_14, .light_14:
