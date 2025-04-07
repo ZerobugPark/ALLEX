@@ -70,8 +70,6 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         
         
         mainView.tableView.rx.modelSelected(ClimbingInfo.self).bind(with: self) { owner, value in
-            
-            print(owner.coordinator)
             owner.coordinator?.showDetail(id: value.id)
             
             
@@ -90,6 +88,13 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         self.navigationController?.navigationBar.isHidden = false
     }
     
+    
+    
+    deinit {
+        
+        print("CalendarViewController Deinit")
+        coordinator = nil
+    }
 
 
     

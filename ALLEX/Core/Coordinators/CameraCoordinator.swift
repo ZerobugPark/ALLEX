@@ -96,9 +96,10 @@ final class CameraCoordinator: Coordinator {
         }
         
         
-        //let vm = VideoViewModel(sharedData)
-        let vc = VideoCaptureViewController()// VideoViewController(viewModel: vm)
-        vc.modalPresentationStyle = .pageSheet // 풀스크린으로 변경할 것
+        let vm = VideoCaptureViewModel(sharedData)
+        let vc = VideoCaptureViewController(viewModel: vm)
+        vc.coordinator = self
+        vc.modalPresentationStyle = .fullScreen
         navigationController.present(vc, animated: true)
         
         

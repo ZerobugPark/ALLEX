@@ -32,7 +32,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\"카메라 접근 권한 허용해주세요\""
+            "value" : "This app requires access to your camera for taking photos and videos.\""
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "\"이 앱은 사진과 비디오 촬영을 위해 카메라 접근 권한이 필요합니다.\""
           }
         }
       }
@@ -44,7 +50,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\"마이크 허용\""
+            "value" : "\"This app requires access to your microphone for recording audio.\""
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "\"이 앱은 오디오 녹음을 위해 마이크 접근 권한이 필요합니다.\""
           }
         }
       }
@@ -56,7 +68,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\"앱에서 사진을 저장하려면 접근이 필요합니다.\""
+            "value" : "\"This app requires access to your photo library to select and save photos.\""
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "\"이 앱은 사진을 선택하고 저장하기 위해 사진 라이브러리 접근 권한이 필요합니다.\""
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryUsageDescription" : {
+      "comment" : "Privacy - Photo Library Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "\"This app requires access to your photo library to select and save photos.\""
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“이 앱은 사진을 선택하거나 접근하기 위해 사진 라이브러리 권한이 필요합니다”"
           }
         }
       }

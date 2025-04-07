@@ -50,6 +50,8 @@ final class PopUpViewController: UIViewController {
     
     deinit {
         print(String(describing: self) + "Deinit")
+        coordinator = nil
+        
     }
   
 }

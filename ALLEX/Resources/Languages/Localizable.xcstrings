@@ -250,13 +250,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Helps you shoot, save and edit climbing videos in real time"
+            "value" : "Helps you shoot, save videos in real time"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "실시간으로 클라이밍 영상을 촬영, 저장 및 편집까지!"
+            "value" : "실시간으로 비디오를 촬영 및 저장"
           }
         }
       }

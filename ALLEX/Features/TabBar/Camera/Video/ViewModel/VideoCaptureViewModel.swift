@@ -1,8 +1,8 @@
 //
-//  VideoViewModel.swift
+//  VideoCaptureViewModel.swift
 //  ALLEX
 //
-//  Created by youngkyun park on 3/31/25.
+//  Created by youngkyun park on 4/7/25.
 //
 
 import Foundation
@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class VideoViewModel: BaseViewModel {
+final class VideoCaptureViewModel: BaseViewModel {
     
     var sharedData: SharedDataModel
     
