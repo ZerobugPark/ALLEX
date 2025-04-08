@@ -22,8 +22,15 @@ final class SearchCoordinator: Coordinator {
     func start() {
         let vm = SearchListViewModel(sharedData)
         let vc = SearchViewController(viewModel: vm)
+        vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
     
+    }
+    
+    func showSpaceDetail(_ gymId: String) {
+        let vm = DetailSpaceViewModel(sharedData, gymId)
+        let vc = DetailSpaceViewController(viewModel: vm)
+        navigationController.pushViewController(vc, animated: true)
     }
     
     
