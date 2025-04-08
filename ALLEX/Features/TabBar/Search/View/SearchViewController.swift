@@ -19,13 +19,14 @@ final class SearchViewController: BaseViewController<SearchListView, SearchListV
         super.viewDidLoad()
         
         mainView.tableView.register(SearchListTableViewCell.self, forCellReuseIdentifier: SearchListTableViewCell.id)
+        searchBar.showsCancelButton = true
     }
     
     override func bind() {
         
-        let searchText = searchBar.rx.text.orEmpty.skip(1).distinctUntilChanged().debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+        let searchText = searchBar.rx.searchButtonClicked.withLatestFrom(searchBar.rx.text.orEmpty.skip(1).distinctUntilChanged())
         
-        let input = SearchListViewModel.Input(viewdidLoad: Observable.just(()), searchText: searchText)
+        let input = SearchListViewModel.Input(viewdidLoad: Observable.just(()), searchText: searchText, cancelButttonTap: searchBar.rx.cancelButtonClicked)
         
         let output = viewModel.transform(input: input)
         
@@ -36,7 +37,11 @@ final class SearchViewController: BaseViewController<SearchListView, SearchListV
             cell.setupUI(data: element)
         
         }.disposed(by: disposeBag)
-    
+        
+        
+        output.hideKeyboard.drive(with: self) { owner, _ in
+            owner.searchBar.resignFirstResponder()
+        }.disposed(by: disposeBag)
         
         output.infoLabel.drive(mainView.infoLabel.rx.isHidden).disposed(by: disposeBag)
         
@@ -48,6 +53,7 @@ final class SearchViewController: BaseViewController<SearchListView, SearchListV
         setupSearchController()
        
     }
+    
     private func setupSearchController() {
         self.navigationItem.titleView = searchBar
     }
@@ -57,7 +63,7 @@ final class SearchViewController: BaseViewController<SearchListView, SearchListV
         navigationController?.navigationBar.isHidden = false
     }
     
-    
+   
 }
 
 
