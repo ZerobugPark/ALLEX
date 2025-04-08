@@ -76,7 +76,7 @@ extension DetailSpaceViewModel {
         
         
         // 난이도 섹션
-        let brandInfo: [Bouldering] = sharedData.getData(for: Bouldering.self)!.filter { $0.brandID == gymInfo.gymID }
+        let brandInfo: [Bouldering] = sharedData.getData(for: Bouldering.self)!.filter { $0.brandID == gymInfo.brandID }
         let grades = brandInfo.map { BoulderingGrade(difficulty: $0.Difficulty, color: $0.Color) }
         let gradeItems = grades.map { GymInfoSectionItem.boulderingGradeItem($0) }
         let boulderingGradeSection = GymInfoSectionModel(

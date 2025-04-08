@@ -37,7 +37,7 @@ final class FacilityInfoCollectionViewCell: BaseCollectionViewCell {
     override func configureView() {
         
         iconView.contentMode = .scaleAspectFit
-        iconView.tintColor = .red//.setAllexColor(.textSecondary)
+        iconView.tintColor = .setAllexColor(.textSecondary)
         
         nameLabel.font = .setAllexFont(.bold_12)
         
