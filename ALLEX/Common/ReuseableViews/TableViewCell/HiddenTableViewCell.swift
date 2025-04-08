@@ -14,7 +14,7 @@ import SnapKit
 final class HiddenTableViewCell: BaseTableViewCell {
     
     // MARK: - Properties
-    let bouldering = BoulderingAttemptView()
+    let bouldering = BoulderingHiddenList()
     
     var disposeBag = DisposeBag()
     

@@ -102,15 +102,15 @@ extension ResultViewModel {
         }
         
         
-        let gymInfo = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == data.gymId }
+        let gymInfo = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == data.gymId }.first!
         
         
         let languageCode = (Locale.preferredLanguages.first ?? "en").split(separator: "-").first ?? ""
         
         if languageCode == "en" {
-            resultData.space = gymInfo[0].nameEn
+            resultData.space = gymInfo.nameEn
         } else {
-            resultData.space = gymInfo[0].nameKo
+            resultData.space = gymInfo.nameKo
         }
         
         resultData.bestGrade = data.bestGrade

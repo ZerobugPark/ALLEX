@@ -15,6 +15,8 @@ final class SearchViewController: BaseViewController<SearchListView, SearchListV
     
     private lazy var searchBar =  BaseSearchBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 44.0))
     
+    var coordinator: SearchCoordinator?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -44,6 +46,12 @@ final class SearchViewController: BaseViewController<SearchListView, SearchListV
         }.disposed(by: disposeBag)
         
         output.infoLabel.drive(mainView.infoLabel.rx.isHidden).disposed(by: disposeBag)
+        
+        mainView.tableView.rx.modelSelected(Gym.self).bind(with: self) { owner, gym in
+            
+            owner.coordinator?.showSpaceDetail(gym.gymID)
+            
+        }.disposed(by: disposeBag)
         
     }
     

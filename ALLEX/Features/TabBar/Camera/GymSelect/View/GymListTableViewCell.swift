@@ -54,7 +54,7 @@ final class GymListTableViewCell: BaseTableViewCell {
            
         likeButton.tintColor = .pirmary
         contentView.backgroundColor = .backGroundSecondary
-        
+        likeButton.isHidden = true
     }
     
     func setupUI(data: Gym) {

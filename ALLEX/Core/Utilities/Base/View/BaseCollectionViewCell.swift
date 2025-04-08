@@ -11,7 +11,7 @@ class BaseCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .setAllexColor(.backGround)
+        contentView.backgroundColor = .setAllexColor(.backGroundSecondary)
         configureHierarchy()
         configureLayout()
         configureView()

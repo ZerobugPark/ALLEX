@@ -26,6 +26,7 @@ extension UIImage {
         case eye = "eye"
         case eyeSlash = "eye.slash"
         case chevronRight = "chevron.right"
+        case document = "document.on.document"
     }
 
     

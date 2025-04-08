@@ -15,8 +15,8 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
     
     var coordinator: CameraCoordinator?
     
-    private let tryButtonEvent = PublishRelay<(TryButtonAction, Int)>()
-    private let successButtonEvent =  PublishRelay<(SuccessButtonAction, Int)>()
+    private let tryButtonEvent = PublishRelay<(ButtonAction, Int)>()
+    private let successButtonEvent =  PublishRelay<(ButtonAction, Int)>()
     private let eveButtonEvent =  PublishRelay<(Int)>()
     private let eveHiddenButtonEvent =  PublishRelay<(Int)>()
     
@@ -28,13 +28,14 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         mainView.hiddenView.tableView.register(HiddenTableViewCell.self, forCellReuseIdentifier: HiddenTableViewCell.id)
         
         
-        
+        mainView.recordView.tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
     }
     
     override func bind() {
         
         
-        let input = RecordViewModel.Input(toggleTimerTrigger: mainView.timeRecord.timeButton.rx.tap, tryButtonEvent: tryButtonEvent.asDriver(onErrorJustReturn: (.tryButtonTap,0)), successButtonEvent: successButtonEvent.asDriver(onErrorJustReturn: (.successButtonTap,0)), eyeButtonEvent: eveButtonEvent.debounce(.milliseconds(100), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: 0), eveHiddenButtonEvent: eveHiddenButtonEvent.debounce(.milliseconds(100), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: 0), saveButtonTapped: mainView.saveButton.rx.tap)
+        let input = RecordViewModel.Input(toggleTimerTrigger: mainView.timeRecord.timeButton.rx.tap, tryButtonEvent: tryButtonEvent.asDriver(onErrorJustReturn: (.addButton,0)), successButtonEvent: successButtonEvent.asDriver(onErrorJustReturn: (.addButton,0)), eyeButtonEvent: eveButtonEvent.debounce(.milliseconds(100), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: 0), eveHiddenButtonEvent: eveHiddenButtonEvent.debounce(.milliseconds(100), scheduler: MainScheduler.instance).asDriver(onErrorJustReturn: 0), saveButtonTapped: mainView.saveButton.rx.tap)
         
         
         
@@ -56,13 +57,6 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
                 owner.tryButtonEvent.accept((type, row))
             }.disposed(by: cell.disposeBag)
             
-            cell.bouldering.eyeButton.rx.tap.bind(with: self) { owner, _ in
-                owner.eveButtonEvent.accept(element.gradeLevel)
-                
-                owner.updateHiddenLayer()
-                
-            }.disposed(by: cell.disposeBag)
-            
             
         }.disposed(by: disposeBag)
         
@@ -72,8 +66,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
             cell.setupData(element)
             
             cell.bouldering.eyeButton.rx.tap.bind(with: self) { owner, _ in
-                
-                
+ 
                 owner.eveHiddenButtonEvent.accept(element.gradeLevel)
                 
             }.disposed(by: cell.disposeBag)
@@ -119,11 +112,55 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        UIApplication.shared.isIdleTimerDisabled = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        UIApplication.shared.isIdleTimerDisabled = false
+    }
+    
+    
     deinit {
         print("RecordViewController Deinit")
         
         coordinator = nil
         print(coordinator)
+    }
+    
+    
+}
+
+extension RecordViewController: UITableViewDelegate {
+    
+    
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        // 현재 데이터 가져오기
+        let element = viewModel.gymGradeList[indexPath.row]
+        
+        
+        // Eye Slash 버튼 액션
+        let hideAction = UIContextualAction(style: .normal, title: "") { [weak self] _, _, completion in
+            guard let self = self else { return }
+            
+            
+            self.eveButtonEvent.accept(element.gradeLevel)
+            self.updateHiddenLayer()
+            
+            completion(true)
+        }
+        
+        hideAction.image = UIImage(systemName: "eye.slash")?.withTintColor(.setAllexColor(.pirmary), renderingMode: .alwaysOriginal)
+        hideAction.backgroundColor = .setAllexColor(.backGroundSecondary)
+        
+        
+        return UISwipeActionsConfiguration(actions: [hideAction])
+        
+        
+        
     }
     
     

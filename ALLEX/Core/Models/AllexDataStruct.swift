@@ -11,7 +11,7 @@ struct Brand: Mappable {
     
     let brandID: String
     let brandName: String
-
+    
     // Gym 객체 초기화하는 메서드
     init(from data: [String]) {
         self.brandID = data[0]
@@ -32,6 +32,8 @@ struct Gym: Mappable {
     let addressKo: String
     let addressEn: String
     let imageURL: String
+    let instaID: String
+    let facilities: [String]
     
     // Gym 객체 초기화하는 메서드
     init(from data: [String]) {
@@ -46,6 +48,13 @@ struct Gym: Mappable {
         self.addressKo = data[8]
         self.addressEn = data[9]
         self.imageURL = data[10]
+        self.instaID = data[11]
+        
+        if data.count > 12, let jsonData = data[12].data(using: .utf8) {
+            self.facilities = (try? JSONDecoder().decode([String].self, from: jsonData)) ?? []
+        } else {
+            self.facilities = []
+        }
     }
 }
 
@@ -55,14 +64,14 @@ struct GymGrades: Mappable {
     let type: String
     let minDifficulty : String?
     let maxDifficulty: String?
-
+    
     // Gym 객체 초기화하는 메서드
     init(from data: [String]) {
         self.brandID = data[0]
         self.type = data[1]
         self.minDifficulty = data[2] == "null" ? nil : data[2]
         self.maxDifficulty = data[3] == "null" ? nil : data[2]
-
+        
     }
 }
 
@@ -72,13 +81,13 @@ struct Bouldering: Mappable {
     let Color: String
     let Difficulty : String
     
-
+    
     // Gym 객체 초기화하는 메서드
     init(from data: [String]) {
         self.brandID = data[0]
         self.GradeLevel = data[1]
         self.Color = data[2]
         self.Difficulty = data[3]
-
+        
     }
 }

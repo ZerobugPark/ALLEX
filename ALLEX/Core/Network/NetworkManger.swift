@@ -128,7 +128,7 @@ final class NetworkManger: GoogleSheetRepository {
     func fetchAsycnAwait(url: String) async throws -> UIImage { // 오로지 성공 데이터
         
         let convertURL = (convertGoogleDriveURLToDownloadLink(url))!
-        let request = URLRequest(url: URL(string: convertURL)!, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 0)
+        let request = URLRequest(url: URL(string: convertURL)!, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 1000)
         
         let (data, response) =  try await URLSession.shared.data(for: request)
         

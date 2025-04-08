@@ -16,7 +16,6 @@ final class RecordView: BaseView {
     let timeRecord = TimeRecordView()
     let recordView = RecordTableView()
     
-    private let infoLable = TertiaryLabel(key: .deleteInfo, title: "")
     
     let saveButton = BaseButton(key: .saveRecord)
     let eyeButton = BaseButton()
@@ -27,7 +26,7 @@ final class RecordView: BaseView {
     var hiddenViewHeightConstraint: Constraint?
     
     override func configureHierarchy() {
-        self.addSubviews(backButton, titleLable, timeRecord, recordView, eyeButton, saveButton, hiddenView, infoLable)
+        self.addSubviews(backButton, titleLable, timeRecord, recordView, eyeButton, saveButton, hiddenView)
     }
     
     override func configureLayout() {
@@ -51,10 +50,6 @@ final class RecordView: BaseView {
             make.height.equalTo(40)
         }
         
-        infoLable.snp.makeConstraints { make in
-            make.bottom.equalTo(recordView.snp.top).offset(-4)
-            make.trailing.equalTo(self.safeAreaLayoutGuide).offset(-12)
-        }
         
         recordView.snp.makeConstraints { make in
             make.top.equalTo(timeRecord.snp.bottom).offset(16)
@@ -103,8 +98,7 @@ final class RecordView: BaseView {
         
         eyeButton.setImage(.setAllexSymbol(.eye), for: .normal)
         eyeButton.tintColor = .systemGray2
-        
-        infoLable.font = .setAllexFont(.regular_12)
+    
     }
     
     // MARK: - Public Methods
