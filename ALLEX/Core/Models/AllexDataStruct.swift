@@ -55,8 +55,6 @@ struct Gym: Mappable {
         } else {
             self.facilities = []
         }
-        
-        print(self.facilities)
     }
 }
 

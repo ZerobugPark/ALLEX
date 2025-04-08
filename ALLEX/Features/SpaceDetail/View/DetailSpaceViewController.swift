@@ -45,6 +45,18 @@ final class DetailSpaceViewController: BaseViewController<DetailSpaceView, Detai
         
         output.sections.drive(mainView.collectionView.rx.items(dataSource: dataSource)).disposed(by: disposeBag)
         
+        mainView.collectionView.rx.itemSelected.bind(with: self) { owner, index in
+            
+            switch index.section {
+            case 3:
+                Profile.goToInstagram(username: Profile.officailAccount)
+            default:
+                break
+            }
+            
+            
+        }.disposed(by: disposeBag)
+        
     }
     
 }
