@@ -47,9 +47,9 @@ extension UIColor {
             case .valid:
                     .valid
             case .tabBarSelected:
-                    .tabBarSelected
+                    .tabbarSelected
             case .tabBarUnSelected:
-                    .tabBarUnSelected
+                    .tabbarUnSelected
             case .routeColor:
                     .route
             }

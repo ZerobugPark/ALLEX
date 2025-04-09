@@ -30,12 +30,7 @@ final class ProfileCoordinator: Coordinator {
     
     func showOfficialAccount() {
         let username = Profile.officailAccount
-        if let url = URL(string: "instagram://user?username=\(username)"),
-           UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        } else if let webURL = URL(string: "https://www.instagram.com/\(username)/") {
-            UIApplication.shared.open(webURL, options: [:], completionHandler: nil)
-        }
+        Profile.goToInstagram(username: username)
     }
     
     func showPrivacyPolicy() {

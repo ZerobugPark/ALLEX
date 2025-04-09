@@ -17,8 +17,8 @@ final class RecordViewModel: BaseViewModel {
     
     struct Input {
         let toggleTimerTrigger: ControlEvent<Void> // 타이머 토글 트리거
-        let tryButtonEvent: Driver<(TryButtonAction, Int)>
-        let successButtonEvent:  Driver<(SuccessButtonAction, Int)>
+        let tryButtonEvent: Driver<(ButtonAction, Int)>
+        let successButtonEvent:  Driver<(ButtonAction, Int)>
         let eyeButtonEvent:  Driver<(Int)>
         let eveHiddenButtonEvent:  Driver<(Int)>
         let saveButtonTapped: ControlEvent<Void>
@@ -51,7 +51,7 @@ final class RecordViewModel: BaseViewModel {
     
     private var gymTitle = ""
     
-    private var gymGradeList: [BoulderingAttempt] = []
+    var gymGradeList: [BoulderingAttempt] = []
     private var hiddenData: [BoulderingAttempt] = []
     
     
@@ -124,10 +124,13 @@ final class RecordViewModel: BaseViewModel {
         input.tryButtonEvent.drive(with: self) { owner, value in
               
             switch value.0 {
-            case .tryButtonTap:
+            case .addButton:
                 owner.gymGradeList[value.1].tryCount += 1
-            case .tryButtonLongTap:
-                owner.gymGradeList[value.1].tryCount = max(0, owner.gymGradeList[value.1].tryCount - 1)
+            case .reduceButton:
+                if owner.gymGradeList[value.1].successCount <=  owner.gymGradeList[value.1].tryCount - 1 {
+                    owner.gymGradeList[value.1].tryCount = max(0, owner.gymGradeList[value.1].tryCount - 1)
+                }
+                
             }
             
             gymGrade.accept(owner.gymGradeList)
@@ -136,10 +139,10 @@ final class RecordViewModel: BaseViewModel {
         
         input.successButtonEvent.drive(with: self) { owner, value in
             switch value.0 {
-            case .successButtonTap:
+            case .addButton:
                 owner.gymGradeList[value.1].tryCount += 1
                 owner.gymGradeList[value.1].successCount += 1
-            case .successButtonLongTap:
+            case .reduceButton:
                 owner.gymGradeList[value.1].successCount = max(0, owner.gymGradeList[value.1].successCount - 1)
             }
             
