@@ -50,7 +50,7 @@ final class GymSelectionCoordinator: Coordinator {
     
     
     func dismiss() {
-        navigationController.dismiss(animated: true)
+        navigationController.dismiss(animated: true, completion: nil)
     }
     
     // ✅ 암장 선택 시 콜백 실행
