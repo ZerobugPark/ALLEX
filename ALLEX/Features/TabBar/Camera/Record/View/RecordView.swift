@@ -46,7 +46,7 @@ final class RecordView: BaseView {
         timeRecord.snp.makeConstraints { make in
             make.top.equalTo(titleLable.snp.bottom).offset(16)
             make.centerX.equalTo(self.safeAreaLayoutGuide)
-            make.width.equalTo(120)
+            make.width.equalToSuperview()
             make.height.equalTo(40)
         }
         
@@ -81,7 +81,7 @@ final class RecordView: BaseView {
         backButton.setImage(.setAllexSymbol(.xmark), for: .normal)
         backButton.tintColor = .setAllexColor(.textSecondary)
         
-        titleLable.font = .setAllexFont(.bold_14)
+        titleLable.font = .setAllexFont(.bold_16)
         
         hiddenView.layer.cornerRadius = 10
         //hiddenView.clipsToBounds = true

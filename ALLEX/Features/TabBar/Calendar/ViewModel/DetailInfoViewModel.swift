@@ -114,6 +114,7 @@ extension DetailInfoViewModel {
         resultData.excersieTime = convertToTimeFormat(data.climbTime)
         resultData.totalSuccessCount = String(data.totalSuccess)
         resultData.totalTryCount = String(data.totalClimb)
+        
         resultData.totalSuccessRate = String(format: "%.0f%%", data.successRate)
         
         resultData.results = getRouteResults(from: data)

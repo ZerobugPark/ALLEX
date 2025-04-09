@@ -26,7 +26,6 @@ final class ResultTableViewCell: BaseTableViewCell {
     
     private let containerView = CustomView(radius: 12, bgColor: .setAllexColor(.backGroundSecondary))
     private let dateLabel = SubTitleLabel()
-    private let actionButtonsContainer = CustomView()
     private let editButton = UIButton()
     private let viewDetailsButton = UIButton()
     
@@ -48,7 +47,6 @@ final class ResultTableViewCell: BaseTableViewCell {
         contentView.addSubview(containerView)
         
         containerView.addSubview(dateLabel)
-        containerView.addSubview(actionButtonsContainer)
         containerView.addSubview(locationPinIcon)
         
         containerView.addSubview(locationNameLabel)
@@ -78,13 +76,7 @@ final class ResultTableViewCell: BaseTableViewCell {
             make.top.left.equalToSuperview().offset(12)
         }
         
-        
-        actionButtonsContainer.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(12)
-            make.trailing.equalToSuperview().offset(-12)
-            make.height.equalTo(20)
-        }
-        
+
         
         locationPinIcon.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(12)
@@ -101,13 +93,13 @@ final class ResultTableViewCell: BaseTableViewCell {
         
         
         timeIcon.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-16)
+            make.trailing.equalTo(timeLabel.snp.leading).offset(-4)
             make.centerY.equalTo(locationPinIcon)
-            make.width.height.equalTo(20)
+            make.size.equalTo(20)
         }
         
         timeLabel.snp.makeConstraints { make in
-            make.right.equalTo(timeIcon.snp.left).offset(-4)
+            make.trailing.equalToSuperview().offset(-16)
             make.centerY.equalTo(timeIcon)
         }
         
@@ -142,11 +134,11 @@ final class ResultTableViewCell: BaseTableViewCell {
         // Date and action buttons
         dateLabel.font = .setAllexFont(.bold_14)
         
-        actionButtonsContainer.backgroundColor = .red
+       
         
         // Location and time info
         locationPinIcon.image = UIImage(systemName: "mappin.circle.fill")
-        locationPinIcon.tintColor = .red
+        locationPinIcon.tintColor = .setAllexColor(.pirmary)
         
         locationNameLabel.font = .systemFont(ofSize: 16, weight: .semibold)
         
@@ -166,7 +158,7 @@ final class ResultTableViewCell: BaseTableViewCell {
         
         // Bowling activity info
         bowlingLabel.text = "클라이밍"
-        bowlingLabel.textColor = .setAllexColor(.pirmary)
+        bowlingLabel.textColor = .setAllexColor(.textPirmary)
         bowlingLabel.font = .setAllexFont(.regular_14)
         
         
@@ -205,7 +197,7 @@ extension ResultTableViewCell {
         let container = CustomView()
         container.backgroundColor = .clear
         
-        let grade = CustomView(radius: 8, bgColor: .setBoulderColor(from: "red")!)
+        let grade = UIImageView(image: UIImage(resource: .climbing))
               
         container.addSubview(grade)
         grade.snp.makeConstraints { make in
@@ -223,7 +215,17 @@ extension ResultTableViewCell {
         }
         
         let percentLabel = TertiaryLabel()
-        percentLabel.text = String(format: "%.0f%%", (Double(game.totalSuccessCount) / Double(game.totalClimbCount)) * 100)
+    
+        let rate = (Double(game.totalSuccessCount) / Double(game.totalClimbCount)) * 100
+        
+        if rate.isNaN {
+            percentLabel.text = "0%"
+        } else {
+            percentLabel.text = String(format: "%.0f%%", rate)
+        }
+        
+        
+        
         percentLabel.font = .setAllexFont(.bold_14)
         container.addSubview(percentLabel)
         percentLabel.snp.makeConstraints { make in
