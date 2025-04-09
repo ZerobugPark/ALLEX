@@ -64,7 +64,7 @@ final class GymHeaderCollectionViewCell: BaseCollectionViewCell {
         }
         
         instaButton.snp.makeConstraints { make in
-            make.top.equalTo(addressLabel.snp.bottom).offset(2)
+            make.bottom.equalTo(contentView.safeAreaLayoutGuide).offset(-4)
             make.leading.equalTo(instaImageView.snp.trailing).offset(8)
         }
 
