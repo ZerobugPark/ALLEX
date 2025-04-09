@@ -62,19 +62,6 @@ final class DetailSpaceView: BaseView {
                 // Create section
                 let section = NSCollectionLayoutSection(group: group)
                 
-                // Add header
-                let headerSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .absolute(44)
-                )
-                let header = NSCollectionLayoutBoundarySupplementaryItem(
-                    layoutSize: headerSize,
-                    elementKind: UICollectionView.elementKindSectionHeader,
-                    alignment: .top
-                )
-                section.boundarySupplementaryItems = [header]
-                
-                
                 return section
                 
             } else if sectionIndex == 1 {
