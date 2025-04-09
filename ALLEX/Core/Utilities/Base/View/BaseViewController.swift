@@ -34,6 +34,10 @@ class BaseViewController<T: BaseView, VM: BaseViewModel>: UIViewController {
     func bind() {}
     
     
+    deinit {
+        print("\(description) Deinit")
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

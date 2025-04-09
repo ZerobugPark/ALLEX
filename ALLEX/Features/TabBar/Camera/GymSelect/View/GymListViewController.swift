@@ -57,10 +57,13 @@ final class GymListViewController: BaseViewController<GymListView, GymListViewMo
         }.disposed(by: disposeBag)
              
     }
+
     
     deinit {
-        print(String(describing: self) + "Deinit")
+        coordinator = nil
+        print("\(description) Deinit")
     }
+    
  
 
 }

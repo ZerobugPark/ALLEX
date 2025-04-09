@@ -188,7 +188,7 @@ final class RecordViewModel: BaseViewModel {
     
     
     deinit {
-        print(String(describing: self) + "Deinit")
+        print("\(type(of: self)) Deinit")
     }
     
 }

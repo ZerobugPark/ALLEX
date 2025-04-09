@@ -78,7 +78,7 @@ final class ProfileSettingView: BaseView {
         }
    
         startButton.snp.makeConstraints { make in
-            make.top.equalTo(dateTextField.snp.bottom).offset(44)
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-44)
             make.horizontalEdges.equalToSuperview().inset(32)
         }
 

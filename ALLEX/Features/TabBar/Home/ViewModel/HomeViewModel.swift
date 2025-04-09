@@ -112,7 +112,7 @@ final class HomeViewModel: BaseViewModel {
     }
     
     deinit {
-        print(String(describing: self) + "Deinit")
+        print("\(type(of: self)) Deinit")
     }
 }
 

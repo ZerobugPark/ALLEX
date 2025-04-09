@@ -25,6 +25,7 @@ final class GymListViewModel: BaseViewModel {
         let dismiss: Driver<Void>
     }
     
+    
     var disposeBag =  DisposeBag()
     private var gymList: [Gym] = []
     
@@ -64,6 +65,8 @@ final class GymListViewModel: BaseViewModel {
             
             dismiss.accept(())
         }.disposed(by: disposeBag)
+        
+        
     
         return Output(list: list.asDriver(onErrorJustReturn: []), dismiss: dismiss.asDriver(onErrorJustReturn: ()))
     }

@@ -20,7 +20,7 @@ struct Brand: Mappable {
 }
 
 
-struct Gym: Mappable {
+struct Gym: Mappable, Hashable {
     let gymID: String
     let brandID: String
     let nameKo: String

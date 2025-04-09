@@ -31,7 +31,7 @@ class BaseCollectionViewCell: UICollectionViewCell {
     }
     
     deinit {
-        print(String(describing: self) + "DeInit")
+        print("\(description) Deinit")
     }
     
 }
