@@ -53,7 +53,6 @@ final class ProfileSettingView: BaseView {
     
         nicknameTextField.snp.makeConstraints { make in
             make.top.equalTo(nicknameLabel.snp.bottom).offset(12)
-            make.leading.equalToSuperview().offset(32)
             make.horizontalEdges.equalToSuperview().inset(32)
             make.height.equalTo(50)
           
