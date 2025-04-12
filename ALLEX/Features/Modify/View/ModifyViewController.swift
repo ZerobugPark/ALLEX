@@ -27,7 +27,12 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
     
     override func bind() {
         
-        let input = ModifyViewModel.Input(spaceTextField: mainView.spaceTextField.rx.text.orEmpty)
+        // 1. timePicker에서 duration을 Observable로 변경
+        let timeSelected = mainView.timePicker.rx
+            .controlEvent(.valueChanged)
+            .map { [weak mainView] in mainView?.timePicker.countDownDuration ?? 0 }
+        
+        let input = ModifyViewModel.Input(spaceTextField: mainView.spaceTextField.rx.text.orEmpty, doneButtonTapped: mainView.doneButton.rx.tap.withLatestFrom(timeSelected))
         
         let output = viewModel.transform(input: input)
         
@@ -36,11 +41,16 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
             cell.setupUI(data: element)
         }.disposed(by: disposeBag)
         
-//        mainView.testButton.rx.tap.bind(with: self) { owenr, _ in
-//            
-//            owenr.coordinator?.showTimeSelector()
-//            
-//        }.disposed(by: disposeBag)
+        
+        
+        output.timeTextField.drive(with: self) { owner, time in
+            owner.mainView.timeTxetFiled.text = time
+            
+            owner.mainView.timeTxetFiled.resignFirstResponder()
+        }.disposed(by: disposeBag)
+        
+        
+
             
     }
     

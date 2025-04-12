@@ -15,11 +15,13 @@ final class ModifyViewModel: BaseViewModel {
     
     struct Input {
         let spaceTextField: ControlProperty<String>
+        let doneButtonTapped: Observable<TimeInterval>
     }
     
     struct Output {
        
         let gymList: Driver<[Gym]>
+        let timeTextField: Driver<String>
     }
     
     
@@ -41,6 +43,7 @@ final class ModifyViewModel: BaseViewModel {
     func transform(input: Input) -> Output {
            
         let outputGymList = BehaviorRelay(value: gymList)
+        let userExcersisetime = PublishRelay<String>()
         
         input.spaceTextField.bind(with: self) { owner, _ in
             
@@ -53,7 +56,15 @@ final class ModifyViewModel: BaseViewModel {
             
         }.disposed(by: disposeBag)
         
-        return Output(gymList: outputGymList.asDriver(onErrorJustReturn: []))
+        input.doneButtonTapped.bind(with: self) { owner, timeValue in
+            
+            
+            let time = owner.donePressed(time: timeValue)
+            userExcersisetime.accept(time)
+            
+        }.disposed(by: disposeBag)
+        
+        return Output(gymList: outputGymList.asDriver(onErrorJustReturn: []), timeTextField: userExcersisetime.asDriver(onErrorJustReturn: ""))
     }
     
     
@@ -64,5 +75,13 @@ final class ModifyViewModel: BaseViewModel {
 
 
 extension ModifyViewModel {
+ 
     
+    private func donePressed(time: Double) -> String {
+        let totalMinutes = Int(time) / 60
+        let hours = totalMinutes / 60
+        let minutes = totalMinutes % 60
+        
+        return "\(hours)시간 \(minutes)분"
+    }
 }

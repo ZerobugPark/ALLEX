@@ -23,12 +23,15 @@ final class ModifyView: BaseView {
     
     private let excersiseTimeLabel = TitleLabel(title: "운동시간")
     let timeTxetFiled = UITextField()
-    //let testButton = UIButton()
     
+    
+    let doneButton = UIBarButtonItem(title: "완료", style: .done, target: nil, action: nil)
+    
+    private let gradeLabel = TitleLabel(title: "난이도")
     
     override func configureHierarchy() {
     
-        self.addSubviews(dateLabel, dateTextField, spaceLabel, spaceTextField, excersiseTimeLabel, timeTxetFiled)
+        self.addSubviews(dateLabel, dateTextField, spaceLabel, spaceTextField, excersiseTimeLabel, timeTxetFiled, gradeLabel)
     
     
     }
@@ -36,7 +39,7 @@ final class ModifyView: BaseView {
     override func configureLayout() {
     
         dateLabel.snp.makeConstraints { make in
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(44)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(16)
             make.leading.equalTo(self.safeAreaLayoutGuide).offset(32)
         }
     
@@ -48,7 +51,7 @@ final class ModifyView: BaseView {
     
         spaceLabel.snp.makeConstraints { make in
             make.top.equalTo(dateTextField.snp.bottom).offset(16)
-            make.leading.equalTo(self.safeAreaLayoutGuide).offset(16)
+            make.leading.equalTo(self.safeAreaLayoutGuide).offset(32)
         }
     
         spaceTextField.snp.makeConstraints { make in
@@ -59,13 +62,18 @@ final class ModifyView: BaseView {
     
         excersiseTimeLabel.snp.makeConstraints { make in
             make.top.equalTo(spaceTextField.snp.bottom).offset(16)
-            make.leading.equalTo(self.safeAreaLayoutGuide).offset(16)
+            make.leading.equalTo(self.safeAreaLayoutGuide).offset(32)
         }
     
         timeTxetFiled.snp.makeConstraints { make in
             make.top.equalTo(excersiseTimeLabel.snp.bottom).offset(12)
             make.horizontalEdges.equalToSuperview().inset(32)
             make.height.equalTo(50)
+        }
+        
+        gradeLabel.snp.makeConstraints { make in
+            make.top.equalTo(timeTxetFiled.snp.bottom).offset(32)
+            make.leading.equalTo(self.safeAreaLayoutGuide).offset(32)
         }
     
     }
@@ -77,35 +85,29 @@ final class ModifyView: BaseView {
         spaceTextField.setupPaddingTextField()
     
         tableView.rowHeight = 70
-        
-        
-        
+         
         timeTxetFiled.inputView = timePicker
         timeTxetFiled.setupPaddingTextField()
         
-       
         // ✅ 툴바 추가
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
-        
-
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let doneButton = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(donePressed))
-
         // ✅ 완료 버튼을 오른쪽으로 밀기 위해 flexibleSpace 추가
         toolbar.setItems([flexibleSpace, doneButton], animated: true)
         
         // ✅ 툴바를 UITextField의 inputAccessoryView로 설정
         timeTxetFiled.inputAccessoryView = toolbar
+        
+        toolbar.backgroundColor = .setAllexColor(.backGroundSecondary)
+        toolbar.tintColor = .setAllexColor(.textSecondary)
+        
+        
+        timePicker.backgroundColor = .setAllexColor(.backGroundSecondary)
+        timePicker.tintColor = .setAllexColor(.textSecondary)
     
     }
     
-    @objc func donePressed() {
-        let totalMinutes = Int(timePicker.countDownDuration) / 60
-        let hours = totalMinutes / 60
-        let minutes = totalMinutes % 60
-        timeTxetFiled.text = "\(hours)시간 \(minutes)분" // 📝 선택한 값 표시
-        timeTxetFiled.resignFirstResponder() // 키보드 닫기
-    }
+
     
 }

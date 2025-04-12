@@ -46,14 +46,6 @@ final class CalendarCoordinator: Coordinator {
         
     }
     
-    func showTimeSelector() {
-        
-        let vm = TimeSettingViewModel()
-        let vc = TimeSettingViewController(viewModel: vm)
-    
-        vc.modalPresentationStyle = .formSheet
-        navigationController.present(vc, animated: true)
-    }
-    
+
     
 }
