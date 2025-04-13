@@ -39,6 +39,11 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
         navigationController?.navigationBar.isHidden = false
     }
     
+    
+    
+    
+
+    
     override func bind() {
         
         

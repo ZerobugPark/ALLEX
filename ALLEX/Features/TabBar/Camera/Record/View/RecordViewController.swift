@@ -30,6 +30,8 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         
         mainView.recordView.tableView.rx.setDelegate(self)
             .disposed(by: disposeBag)
+  
+        
     }
     
     override func bind() {
@@ -108,6 +110,15 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
             
             owner.mainView.isHiddenViewVisible.toggle()
             owner.updateHiddenLayer()
+        }.disposed(by: disposeBag)
+        
+        
+        mainView.timeRecord.timeButton.rx.tap.bind(with: self) { owner, _ in
+            if owner.mainView.timeRecord.animationImageView.isAnimationPlaying {
+                owner.mainView.timeRecord.animationImageView.pause()
+            } else {
+                owner.mainView.timeRecord.animationImageView.play()
+            }
         }.disposed(by: disposeBag)
         
     }

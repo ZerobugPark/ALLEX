@@ -22,8 +22,7 @@ final class ResultViewController: BaseViewController<ResultView, ResultViewModel
        
     }
     
-    
-    
+
     override func bind() {
         
         let input = ResultViewModel.Input()
@@ -60,5 +59,10 @@ final class ResultViewController: BaseViewController<ResultView, ResultViewModel
     }
     
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = false
+        mainView.layoutIfNeeded()
+    }
 }
 

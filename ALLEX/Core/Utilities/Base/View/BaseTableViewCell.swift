@@ -13,10 +13,12 @@ class BaseTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .setAllexColor(.backGround)
+        self.selectionStyle = .none
+        
         configureHierarchy()
         configureLayout()
         configureView()
-        self.selectionStyle = .none
+       
      
     }
 
@@ -29,7 +31,7 @@ class BaseTableViewCell: UITableViewCell {
 
     
     deinit {
-        print(String(describing: self) + "DeInit")
+        print("\(description) Deinit")
     }
     
     @available(*, unavailable)

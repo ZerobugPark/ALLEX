@@ -53,7 +53,6 @@ final class ProfileSettingView: BaseView {
     
         nicknameTextField.snp.makeConstraints { make in
             make.top.equalTo(nicknameLabel.snp.bottom).offset(12)
-            make.leading.equalToSuperview().offset(32)
             make.horizontalEdges.equalToSuperview().inset(32)
             make.height.equalTo(50)
           
@@ -78,7 +77,7 @@ final class ProfileSettingView: BaseView {
         }
    
         startButton.snp.makeConstraints { make in
-            make.top.equalTo(dateTextField.snp.bottom).offset(44)
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-44)
             make.horizontalEdges.equalToSuperview().inset(32)
         }
 

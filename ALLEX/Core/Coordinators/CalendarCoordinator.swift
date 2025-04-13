@@ -32,10 +32,25 @@ final class CalendarCoordinator: Coordinator {
     func showDetail(id: ObjectId) {
         let vm = DetailInfoViewModel(sharedData, id)
         let vc = DetailInfoViewController(viewModel: vm)
-       
         navigationController.pushViewController(vc, animated: true)
         
     }
     
+    func showModify() {
+        
+        let vm = ModifyViewModel(sharedData)
+        let vc = ModifyViewController(viewModel: vm)
+        vc.coordinator = self
+        navigationController.pushViewController(vc, animated: true)
+        
+        
+    }
+    
+    func dismiss() {
+        
+        navigationController.popViewController(animated: true)
+    }
+    
+
     
 }

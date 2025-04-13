@@ -25,6 +25,8 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
     private let currentDate = PublishRelay<Date>()
     private let changedMonth = PublishRelay<(Int,Int)>()
     
+    private let rightBarButton = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: nil, action: nil)
+    
     override func viewDidLoad() {
        
         super.viewDidLoad()
@@ -41,12 +43,12 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         restrictDateRange()
       
       
+        navigationItem.rightBarButtonItem = rightBarButton
       
    
     }
     
-  
-    
+
     
     override func bind() {
         
@@ -71,31 +73,23 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         
         mainView.tableView.rx.modelSelected(ClimbingInfo.self).bind(with: self) { owner, value in
             owner.coordinator?.showDetail(id: value.id)
+        }.disposed(by: disposeBag)
+        
+        rightBarButton.rx.tap.bind(with: self) { owner, _ in
             
+            owner.coordinator?.showModify()
             
         }.disposed(by: disposeBag)
         
     }
-    
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.isHidden = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.navigationController?.navigationBar.isHidden = false
-    }
-    
-    
-    
-    deinit {
         
-        print("CalendarViewController Deinit")
+    deinit {
         coordinator = nil
+        print("\(description) Deinit")
     }
-
+    
+    
+   
 
     
 }

@@ -13,12 +13,11 @@ final class GymListTableViewCell: BaseTableViewCell {
 
     private let title = SubTitleLabel()
     private let subTitle = TertiaryLabel()
-    private let likeButton = UIImageView(image: .setAllexSymbol(.star))
 
-    
 
     override func configureHierarchy() {
-        contentView.addSubviews(title, subTitle, likeButton)
+        contentView.addSubviews(title, subTitle)
+
     }
     
     override func configureLayout() {
@@ -26,22 +25,14 @@ final class GymListTableViewCell: BaseTableViewCell {
         
         title.snp.makeConstraints { make in
             make.centerY.equalTo(contentView.safeAreaLayoutGuide).offset(-16)
-            make.leading.equalTo(contentView.safeAreaLayoutGuide).offset(16)
-            make.trailing.equalTo(likeButton.snp.leading).offset(-32)
+            make.horizontalEdges.equalTo(contentView.safeAreaLayoutGuide).offset(16)
+            
 
         }
         
         subTitle.snp.makeConstraints { make in
             make.top.equalTo(title.snp.bottom).offset(8)
-            make.leading.equalTo(contentView.safeAreaLayoutGuide).offset(16)
-            make.trailing.equalTo(likeButton.snp.leading).offset(-32)
-        }
-        
-        likeButton.snp.makeConstraints { make in
-            make.centerY.equalTo(contentView.safeAreaLayoutGuide)
-            make.trailing.equalToSuperview().inset(16)
-            make.size.equalTo(contentView.snp.height).multipliedBy(0.3)
-            
+            make.horizontalEdges.equalTo(contentView.safeAreaLayoutGuide).inset(16)
         }
         
     }
@@ -52,9 +43,10 @@ final class GymListTableViewCell: BaseTableViewCell {
         subTitle.lineBreakMode = .byTruncatingTail
         subTitle.numberOfLines = 2
            
-        likeButton.tintColor = .pirmary
+        
         contentView.backgroundColor = .backGroundSecondary
-        likeButton.isHidden = true
+        
+
     }
     
     func setupUI(data: Gym) {

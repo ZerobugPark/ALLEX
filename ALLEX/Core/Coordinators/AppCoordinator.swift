@@ -80,7 +80,7 @@ final class AppCoordinator: Coordinator {
         if let index = childCoordinators.firstIndex(where: { $0 === coordinator }) {
             childCoordinators.remove(at: index)
         }
-        print(childCoordinators)
+        //print(childCoordinators)
     }
     
     private func setupNavigationBarAppearance() {
@@ -105,7 +105,6 @@ extension AppCoordinator {
     private func resetUserDefatuls() {
         for key in UserDefaults.standard.dictionaryRepresentation().keys {
             UserDefaults.standard.removeObject(forKey: key.description)
-            print(key)
         }
     }
 }

@@ -11,54 +11,73 @@ import SnapKit
 
 final class GymSelectionView: BaseView {
 
-  
-    private let mainImage = UIImageView(image: UIImage(resource: .launchScreen))
-    private let imageView = UIImageView(image: .setAllexSymbol(.location))
     
-    let spaceLabel = TitleLabel(key: .gymTitle, title: "")
-
+    let selectedGym = GymSelectButton()
+    
     let startButton = BaseButton(key: .start)
+    
+    let subTitle = SubTitleLabel()
+    
+    let infoLabel = TertiaryLabel(title: "다녀오신 암장 기록이 없어요!")
+    
+    let tableView = BaseTableView()
     
     
     
     override func configureHierarchy() {
-        self.addSubviews(mainImage, imageView, spaceLabel, startButton)
- 
+        self.addSubviews(selectedGym, subTitle, tableView, infoLabel, startButton)
         
     }
     
     override func configureLayout() {
-        mainImage.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(-80)
-            make.size.equalTo(100)
+        
+        selectedGym.snp.makeConstraints { make in
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(16)
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(50)
         }
         
-        
-        imageView.snp.makeConstraints { make in
-            make.top.equalTo(mainImage.snp.bottom).offset(24)
-            make.trailing.equalTo(spaceLabel.snp.leading).offset(-4)
-            make.size.equalTo(24)
+        subTitle.snp.makeConstraints { make in
+            make.top.equalTo(selectedGym.snp.bottom).offset(16)
+            make.leading.equalToSuperview().offset(16)
+            
         }
         
-        spaceLabel.snp.makeConstraints { make in
-            make.top.equalTo(mainImage.snp.bottom).offset(24)
-            make.centerX.equalToSuperview()
+        infoLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
         
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(subTitle.snp.bottom).offset(16)
+            make.horizontalEdges.equalToSuperview().inset(16)
+            make.bottom.equalTo(startButton.snp.top).offset(-44)
+            
+        }
+        
+
         startButton.snp.makeConstraints { make in
-            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-120)
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-44)
             make.horizontalEdges.equalToSuperview().inset(32)
         }
         
     }
     
     override func configureView() {
-        spaceLabel.isUserInteractionEnabled = true
-        spaceLabel.font = .setAllexFont(.bold_16)
+
+        subTitle.text = "최근 방문 기록"
+        subTitle.font = .setAllexFont(.bold_14)
         
-        imageView.tintColor = .setAllexColor(.textPirmary)
+        
         startButton.isEnabled = false
+        
+        infoLabel.font = .setAllexFont(.regular_14)
+        infoLabel.numberOfLines = 0
+
+        
+        tableView.separatorStyle = .none
+        tableView.rowHeight = 70
+        
+        
     }
     
     
