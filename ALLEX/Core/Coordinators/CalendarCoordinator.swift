@@ -46,6 +46,11 @@ final class CalendarCoordinator: Coordinator {
         
     }
     
+    func dismiss() {
+        
+        navigationController.popViewController(animated: true)
+    }
+    
 
     
 }

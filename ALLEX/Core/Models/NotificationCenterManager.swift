@@ -31,13 +31,13 @@ extension NotificationCenterHandler {
 }
 
 enum NotificationCenterManager: NotificationCenterHandler {
-    case isSelected
-    case isChangedUserInfo
-    case isUpdatedRecored
+    case isGymSelected // 실시간 짐 선택
+    case isChangedUserInfo // 프로필 수정
+    case isUpdatedRecored // 기록 업데이트 (실시간 또는 유저 추가)
     
     var name: Notification.Name {
         switch self {
-        case .isSelected:
+        case .isGymSelected:
             return Notification.Name("Gym.Selected")
         case .isChangedUserInfo:
             return Notification.Name("UserInfo.Changed")

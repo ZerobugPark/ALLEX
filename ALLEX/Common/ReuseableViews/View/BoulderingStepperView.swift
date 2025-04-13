@@ -1,45 +1,49 @@
 //
-//  BoulderingAttemptView.swift
+//  BoulderingStepperView.swift
 //  ALLEX
 //
-//  Created by youngkyun park on 4/3/25.
+//  Created by youngkyun park on 4/12/25.
 //
 
 import UIKit
 
-final class BoulderingAttemptView: BaseView {
+import SnapKit
+
+final class BoulderingStepperView: BaseView {
     
     // MARK: - Properties
     
     private let stackView = UIStackView()
     
-    
     private let colorIndicatorContainer = CustomView()
     let colorIndicator = CustomView()
     
     private let tryCountContainer = CustomView()
-    let tryCountButton = CountButton()
-    let tryMinusButton = UIButton()
+    let tryCountLabel = SubTitleLabel(title: "0")
+    let tryCountButton = CustomStepper()
     
     
     private let successCountContainer = CustomView()
-    let successCountButton = CountButton()
-    let successMinusButton = UIButton()
+    let successCountLabel = SubTitleLabel(title: "0")
+    let successCountButton = CustomStepper()
     
     let gradeLabel = TertiaryLabel(title: "")
+    
+    var test = 0
+    var test1 = 0
     
     override func configureHierarchy() {
         self.addSubview(stackView)
         
         stackView.addArrangedSubviews(colorIndicatorContainer, tryCountContainer, successCountContainer)
-
+        
         colorIndicatorContainer.addSubview(colorIndicator)
         colorIndicator.addSubview(gradeLabel)
         
         
-        tryCountContainer.addSubviews(tryCountButton, tryMinusButton)
+        tryCountContainer.addSubviews(tryCountLabel, tryCountButton)
         
-        successCountContainer.addSubviews(successCountButton, successMinusButton)
+        successCountContainer.addSubviews(successCountLabel, successCountButton)
         
         
     }
@@ -73,17 +77,21 @@ final class BoulderingAttemptView: BaseView {
         }
         
         // Try count button constraints
-        tryCountButton.snp.makeConstraints { make in
-            make.leading.top.bottom.equalToSuperview()
-            make.trailing.equalTo(tryMinusButton.snp.leading)
+        tryCountLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.6)
+            make.height.equalTo(60)
+            make.trailing.equalTo(tryCountButton.snp.leading).offset(-8)
         }
         
         // Try minus button constraints
-        tryMinusButton.snp.makeConstraints { make in
+        tryCountButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-8)
-            make.size.equalTo(24)
+            make.trailing.equalToSuperview().offset(-8)  // 오른쪽 마진 추가
+            make.width.equalTo(40)
+            make.height.equalTo(70)
         }
+        
         
         // Success count container constraints
         successCountContainer.snp.makeConstraints { make in
@@ -92,16 +100,19 @@ final class BoulderingAttemptView: BaseView {
         }
         
         // Success count button constraints
-        successCountButton.snp.makeConstraints { make in
-            make.leading.top.bottom.equalToSuperview()
-            make.trailing.equalTo(successMinusButton.snp.leading)
+        successCountLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.6)
+            make.height.equalTo(60)
+            make.trailing.equalTo(successCountButton.snp.leading).offset(-8)
         }
         
         // Success minus button constraints
-        successMinusButton.snp.makeConstraints { make in
+        successCountButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-8)
-            make.size.equalTo(24)
+            make.trailing.equalToSuperview().offset(-8)  // 오른쪽 마진 추가
+            make.width.equalTo(40)
+            make.height.equalTo(70)
         }
     }
     
@@ -109,21 +120,26 @@ final class BoulderingAttemptView: BaseView {
         
         stackView.axis = .horizontal
         stackView.distribution = .fill
-
+        
         // Color indicator
         colorIndicator.clipsToBounds = true
         
         gradeLabel.font = .setAllexFont(.bold_12)
         gradeLabel.textAlignment = .center
         
-        // Configure minus buttons
-        tryMinusButton.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
-        successMinusButton.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
         
-        tryMinusButton.tintColor = .systemRed
-        successMinusButton.tintColor = .systemRed
+        tryCountLabel.backgroundColor = .setAllexColor(.backGroundTertiary)
+        tryCountLabel.textAlignment = .center
+        tryCountLabel.layer.cornerRadius = 20
+        tryCountLabel.clipsToBounds = true
+        
+        successCountLabel.backgroundColor = .setAllexColor(.backGroundTertiary)
+        successCountLabel.textAlignment = .center
+        successCountLabel.layer.cornerRadius = 20
+        successCountLabel.clipsToBounds = true
+        
+        
     }
-    
-    
-    
 }
+    
+

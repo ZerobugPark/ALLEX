@@ -61,7 +61,7 @@ final class GymListViewModel: BaseViewModel {
         input.selectedGym.drive(with: self) { owner, value in
             owner.sharedData.updateData(data: value, for: String.self)
             
-            NotificationCenterManager.isSelected.post()
+            NotificationCenterManager.isGymSelected.post()
             
             dismiss.accept(())
         }.disposed(by: disposeBag)

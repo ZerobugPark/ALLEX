@@ -8,7 +8,7 @@
 import Foundation
 
 protocol MonthlyClimbingStatisticsRepository: Repository where T == MonthlyClimbingStatistics {
-    func updateMonthlyStatistics(climbCount: Int, successCount: Int, climbTime: Int, lastGrade: String)
+    func updateMonthlyStatistics(climbCount: Int, successCount: Int, climbTime: Int, lastGrade: String, date: Date)
     func getCurrentMonthStatistics() -> MonthlyClimbingStatistics?
 }
 
@@ -27,13 +27,13 @@ final class RealmMonthlyClimbingStatisticsRepository: RealmRepository<MonthlyCli
     }
     
     
-    func updateMonthlyStatistics(climbCount: Int, successCount: Int, climbTime: Int, lastGrade: String) {
+    func updateMonthlyStatistics(climbCount: Int, successCount: Int, climbTime: Int, lastGrade: String, date: Date) {
       
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM"
         formatter.timeZone = TimeZone.current
         
-        let startOfMonth = formatter.string(from: Date()) // "2025-04" 형식으로 저장
+        let startOfMonth = formatter.string(from: date) // "2025-04" 형식으로 저장
 
         do {
             if let existingStatistics = realm.objects(MonthlyClimbingStatistics.self)

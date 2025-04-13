@@ -237,7 +237,7 @@ extension RecordViewModel {
             .reduce(0) { $0 + $1.successCount }
 
     
-        monthlyRepository.updateMonthlyStatistics(climbCount: totalClimbCount, successCount: totalSuccessCount, climbTime: timeMinute, lastGrade: highestGrade?.difficulty ?? "VB")
+        monthlyRepository.updateMonthlyStatistics(climbCount: totalClimbCount, successCount: totalSuccessCount, climbTime: timeMinute, lastGrade: highestGrade?.difficulty ?? "VB", date: Date())
         
         
         

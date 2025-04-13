@@ -22,8 +22,7 @@ final class ResultViewController: BaseViewController<ResultView, ResultViewModel
        
     }
     
-    
-    
+
     override func bind() {
         
         let input = ResultViewModel.Input()
