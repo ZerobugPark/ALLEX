@@ -80,6 +80,8 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         
         navigationItem.rightBarButtonItem = barButtonItem
         
+        mainView.spaceTextField.delegate = self
+        mainView.timeTxetFiled.delegate = self
         
     }
     
@@ -152,6 +154,15 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         view.endEditing(true)
     }
     
+  
+
+    
+}
+
+extension ModifyViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        return false // 입력 차단
+    }
 }
 
 extension ModifyViewController: UICollectionViewDelegateFlowLayout {
