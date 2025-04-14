@@ -18,9 +18,10 @@ final class ResultView: BaseView {
     
     let dateLabel = TitleLabel()
     
+    // 버튼 없이 그냥 수정 할 것
     let spaceDetailButton = SpaceDetialButton()
     
-    private let statisticsLabel = SubTitleLabel(title: "통계")
+    private let statisticsLabel = SubTitleLabel(key: .Info_Statistics, title: "")
     
     
     // 통계 지표 컨테이너
@@ -28,15 +29,15 @@ final class ResultView: BaseView {
         
     
     // 상단 통계 영역 - 2x2 그리드
-    let attemptView = StatView(title: "시도")
-    let completionView = StatView(title: "성공")
-    let rateView = StatView(title: "완등률")
-    let maxLevelView = StatView(title: "최고난이도")
+    let attemptView = StatView(key: .Record_Try)
+    let completionView = StatView(key: .Record_Success)
+    let rateView = StatView(key: .Record_Send)
+    let maxLevelView = StatView(key: .Record_HighestGrade)
     
     
-    private let exerciseTimeLabel = TertiaryLabel(title: "운동시간")
+    private let exerciseTimeLabel = TertiaryLabel(key: .Info_ExerciseTime, title: "")
     let exerciseTimeValue =  SubTitleLabel()
-    private let problemsLabel =  SubTitleLabel(title: "문제")
+    private let routesLabel =  SubTitleLabel(key: .Info_Route, title: "")
     private let problemsStackView = UIStackView()
     
     
@@ -51,7 +52,7 @@ final class ResultView: BaseView {
         statsContainerView.addSubviews(attemptView, completionView, rateView, maxLevelView)
         contentView.addSubviews(exerciseTimeLabel, exerciseTimeValue)
     
-        contentView.addSubviews(problemsLabel, problemsStackView)
+        contentView.addSubviews(routesLabel, problemsStackView)
         
         problemViewArray.forEach {
             problemsStackView.addArrangedSubview($0)
@@ -135,13 +136,13 @@ final class ResultView: BaseView {
         
  
         
-        problemsLabel.snp.makeConstraints { make in
+        routesLabel.snp.makeConstraints { make in
             make.top.equalTo(exerciseTimeValue.snp.bottom).offset(40)
             make.leading.equalToSuperview().offset(20)
         }
         
         problemsStackView.snp.makeConstraints { make in
-            make.top.equalTo(problemsLabel.snp.bottom).offset(15)
+            make.top.equalTo(routesLabel.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
             make.bottom.equalTo(contentView).offset(-30)
@@ -159,7 +160,7 @@ final class ResultView: BaseView {
         exerciseTimeLabel.font = .setAllexFont(.bold_20)
         exerciseTimeValue.font = .setAllexFont(.bold_20)
         
-        problemsLabel.font = .setAllexFont(.bold_16)
+        routesLabel.font = .setAllexFont(.bold_16)
         
         problemsStackView.axis = .vertical
         problemsStackView.spacing = 15

@@ -17,7 +17,7 @@ final class RecordView: BaseView {
     let recordView = RecordEntryTableView()
     
     
-    let saveButton = BaseButton(key: .saveRecord)
+    let saveButton = BaseButton(key: .Button_Save_Record)
     let eyeButton = BaseButton()
     
     

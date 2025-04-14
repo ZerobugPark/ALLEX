@@ -76,25 +76,18 @@ final class ProgressView: UIView {
         
         containerView.backgroundColor = .clear
         
-        
-        levelLabel.text = "V10"
-        levelLabel.textColor = .white
-        levelLabel.font = .systemFont(ofSize: 14, weight: .bold)
+        levelLabel.font = .setAllexFont(.bold_14)
         levelLabel.textAlignment = .center
         levelCircle.layer.cornerRadius = 18
-        levelCircle.backgroundColor = .systemBlue // Add background color
-        // 향상된 프로그레스 바
-
-        progressView.progress = Float.random(in: 0.3...0.9) // 랜덤 진행률
-        progressView.progressTintColor = UIColor(red: 0.92, green: 0.35, blue: 0.35, alpha: 1.0)
+        
+    
+        progressView.progressTintColor = .setAllexColor(.pirmary)
         progressView.trackTintColor = UIColor(red: 0.95, green: 0.75, blue: 0.75, alpha: 1.0)
         progressView.layer.cornerRadius = 6
         progressView.clipsToBounds = true
         progressView.transform = CGAffineTransform(scaleX: 1, y: 2) // 높이 조정
         
-    
-    //    countLabel.text = "\(completions) / \(attempts)"
-        countLabel.font = .systemFont(ofSize: 14)
+        countLabel.font = .setAllexFont(.bold_14)
         countLabel.textAlignment = .right
         
     }

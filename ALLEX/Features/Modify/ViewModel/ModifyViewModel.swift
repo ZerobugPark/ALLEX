@@ -249,21 +249,24 @@ extension ModifyViewModel {
     
     
     private func dateConvertor(_ dateString: String) -> Date {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy. M. d."
-        inputFormatter.locale = Locale(identifier: "en_US_POSIX")
-        inputFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        let dateFormats = [
+            "yyyy. M. d.",
+            "MMM d, yyyy" // 예: "Apr 8, 2025"
+        ]
         
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy. M. d."
-        formatter.locale = Locale(identifier: "en_US_POSIX") // 항상 고정된 포맷 해석
-        formatter.timeZone = TimeZone(secondsFromGMT: 0) // UTC 기준 (Z 시간대)
-        
-        if let date = formatter.date(from: dateString) {
-            return date
-        } else {
-            return Date()
+        for format in dateFormats {
+            let formatter = DateFormatter()
+            formatter.dateFormat = format
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+           
+            if let date = formatter.date(from: dateString) {
+                return date
+            }
         }
+        
+        // 실패 시 현재 시간 반환 (예외 처리 or 경고 로그도 가능)
+        return Date()
     }
     
 }
+

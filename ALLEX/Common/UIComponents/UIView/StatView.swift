@@ -33,10 +33,12 @@ final class StatView: UIView {
         return view
     }()
     
-    init(title: String) {
+
+    
+    init(key: LocalizedKey) {
         super.init(frame: .zero)
         
-        titleLabel.text = title //나중에 키값으로 변경
+        titleLabel.text = key.rawValue.localized(with: "")
         
         addSubview(containerView)
         containerView.addSubview(valueLabel)

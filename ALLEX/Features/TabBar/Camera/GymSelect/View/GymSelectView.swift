@@ -14,18 +14,18 @@ final class GymSelectionView: BaseView {
     
     let selectedGym = GymSelectButton()
     
-    let startButton = BaseButton(key: .start)
+    let startButton = BaseButton(key: .Button_Start_Login)
     
-    let subTitle = SubTitleLabel()
+    let recentLabel = SubTitleLabel(key: .Info_Recent_Gym_Label, title: "")
     
-    let infoLabel = TertiaryLabel(title: "다녀오신 암장 기록이 없어요!")
+    let infoLabel = TertiaryLabel(key: .Info_Recent_Gym_History, title: "")
     
     let tableView = BaseTableView()
     
     
     
     override func configureHierarchy() {
-        self.addSubviews(selectedGym, subTitle, tableView, infoLabel, startButton)
+        self.addSubviews(selectedGym, recentLabel, tableView, infoLabel, startButton)
         
     }
     
@@ -37,7 +37,7 @@ final class GymSelectionView: BaseView {
             make.height.equalTo(50)
         }
         
-        subTitle.snp.makeConstraints { make in
+        recentLabel.snp.makeConstraints { make in
             make.top.equalTo(selectedGym.snp.bottom).offset(16)
             make.leading.equalToSuperview().offset(16)
             
@@ -48,7 +48,7 @@ final class GymSelectionView: BaseView {
         }
         
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(subTitle.snp.bottom).offset(16)
+            make.top.equalTo(recentLabel.snp.bottom).offset(16)
             make.horizontalEdges.equalToSuperview().inset(16)
             make.bottom.equalTo(startButton.snp.top).offset(-44)
             
@@ -64,8 +64,8 @@ final class GymSelectionView: BaseView {
     
     override func configureView() {
 
-        subTitle.text = "최근 방문 기록"
-        subTitle.font = .setAllexFont(.bold_14)
+        
+        recentLabel.font = .setAllexFont(.bold_14)
         
         
         startButton.isEnabled = false
