@@ -11,20 +11,20 @@ import SnapKit
 import Lottie
 
 
+// 실시간 기록시 시간 기록 뷰
 final class TimeRecordView: BaseView {
     
-    
-
     let timeLabel = TertiaryLabel(title: "")
     let timeButton = TimeButton()
     
     let animationImageView = LottieAnimationView(name: "Run")
     
+    // 스와이프 안내 레이블
+    private let infoLabel = TertiaryLabel(key: .Info_SwipeGesture, title: "")
+    
     
     override func configureHierarchy() {
-        self.addSubviews(timeButton, timeLabel, animationImageView)
-        
-        
+        self.addSubviews(timeButton, timeLabel, animationImageView, infoLabel)
     }
     
     override func configureLayout() {
@@ -46,6 +46,11 @@ final class TimeRecordView: BaseView {
             make.centerY.equalTo(self.safeAreaLayoutGuide)
             make.leading.equalTo(timeButton.snp.trailing).offset(12)
         }
+        
+        infoLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(self.safeAreaLayoutGuide)
+            make.trailing.equalTo(self.safeAreaLayoutGuide).offset(-12)
+        }
     }
     
     override func configureView() {
@@ -54,6 +59,7 @@ final class TimeRecordView: BaseView {
         timeLabel.textAlignment = .center
         timeLabel.font = .setAllexFont(.regular_16)
         
+        infoLabel.font = .setAllexFont(.light_12)
         
         self.backgroundColor = .setAllexColor(.backGround)
         self.layer.cornerRadius = 20
@@ -65,6 +71,8 @@ final class TimeRecordView: BaseView {
         
         animationImageView.loopMode = .loop
         animationImageView.play()
+        
+        
         
     }
     

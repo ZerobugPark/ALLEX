@@ -14,7 +14,7 @@ import RxCocoa
 final class ModifyCollectionViewCell: BaseCollectionViewCell {
     
     
-    let bouldering = BoulderingStepperView()
+    let bouldering = ClimbLogUnitView()
     
     
     var disposeBag = DisposeBag()

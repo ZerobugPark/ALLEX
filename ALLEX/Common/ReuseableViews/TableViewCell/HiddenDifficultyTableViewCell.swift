@@ -11,10 +11,11 @@ import RxCocoa
 import RxSwift
 import SnapKit
 
-final class HiddenTableViewCell: BaseTableViewCell {
+// 실시간 난이도 숨김 테이블뷰 셀
+final class HiddenDifficultyTableViewCell: BaseTableViewCell {
     
     // MARK: - Properties
-    let bouldering = BoulderingHiddenList()
+    let bouldering = HiddenDifficultyView()
     
     var disposeBag = DisposeBag()
     
@@ -26,10 +27,8 @@ final class HiddenTableViewCell: BaseTableViewCell {
     override func configureLayout() {
         
         bouldering.snp.makeConstraints { make in
-            make.edges.equalTo(contentView.self.safeAreaLayoutGuide)
-            
+            make.edges.equalTo(contentView.safeAreaLayoutGuide)
         }
-
     }
     
     override func configureView() {
@@ -47,23 +46,10 @@ final class HiddenTableViewCell: BaseTableViewCell {
         
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        contentView.layoutIfNeeded()
-        guard contentView.bounds.width > 0 else { return }
-        
-        bouldering.colorIndicator.layer.cornerRadius = bouldering.colorIndicator.frame.width / 2
-        
-        
-    }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         disposeBag = DisposeBag()
     }
-    
-    
-    
-
     
 }

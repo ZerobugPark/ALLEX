@@ -9,7 +9,7 @@ import UIKit
 
 import SnapKit
 
-final class CountButton: UIButton {
+final class RecordCountButton: UIButton {
 
     // 커스텀 이미지 뷰로 버튼의 이미지를 설정
     private let containerView = CustomView(radius: 20, bgColor: .setAllexColor(.backGroundSecondary))
@@ -31,9 +31,7 @@ final class CountButton: UIButton {
         countLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
-        
-        
-        
+                
         countLabel.textAlignment = .center
         countLabel.font = .setAllexFont(.bold_16)
    
@@ -42,18 +40,6 @@ final class CountButton: UIButton {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // 레이아웃 설정
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // customImageView의 크기와 위치를 설정
-      //  customImageView.frame = bounds // 버튼의 전체 크기를 이미지 뷰의 크기로 설정
-    }
-    
-    
-    
 
-    
     
 }

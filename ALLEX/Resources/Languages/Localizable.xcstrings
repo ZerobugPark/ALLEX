@@ -52,6 +52,23 @@
         }
       }
     },
+    "Info_SwipeGesture" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe right to reveal the Hidden icon"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오른쪽 스와이프시 숨김 버튼이 나옵니다"
+          }
+        }
+      }
+    },
     "Nickname_Title" : {
       "comment" : "닉네임 타이틀 레이블     *누리(세상)에서 널 부르는 특별한 이름",
       "extractionState" : "manual",
@@ -101,6 +118,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기록하기"
+          }
+        }
+      }
+    },
+    "Record_Grade" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grade"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "난이도"
+          }
+        }
+      }
+    },
+    "Record_Success" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Success"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "성공"
+          }
+        }
+      }
+    },
+    "Record_Try" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시도"
           }
         }
       }

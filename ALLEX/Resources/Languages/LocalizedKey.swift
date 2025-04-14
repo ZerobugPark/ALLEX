@@ -25,6 +25,16 @@ enum LocalizedKey: String {
     case userId = "User_ID"
     case greeting = "Greeting"
     case deleteInfo = "Delete_Info"
+    
+    
+    // 안내 관련
+    case Info_SwipeGesture = "Info_SwipeGesture"
+    
+    
+    // 기록 관련
+    case Record_Grade = "Record_Grade"
+    case Record_Try = "Record_Try"
+    case Record_Success = "Record_Success"
 }
 
 
