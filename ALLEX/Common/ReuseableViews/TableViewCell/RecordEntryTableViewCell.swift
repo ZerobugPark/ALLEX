@@ -7,24 +7,14 @@
 
 import UIKit
 
+import RxCocoa
+import RxSwift
 import SnapKit
 
-import RxSwift
-import RxCocoa
+// 실시간 기록 테이블뷰 셀
+final class RecordEntryTableViewCell: BaseTableViewCell {
 
-enum ButtonAction {
-    case addButton
-    case reduceButton
-}
-
-
-
-final class RecordTableViewCell: BaseTableViewCell {
-    
-    // MARK: - Properties
-    
-
-    let bouldering = BoulderingAttemptView()
+    let bouldering = RecordEntryView()
     
     var disposeBag = DisposeBag()
     
@@ -50,9 +40,7 @@ final class RecordTableViewCell: BaseTableViewCell {
         setObservable()
     }
 
-    
-    
-    
+ 
     func setupData(_ data: BoulderingAttempt) {
         bouldering.colorIndicator.backgroundColor = .setBoulderColor(from: data.color)
         bouldering.gradeLabel.text = data.difficulty
@@ -63,28 +51,16 @@ final class RecordTableViewCell: BaseTableViewCell {
         
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        contentView.layoutIfNeeded()
-        guard contentView.bounds.width > 0 else { return }
-        
-        bouldering.colorIndicator.layer.cornerRadius = bouldering.colorIndicator.frame.width / 2
-        
-        
-    }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         disposeBag = DisposeBag()
     }
-    
-    
-    
 
     
 }
 
-extension RecordTableViewCell {
+extension RecordEntryTableViewCell {
     
     private func setObservable() {
         

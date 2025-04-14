@@ -9,6 +9,7 @@ import UIKit
 
 import SnapKit
 
+// 실시간 클라이밍 기록 중 히든 테이블 뷰
 final class HiddenTableView: BaseView {
 
     
@@ -25,14 +26,6 @@ final class HiddenTableView: BaseView {
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-    }
-
-    override func configureView() {
-        
-//        tableView.separatorStyle = .none
-//        tableView.rowHeight = 70
-//        tableView.bounces = false
-//        tableView.showsVerticalScrollIndicator = false
     }
 
 }

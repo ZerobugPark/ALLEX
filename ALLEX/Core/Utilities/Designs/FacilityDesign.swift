@@ -32,7 +32,7 @@ extension UIImage {
     }
     
     
-    static func setSymbol(from name: String) -> UIImage? {
+    static func setFacilitySymbol(from name: String) -> UIImage? {
         let matchedFacility = FacilityDesign.from(name)
         return matchedFacility?.image
     }

@@ -118,7 +118,8 @@ final class CalendarView: BaseView {
             make.top.equalToSuperview()
             make.horizontalEdges.equalToSuperview()
             make.width.equalTo(scrollView.snp.width)
-            make.bottom.equalTo(recordButton.snp.bottom).offset(16)
+            make.bottom.equalTo(self.safeAreaLayoutGuide)
+            //make.bottom.equalTo(recordButton.snp.bottom).offset(16)
         }
 
         scrollView.contentSize = CGSize(width: self.frame.width, height: totalHeight) // ✅ 올바른 크기 지정

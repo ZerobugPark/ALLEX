@@ -8,20 +8,22 @@
 import UIKit
 import SnapKit
 
-class CustomStepper: BaseView {
+// 수동 기록 입력시, 횟수 입력 버튼
+final class StepperControl: BaseView {
     
     // MARK: - Properties
     private let buttonContainer = UIView()
     let minusButton = UIButton()
     let plusButton = UIButton()
 
+    private let buttonWidht = 40
+    private let buttonHeigth = 25
+    private let buttonOffset = 16
 
     override func configureHierarchy() {
-        
-        
+
         self.addSubview(buttonContainer)
         buttonContainer.addSubviews(plusButton, minusButton)
-        
     }
     
     override func configureLayout() {
@@ -30,18 +32,16 @@ class CustomStepper: BaseView {
             make.edges.equalToSuperview()            
         }
         
-
         plusButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview().offset(-16)
-            make.width.equalTo(40)
-            make.height.equalTo(25)
+            make.centerY.equalToSuperview().offset(-buttonOffset)
+            make.width.equalTo(buttonWidht)
+            make.height.equalTo(buttonHeigth)
         }
         
-
         minusButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview().offset(16)
-            make.width.equalTo(40)
-            make.height.equalTo(25)
+            make.centerY.equalToSuperview().offset(buttonOffset)
+            make.width.equalTo(buttonWidht)
+            make.height.equalTo(buttonHeigth)
             
         }
     }
@@ -53,20 +53,18 @@ class CustomStepper: BaseView {
 
         // 플러스 버튼 설정 (위)
         plusButton.setTitle("+", for: .normal)
-        plusButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        plusButton.backgroundColor = .darkGray
-        
-        plusButton.layer.cornerRadius = 12
-      
         
         // 마이너스 버튼 설정 (아래)
         minusButton.setTitle("-", for: .normal)
-        minusButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        minusButton.backgroundColor = .darkGray
-        minusButton.layer.cornerRadius = 12
-      
+        
+        [plusButton, minusButton].forEach {
+            $0.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+            $0.backgroundColor = .darkGray
+            $0.layer.cornerRadius = 12
+        }
+
+
     }
-    
 
   
 }

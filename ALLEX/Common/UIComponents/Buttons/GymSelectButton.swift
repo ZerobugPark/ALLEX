@@ -11,8 +11,7 @@ final class GymSelectButton: UIButton {
     
     // 커스텀 이미지 뷰로 버튼의 이미지를 설정
     private let customImageView = UIImageView(image: UIImage(resource: .carabiner))
-    let nameLabel = TitleLabel()
-
+    let nameLabel = TitleLabel(key: .Info_Gym_Title, title: "")
     init() {
         super.init(frame: .zero)
         
@@ -38,8 +37,6 @@ final class GymSelectButton: UIButton {
         customImageView.contentMode = .scaleAspectFit
         
         nameLabel.font = .setAllexFont(.bold_16)
-        nameLabel.text = "클라이밍장을 선택해주세요."
-        
 
         
         

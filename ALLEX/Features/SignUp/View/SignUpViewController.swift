@@ -40,10 +40,10 @@ final class SignUpViewController: BaseViewController<SignUpView, SignUpViewModel
             
             if value < 2 {
                 
-                owner.mainView.profile.infoLabel.text = LocalizedKey.unVerifiedNickName.rawValue.localized(with: "")
+                owner.mainView.profile.infoLabel.text = LocalizedKey.Setting_UnVerified_NickName.rawValue.localized(with: "")
             } else {
                 
-                owner.mainView.profile.infoLabel.text = LocalizedKey.verifiedNickName.rawValue.localized(with: "")
+                owner.mainView.profile.infoLabel.text = LocalizedKey.Setting_Verified_NickName.rawValue.localized(with: "")
             }
             owner.mainView.profile.infoLabel.updateTextColorBasedOnLength(count: value)
         }.disposed(by: disposeBag)

@@ -1,19 +1,36 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Delete_Info" : {
+    "Button_Save_Record" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Press and hold the button to delete it."
+            "value" : "Save"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "버튼을 길게 눌러 삭제하세요"
+            "value" : "저장하기"
+          }
+        }
+      }
+    },
+    "Button_Start_Login" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Getting started"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시작하기"
           }
         }
       }
@@ -35,24 +52,297 @@
         }
       }
     },
-    "Gym_Title" : {
+    "Info_ExerciseTime" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pick a Gym"
+            "value" : "Exercise Time"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오늘의 클픽!"
+            "value" : "운동시간"
           }
         }
       }
     },
-    "Nickname_Title" : {
+    "Info_Gym_Title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Where are you climbing today?"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클라이밍장을 선택해주세요!"
+          }
+        }
+      }
+    },
+    "Info_Recent_Gym_History" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You don’t have any climbing gym records yet"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다녀오신 암장 기록이 없어요"
+          }
+        }
+      }
+    },
+    "Info_Recent_Gym_Label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent Visits"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 방문 기록"
+          }
+        }
+      }
+    },
+    "Info_Route" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Route"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "결과"
+          }
+        }
+      }
+    },
+    "Info_Statistics" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistics"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "통계"
+          }
+        }
+      }
+    },
+    "Info_SwipeGesture" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe right to reveal the Hidden icon"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오른쪽 스와이프시 숨김 버튼이 나옵니다"
+          }
+        }
+      }
+    },
+    "Info_Video_Record" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Real-time Recording"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실시간 영상"
+          }
+        }
+      }
+    },
+    "Info_Video_RecordSub" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helps you shoot, save videos in real time"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실시간으로 비디오를 촬영 및 저장"
+          }
+        }
+      }
+    },
+    "Info_Write_Record" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Real-time writing"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실시간 기록"
+          }
+        }
+      }
+    },
+    "Info_Write_RecordSub" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can register climbing records in real time I'll measure my workout time!"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실시간으로 등반 기록해요! 운동 시간은 제가 측정할게요"
+          }
+        }
+      }
+    },
+    "PlaceHolder_SearchBar" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which climbing gym are you looking for?"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "어떤 클라이밍 장을 찾으시나요?"
+          }
+        }
+      }
+    },
+    "Record_Grade" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grade"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "난이도"
+          }
+        }
+      }
+    },
+    "Record_HighestGrade" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Highest Grade"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최고 난이도"
+          }
+        }
+      }
+    },
+    "Record_Send" : {
+      "comment" : "성공률 (클라이밍에서는 성공을 send라고 한다네..)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Rate"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완등률"
+          }
+        }
+      }
+    },
+    "Record_Success" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Success"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "성공"
+          }
+        }
+      }
+    },
+    "Record_Try" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시도"
+          }
+        }
+      }
+    },
+    "Setting_Nickname_Title" : {
       "comment" : "닉네임 타이틀 레이블     *누리(세상)에서 널 부르는 특별한 이름",
       "extractionState" : "manual",
       "localizations" : {
@@ -70,7 +360,7 @@
         }
       }
     },
-    "Profile_Title" : {
+    "Setting_ProfileTitle" : {
       "comment" : "온보딩 프로필 설정 타이틀",
       "extractionState" : "manual",
       "localizations" : {
@@ -88,36 +378,55 @@
         }
       }
     },
-    "Record_Button" : {
+    "Setting_Start_Date" : {
+      "comment" : "클라이밍 시작한 날짜",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Record"
+            "value" : "My climbing journey began on"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "기록하기"
+            "value" : "나의 첫 클라이밍 시작"
           }
         }
       }
     },
-    "Save_Record" : {
+    "Setting_UnVerified_NickName" : {
+      "comment" : "닉네임 유효성검사",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Save"
+            "value" : "Minimum two characters required"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "저장하기"
+            "value" : "두 글자 이상 입력해주세요"
+          }
+        }
+      }
+    },
+    "Setting_Verified_NickName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "available nickname"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용 가능한 누리이름 입니다."
           }
         }
       }
@@ -140,59 +449,6 @@
         }
       }
     },
-    "Start_Button" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Getting started"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "시작하기"
-          }
-        }
-      }
-    },
-    "Start_Date" : {
-      "comment" : "클라이밍 시작한 날짜",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My climbing journey began on"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "나의 첫 클라이밍 시작"
-          }
-        }
-      }
-    },
-    "UnVerified_NickName" : {
-      "comment" : "닉네임 유효성검사",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Minimum two characters required"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "두 글자 이상 입력해주세요"
-          }
-        }
-      }
-    },
     "User_ID" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -206,91 +462,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "클라이밍과 함께한 지 %d일 째!"
-          }
-        }
-      }
-    },
-    "Verified_NickName" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "available nickname"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "사용 가능한 누리이름 입니다."
-          }
-        }
-      }
-    },
-    "Video_Record" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Real-time Recording"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "실시간 영상"
-          }
-        }
-      }
-    },
-    "Video_RecordSub" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Helps you shoot, save videos in real time"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "실시간으로 비디오를 촬영 및 저장"
-          }
-        }
-      }
-    },
-    "Write_Record" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Real-time writing"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "실시간 기록"
-          }
-        }
-      }
-    },
-    "Write_RecordSub" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You can register climbing records in real time I'll measure my workout time!"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "실시간으로 등반 기록해요! 운동 시간은 제가 측정할게요"
           }
         }
       }
