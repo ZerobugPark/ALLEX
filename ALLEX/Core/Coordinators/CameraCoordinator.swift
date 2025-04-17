@@ -88,22 +88,7 @@ final class CameraCoordinator: Coordinator {
         navigationController.present(vc, animated: true)
     }
     
-//    private func showCamera() {
-//        
-//        guard let navigationController = extractNavigationController() else {
-//            handleNavigationControllerMissing()
-//            return
-//        }
-//        
-//        
-//        let vm = VideoCaptureViewModel(sharedData)
-//        let vc = VideoCaptureViewController(viewModel: vm)
-//        vc.coordinator = self
-//        vc.modalPresentationStyle = .fullScreen
-//        navigationController.present(vc, animated: true)
-//        
-//        
-//    }
+
     func showCamera() {
         guard let navigationController = extractNavigationController() else {
             handleNavigationControllerMissing()
