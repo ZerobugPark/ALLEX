@@ -22,17 +22,14 @@ final class ProfileSettingViewController: BaseViewController<SignUpView, SignUpV
     
     override func bind() {
         
-        let edited = mainView.profile.nicknameTextField.rx.controlEvent(.editingDidEnd).withLatestFrom(mainView.profile.nicknameTextField.rx.text.orEmpty)
-        
         let startButton = mainView.profile.startButton.rx.tap.withLatestFrom(Observable.combineLatest(mainView.profile.nicknameTextField.rx.text.orEmpty, mainView.profile.dateTextField.rx.text.orEmpty))
         
         let input = SignUpViewModel.Input(currentText: mainView.profile.nicknameTextField.rx.text.orEmpty,
-                                          edited: edited,
-                                          startButtonTapped: startButton)
+                                          signUpTapped: startButton)
         
         let output = viewModel.transform(input: input)
         
-        output.changedCountLable.drive(with: self) { owner, value in
+        output.nicknameLength.drive(with: self) { owner, value in
             
             owner.mainView.profile.countLabel.text = "\(value)/7"
             
@@ -48,7 +45,7 @@ final class ProfileSettingViewController: BaseViewController<SignUpView, SignUpV
         
         
         
-        output.vaildStatus.drive(with: self) { owner, status in
+        output.isNicknameValid.drive(with: self) { owner, status in
             
             owner.mainView.profile.startButton.isEnabled = status
             
