@@ -51,4 +51,3 @@ class DetailInfoViewController: BaseViewController<ResultView, DetailInfoViewMod
         
     }
 }
-

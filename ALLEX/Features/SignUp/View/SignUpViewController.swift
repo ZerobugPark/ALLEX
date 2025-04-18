@@ -66,6 +66,10 @@ final class SignUpViewController: BaseViewController<SignUpView, SignUpViewModel
         self.view.endEditing(true)
     }
     
+    deinit {
+        coordinator = nil
+        print("\(description) Deinit")
+    }
     
 }
 

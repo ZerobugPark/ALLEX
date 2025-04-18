@@ -71,11 +71,8 @@ final class ResultViewModel: BaseViewModel {
     
     func transform(input: Input) -> Output {
         
-        
         let setupUI = BehaviorRelay<ResultData>(value: result)
-        
-        
-        
+   
         return Output(setupUI: setupUI.asDriver(onErrorJustReturn: empty))
     }
     
@@ -114,8 +111,8 @@ extension ResultViewModel {
         }
         
         resultData.bestGrade = data.bestGrade
-        resultData.date = convertToDataFormat(data.climbDate)
-        resultData.excersieTime = convertToTimeFormat(data.climbTime)
+        resultData.date = data.climbDate.toFormattedString()
+        resultData.excersieTime = data.climbTime.toTimeFormat()
         resultData.totalSuccessCount = String(data.totalSuccess)
         resultData.totalTryCount = String(data.totalClimb)
         resultData.totalSuccessRate = String(format: "%.0f%%", data.successRate)

@@ -45,7 +45,6 @@ final class CalendarViewModel: BaseViewModel {
         var list: [String] = []
         
     }
- 
     
     var disposeBag =  DisposeBag()
     
@@ -53,41 +52,59 @@ final class CalendarViewModel: BaseViewModel {
     
     private var currentDateList: [ClimbingInfo] = []
     
+    // 캐싱을 위한 딕셔너리
+    private var gymInfoCache: [String: Gym] = [:]
+    
+    
     init(_ sharedData: SharedDataModel) {
         self.sharedData = sharedData
+        self.cacheGymInfo()
     }
-    
+
     
     func transform(input: Input) -> Output {
         
         let setupList = BehaviorRelay(value: currentDateList)
         let eventList = BehaviorRelay(value: CalendarList())
-       
+        
+        // 현재 날짜 데이터 로드 및 캘린더 설정
+        let loadCurrentData = { [weak self] (date: Date) in
+            guard let self = self else { return }
+            
+            self.currentDateList = self.formatClimbingData(for: date)
+            setupList.accept(self.currentDateList)
+        }
+        
+        // 월 변경 처리
+        let handleMonthChange = { [weak self] (year: Int, month: Int) in
+            guard let self = self else { return }
+            
+            let data = self.calendarList(newYear: year, newMonth: month)
+            eventList.accept(data)
+        }
+        
+        
+        
         input.viewDidLoad.bind(with: self) { owner, _ in
             
-            
-            owner.currentDateList = owner.formatData(for: Date())
+            owner.cacheGymInfo()
             
             let date = owner.getCurrentYearAndMonth()
-            let data = owner.calendarList(newYear: date.year, newMonth: date.month)
-            
-            eventList.accept(data)
-            setupList.accept(owner.currentDateList)
-            
-            
+            handleMonthChange(date.year, date.month)
+            loadCurrentData(Date())
+   
+        
         }.disposed(by: disposeBag)
         
-        input.changedMonth.bind(with: self) { owner, value in
-            
-            let data = owner.calendarList(newYear: value.0, newMonth: value.1)
-            eventList.accept(data)
-            
-        }.disposed(by: disposeBag)
+        input.changedMonth
+            .bind(with: self) { owner, date in
+                let (year, month) = date
+                handleMonthChange(year, month)
+                
+            }.disposed(by: disposeBag)
         
         input.currentDate.bind(with: self) { owner, date in
-            
-            owner.currentDateList = owner.formatData(for: date)
-            setupList.accept(owner.currentDateList)
+            loadCurrentData(date)
         }.disposed(by: disposeBag)
         
         return Output(setupList: setupList.asDriver(onErrorJustReturn: []), eventList: eventList.asDriver(onErrorJustReturn: CalendarList()))
@@ -99,7 +116,18 @@ final class CalendarViewModel: BaseViewModel {
     
 }
 
+
+// MARK: Logic Function
 extension CalendarViewModel {
+    
+    
+    private func cacheGymInfo() {
+        guard let gymList = sharedData.getData(for: Gym.self) else { return }
+        for gym in gymList {
+            gymInfoCache[gym.gymID] = gym
+        }
+    }
+    
     
     func getCurrentYearAndMonth() -> (year: Int, month: Int) {
         let calendar = Calendar.current
@@ -124,80 +152,32 @@ extension CalendarViewModel {
         
     }
     
-    func formatData(for date: Date) -> [ClimbingInfo] {
+    func formatClimbingData(for date: Date) -> [ClimbingInfo] {
+        let climbingElements = repository.findBoulderingList(for: date)
         
-        let data = repository.findBoulderingList(for: date)
-        
-        var resultData: [ClimbingInfo]  = []
-        
-        
-        if data.isEmpty {
+        if climbingElements.isEmpty {
             return []
         }
         
-        
-        for element in data {
-            
-            var result = ClimbingInfo()
-            
-            let gymInfo = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == element.gymId }
-            
-            
-            let languageCode = (Locale.preferredLanguages.first ?? "en").split(separator: "-").first ?? ""
-            
-            if languageCode == "en" {
-                result.gym = gymInfo[0].nameEn
-            } else {
-                result.gym = gymInfo[0].nameKo
+        return climbingElements.compactMap { climbingElement -> ClimbingInfo?  in
+            guard let gym = gymInfoCache[climbingElement.gymId] else {
+                return nil
             }
-            
-            
-            result.climbDate = convertToDataFormat(element.climbDate)
-            result.excersieTime = convertToTimeFormat(element.climbTime)
 
+            let (totalClimbCount, totalSuccessCount) = getTotalCounts(from: climbingElement)
             
-            let (totalClimbCount, totalSuccessCount) = getTotalCounts(from: element)
-            result.totalClimbCount = totalClimbCount
-            result.totalSuccessCount = totalSuccessCount
-            result.id = element.id
-            resultData.append(result)
+            return ClimbingInfo(
+                id: climbingElement.id,
+                gym: Locale.preferredLanguageCode == "en" ? gym.nameEn : gym.nameKo,
+                excersieTime: climbingElement.climbTime.toTimeFormat(),
+                climbDate: climbingElement.climbDate.toFormattedString(),
+                totalClimbCount: totalClimbCount,
+                totalSuccessCount: totalSuccessCount
+            )
         }
-        
-      
+    }
 
-        return resultData
-    }
     
-    private func convertToDataFormat(_ date: Date) -> String {
-        
-        
-        let dateFormatter = DateFormatter()
-        
-        // 현재 로케일 및 시간대에 맞게 설정
-        dateFormatter.locale = Locale.current
-        dateFormatter.timeZone = TimeZone.current
-        
-        // 원하는 포맷 설정 (yyyy-MM-dd <HH:mm> EEEE -> 요일 포함)
-        dateFormatter.dateFormat = "yyyy-MM-dd EEEE"
-        
-        // Date를 원하는 포맷으로 변환
-        let formattedDate = dateFormatter.string(from: date)
-        
-        return formattedDate
-    }
-    
-    
-    private func convertToTimeFormat(_ time: Int) -> String {
-        
-        // 시와 분으로 변환
-        let hours = time / 60
-        let minutes = time % 60
-        
-        // 두 자릿수로 포맷팅
-        return String(format: "%02d:%02d", hours, minutes)
-        
-        
-    }
     
     private func getTotalCounts(from boulderingList: BoulderingList) -> (totalClimb: Int, totalSuccess: Int) {
         return boulderingList.routeResults

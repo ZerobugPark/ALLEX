@@ -186,11 +186,7 @@ extension ResultTableViewCell {
         
         let gameView = createGameResultView(game: info)
         bowlingStatusContainer.addArrangedSubview(gameView)
-        // Add game results
-//        for game in info.routeResults {
-//            let gameView = createGameResultView(game: game)
-//            bowlingStatusContainer.addArrangedSubview(gameView)
-//        }
+
     }
     
     private func createGameResultView(game: ClimbingInfo) -> UIView {
