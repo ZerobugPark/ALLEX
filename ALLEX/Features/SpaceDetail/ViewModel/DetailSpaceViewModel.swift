@@ -80,7 +80,7 @@ extension DetailSpaceViewModel {
         let grades = brandInfo.map { BoulderingGrade(difficulty: $0.Difficulty, color: $0.Color) }
         let gradeItems = grades.map { GymInfoSectionItem.boulderingGradeItem($0) }
         let boulderingGradeSection = GymInfoSectionModel(
-            section: .boulderingGrade(title: "암장 난이도"),
+            section: .boulderingGrade(title: LocalizedKey.Gym_Info_Grade.rawValue.localized(with: "")),
             items: gradeItems
         )
         
@@ -90,7 +90,7 @@ extension DetailSpaceViewModel {
         let facilities = gymInfo.facilities.map { FacilityInfo(facility: $0) }
         let facilityItems = facilities.map { GymInfoSectionItem.facilityItem($0) }
         let facilitySection = GymInfoSectionModel(
-            section: .facilityInfo(title: "시설 정보"),
+            section: .facilityInfo(title:  LocalizedKey.Gym_Info_facility.rawValue.localized(with: "")),
             items: facilityItems
         )
         
@@ -98,7 +98,7 @@ extension DetailSpaceViewModel {
         // 푸터 섹션
         let footerSection = GymInfoSectionModel(
             section: .footer,
-            items: [.footerItem("정보 수정 요청하기")]
+            items: [.footerItem(LocalizedKey.Gym_Info_request_modify.rawValue.localized(with: ""))]
         )
         
         // 모든 섹션 반환

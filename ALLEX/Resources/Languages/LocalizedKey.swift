@@ -50,6 +50,12 @@ enum LocalizedKey: String {
     case Info_Recent_Gym_Label = "Info_Recent_Gym_Label"
     
     
+    // 시설 정보 관려
+    case Gym_Info_facility = "Gym_Info_facility"
+    case Gym_Info_Grade = "Gym_Info_Grade"
+    case Gym_Info_request_modify = "Gym_Info_request_modify"
+    
+    
     // 기록 관련
     case Record_Grade = "Record_Grade"
     case Record_Try = "Record_Try"

@@ -13,8 +13,6 @@ import RxSwift
 
 final class ResultViewController: BaseViewController<ResultView, ResultViewModel> {
     
-    
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -62,7 +60,6 @@ final class ResultViewController: BaseViewController<ResultView, ResultViewModel
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = false
-        mainView.layoutIfNeeded()
     }
 }
 

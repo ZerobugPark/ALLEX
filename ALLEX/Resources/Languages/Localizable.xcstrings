@@ -52,6 +52,57 @@
         }
       }
     },
+    "Gym_Info_facility" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Facility"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시설 정보"
+          }
+        }
+      }
+    },
+    "Gym_Info_Grade" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gym Grade"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "암장 난이도"
+          }
+        }
+      }
+    },
+    "Gym_Info_request_modify" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request to modify information"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정보 수정 요청하기"
+          }
+        }
+      }
+    },
     "Info_ExerciseTime" : {
       "extractionState" : "manual",
       "localizations" : {
