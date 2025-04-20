@@ -75,6 +75,8 @@ final class RealmClimbingResultRepository: RealmRepository<ClimbingResultTable>,
         return uniqueDateStrings.sorted() // 정렬된 배열로 반환
     }
     
+    
+    //선택한 클라이밍 기록
     func findBoulderingSelectedList(by id: ObjectId) -> BoulderingList? {
         
         

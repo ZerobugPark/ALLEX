@@ -83,7 +83,6 @@ final class DetailSpaceView: BaseView {
                 
                 // Create section
                 let section = NSCollectionLayoutSection(group: group)
-           //     section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
                 
                 // Add header
                 let headerSize = NSCollectionLayoutSize(

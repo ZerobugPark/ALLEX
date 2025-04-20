@@ -9,7 +9,6 @@ import Foundation
 import RxSwift
 
 protocol GoogleSheetRepository {
-    //func fetchGoogleData() async throws -> [GoogleSheetData]
     func callRequest() -> Single<Result<[GoogleSheetData], NetworkError>>
     
 }

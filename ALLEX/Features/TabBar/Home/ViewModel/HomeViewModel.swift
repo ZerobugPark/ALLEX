@@ -124,6 +124,8 @@ final class HomeViewModel: BaseViewModel {
 }
 
 
+// MARK: Logic Function
+
 extension HomeViewModel {
     
     
@@ -134,7 +136,7 @@ extension HomeViewModel {
         let date = LocalizedKey.userId.rawValue.localized(with: (daysBetween(startDate, Date()) + 1))
         let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)
         
-        return HomeData(nickName: nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: String(format: "%.0f%%", data?.sucessRate ?? 0), totalTime: convertToTimeFormat(data?.totalClimbTime ?? 0), bestGrade: data?.lastGrade ?? "")
+        return HomeData(nickName: nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: String(format: "%.0f%%", data?.sucessRate ?? 0), totalTime: (data?.totalClimbTime ?? 0).toTimeFormat(), bestGrade: data?.lastGrade ?? "")
     }
     
     func convertToGyms<T: Mappable>(from googleSheetData: GoogleSheetData, type: T.Type) -> [T] {
@@ -171,19 +173,6 @@ extension HomeViewModel {
         return components.day ?? 0
     }
     
-    
-    private func convertToTimeFormat(_ time: Int) -> String {
-        
-        // 시와 분으로 변환
-        let hours = time / 60
-        let minutes = time % 60
-        
-        // 두 자릿수로 포맷팅
-        return String(format: "%02d:%02d", hours, minutes)
-        
-        
-    }
-    
-    
+
     
 }

@@ -12,7 +12,7 @@ import SnapKit
 final class ProfileView: BaseView {
     
     // MARK: - Properties
-    let tableView = UITableView(frame: .zero, style: .insetGrouped)
+    let tableView = BaseTableView(frame: .zero, style: .insetGrouped)
     
     let profileButton = ProfileButton()
     
@@ -38,14 +38,10 @@ final class ProfileView: BaseView {
   
 
     }
-    
+   
     override func configureView() {
         tableView.separatorStyle = .singleLine
-        tableView.bounces = false
-        tableView.showsVerticalScrollIndicator = false
-        tableView.backgroundColor = .setAllexColor(.backGround)
-    
-
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
         tableView.separatorColor = UIColor.darkGray.withAlphaComponent(0.5)
             

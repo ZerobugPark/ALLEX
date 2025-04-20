@@ -72,6 +72,7 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         
         
         mainView.tableView.rx.modelSelected(ClimbingInfo.self).bind(with: self) { owner, value in
+           
             owner.coordinator?.showDetail(id: value.id)
         }.disposed(by: disposeBag)
         
@@ -88,9 +89,6 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         print("\(description) Deinit")
     }
     
-    
-   
-
     
 }
 
