@@ -11,7 +11,15 @@ import Foundation
     
     let key: String
     let empty: T
+    let defaults: UserDefaults
     
+    init(key: String, empty: T, useAppGroup: Bool = false) {
+        self.key = key
+        self.empty = empty
+        self.defaults = useAppGroup
+            ? UserDefaults(suiteName: "group.Allex.zerobugPark")!
+            : .standard
+    }
     
     var wrappedValue: T {
         get {
@@ -25,7 +33,7 @@ import Foundation
 
 enum UserDefaultManager {
     enum Key: String {
-        case isLoggedIn, nickname, startDate
+        case isLoggedIn, nickname, startDate, latestGrade
     }
     
     @AllexUserDefaultManager(key: Key.isLoggedIn.rawValue, empty: false)
@@ -34,10 +42,12 @@ enum UserDefaultManager {
     @AllexUserDefaultManager(key: Key.nickname.rawValue, empty: "")
     static var nickname
     
-    // rice, water
     @AllexUserDefaultManager(key: Key.startDate.rawValue, empty: "")
     static var startDate
     
+    
+    @AllexUserDefaultManager(key: Key.latestGrade.rawValue, empty: "", useAppGroup: true)
+    static var latestGrade
    
     
 }

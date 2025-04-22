@@ -198,6 +198,70 @@ final class RecordViewModel: BaseViewModel {
 extension RecordViewModel {
     
     func savedData() {
+        // 1. 필요한 데이터 준비
+        let info = sharedData.getData(for: String.self)!
+        let brandId = info[0]
+        let gymId = info[1]
+        let timeMinute = timeCount / 60
+        let currentDate = Date()
+        
+        // 2. 통계 계산 (한 번의 순회로 여러 값 계산)
+        var totalClimbCount = 0
+        var totalSuccessCount = 0
+        let bestGrade = gymGradeList
+            .filter { grade in
+                // 시도 및 성공 횟수 계산
+                if grade.tryCount > 0 {
+                    totalClimbCount += grade.tryCount
+                }
+                if grade.successCount > 0 {
+                    totalSuccessCount += grade.successCount
+                    return true  // 성공한 항목만 반환
+                }
+                return false
+            }
+            .max(by: { $0.gradeLevel < $1.gradeLevel })
+        
+        let bestGradeDifficulty = bestGrade?.difficulty ?? "VB"
+        
+        // 위젯용 최신 데이터 그레이드 저장
+        UserDefaultManager.latestGrade = bestGradeDifficulty
+        
+        // 3. 결과 데이터 변환
+        let routeResults = gymGradeList.map { element in
+            RouteResult(
+                level: element.gradeLevel,
+                color: element.color,
+                difficulty: element.difficulty,
+                totalClimbCount: element.tryCount,
+                totalSuccessCount: element.successCount
+            )
+        }
+        
+        // 4. 데이터 저장
+        let boulderingList = BoulderingList(
+            brandId: brandId,
+            gymId: gymId,
+            climbTime: timeMinute,
+            climbDate: currentDate,
+            bestGrade: bestGradeDifficulty,
+            routeResults: routeResults
+        )
+        
+        let data = ClimbingResultTable(boulderingLists: [boulderingList])
+        repository.create(data)
+        
+        // 5. 월간 통계 업데이트
+        monthlyRepository.updateMonthlyStatistics(
+            climbCount: totalClimbCount,
+            successCount: totalSuccessCount,
+            climbTime: timeMinute,
+            lastGrade: bestGradeDifficulty,
+            date: currentDate
+        )
+    }
+    
+    func savedData2() {
         
         
         var result: [RouteResult] = []
@@ -239,7 +303,7 @@ extension RecordViewModel {
     
         monthlyRepository.updateMonthlyStatistics(climbCount: totalClimbCount, successCount: totalSuccessCount, climbTime: timeMinute, lastGrade: highestGrade?.difficulty ?? "VB", date: Date())
         
-        
+     
         
         
     }

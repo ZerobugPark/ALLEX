@@ -157,7 +157,7 @@ extension HomeViewModel {
         for format in formats {
             formatter.dateFormat = format
             if let date = formatter.date(from: dateString) {
-                print(date)
+                //print(date)
                 return date
             }
         }

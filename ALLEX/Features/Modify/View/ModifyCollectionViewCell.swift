@@ -39,7 +39,7 @@ final class ModifyCollectionViewCell: BaseCollectionViewCell {
         bouldering.backgroundColor = .setAllexColor(.backGroundSecondary)
     }
     
-    func setupData(_ data: BoulderingWithCount) {
+    func setupData(_ data: BoulderingAttempt) {
         bouldering.colorIndicator.backgroundColor = .setBoulderColor(from: data.color)
         bouldering.gradeLabel.text = data.difficulty
         bouldering.gradeLabel.textColor = .setAllexColor(.routeColor)

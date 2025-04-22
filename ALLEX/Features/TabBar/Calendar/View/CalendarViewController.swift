@@ -176,7 +176,7 @@ extension CalendarViewController: UICalendarViewDelegate {
         } != nil
         
         if hasEvent {
-            print("✅ 이벤트 있음: \(dateComponents)")
+            //print("✅ 이벤트 있음: \(dateComponents)")
             return UICalendarView.Decoration.customView {
                 let view = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 6))
                 view.backgroundColor = .red
@@ -184,7 +184,7 @@ extension CalendarViewController: UICalendarViewDelegate {
                 return view
             }
         } else {
-            print("❌ 이벤트 없음: \(dateComponents)")
+            //print("❌ 이벤트 없음: \(dateComponents)")
         }
         
         
@@ -217,7 +217,7 @@ extension CalendarViewController: UICalendarViewDelegate {
         
         
         if #available(iOS 17.0, *) {
-            print("🔴 이벤트 날짜: \(eventDates)")
+            //print("🔴 이벤트 날짜: \(eventDates)")
             mainView.calendarView.reloadDecorations(forDateComponents: Array(eventDates), animated: true)
         } else {
             
@@ -252,7 +252,7 @@ extension CalendarViewController: UICalendarSelectionSingleDateDelegate {
             mainView.calendarView.reloadDecorations(forDateComponents: [dateComponents], animated: true)
         }
         
-        print("현재 TimeZone: \(TimeZone.current.identifier)")
+        //print("현재 TimeZone: \(TimeZone.current.identifier)")
         
         // DateComponents에 시간대 정보 추가
         if var fullDateComponents = dateComponents {

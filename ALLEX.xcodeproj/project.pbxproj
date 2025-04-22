@@ -11,11 +11,24 @@
 		D07C532C2DA4FF1800EF53F8 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = D07C532B2DA4FF1800EF53F8 /* RxDataSources */; };
 		D07C53352DA50CEE00EF53F8 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D0CEC67B2DA444C7003D50B1 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D09F9D232DA684FB00A0AA69 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = D09F9D222DA684FB00A0AA69 /* Lottie */; };
+		D0C38AAD2DB7EBBD008E6769 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C38AAC2DB7EBBD008E6769 /* WidgetKit.framework */; };
+		D0C38AAF2DB7EBBD008E6769 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C38AAE2DB7EBBD008E6769 /* SwiftUI.framework */; };
+		D0C38ABA2DB7EBBD008E6769 /* AllexWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D0C38AAA2DB7EBBD008E6769 /* AllexWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D0CEC6742DA4448C003D50B1 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D0CEC6732DA4448C003D50B1 /* SnapKit */; };
 		D0CEC6772DA444A2003D50B1 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = D0CEC6762DA444A2003D50B1 /* RxCocoa */; };
 		D0CEC6792DA444A2003D50B1 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D0CEC6782DA444A2003D50B1 /* RxSwift */; };
 		D0CEC67C2DA444C7003D50B1 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D0CEC67B2DA444C7003D50B1 /* RealmSwift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D0C38AB82DB7EBBD008E6769 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D02E5D7B2D95094600534F24 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C38AA92DB7EBBD008E6769;
+			remoteInfo = AllexWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		D0C187D72D9EE69100383EED /* Embed Frameworks */ = {
@@ -29,11 +42,26 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D0C38ABB2DB7EBBD008E6769 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D0C38ABA2DB7EBBD008E6769 /* AllexWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		D02E5D832D95094600534F24 /* ALLEX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALLEX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D02E5D9B2D95096500534F24 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		D0C38AAA2DB7EBBD008E6769 /* AllexWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AllexWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0C38AAC2DB7EBBD008E6769 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		D0C38AAE2DB7EBBD008E6769 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		D0C38AEE2DB7EC55008E6769 /* AllexWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AllexWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -44,6 +72,13 @@
 			);
 			target = D02E5D822D95094600534F24 /* ALLEX */;
 		};
+		D0C38ABF2DB7EBBD008E6769 /* Exceptions for "AllexWidget" folder in "AllexWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D0C38AA92DB7EBBD008E6769 /* AllexWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -53,6 +88,14 @@
 				D02E5D952D95094700534F24 /* Exceptions for "ALLEX" folder in "ALLEX" target */,
 			);
 			path = ALLEX;
+			sourceTree = "<group>";
+		};
+		D0C38AB02DB7EBBD008E6769 /* AllexWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D0C38ABF2DB7EBBD008E6769 /* Exceptions for "AllexWidget" folder in "AllexWidgetExtension" target */,
+			);
+			path = AllexWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -71,14 +114,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D0C38AA72DB7EBBD008E6769 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0C38AAF2DB7EBBD008E6769 /* SwiftUI.framework in Frameworks */,
+				D0C38AAD2DB7EBBD008E6769 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		D02E5D7A2D95094600534F24 = {
 			isa = PBXGroup;
 			children = (
+				D0C38AEE2DB7EC55008E6769 /* AllexWidgetExtension.entitlements */,
 				D02E5D9B2D95096500534F24 /* .gitignore */,
 				D02E5D852D95094600534F24 /* ALLEX */,
+				D0C38AB02DB7EBBD008E6769 /* AllexWidget */,
+				D0C38AAB2DB7EBBD008E6769 /* Frameworks */,
 				D02E5D842D95094600534F24 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -87,8 +142,18 @@
 			isa = PBXGroup;
 			children = (
 				D02E5D832D95094600534F24 /* ALLEX.app */,
+				D0C38AAA2DB7EBBD008E6769 /* AllexWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D0C38AAB2DB7EBBD008E6769 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D0C38AAC2DB7EBBD008E6769 /* WidgetKit.framework */,
+				D0C38AAE2DB7EBBD008E6769 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -102,10 +167,12 @@
 				D02E5D802D95094600534F24 /* Frameworks */,
 				D02E5D812D95094600534F24 /* Resources */,
 				D0C187D72D9EE69100383EED /* Embed Frameworks */,
+				D0C38ABB2DB7EBBD008E6769 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D0C38AB92DB7EBBD008E6769 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				D02E5D852D95094600534F24 /* ALLEX */,
@@ -123,6 +190,28 @@
 			productReference = D02E5D832D95094600534F24 /* ALLEX.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D0C38AA92DB7EBBD008E6769 /* AllexWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D0C38ABE2DB7EBBD008E6769 /* Build configuration list for PBXNativeTarget "AllexWidgetExtension" */;
+			buildPhases = (
+				D0C38AA62DB7EBBD008E6769 /* Sources */,
+				D0C38AA72DB7EBBD008E6769 /* Frameworks */,
+				D0C38AA82DB7EBBD008E6769 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D0C38AB02DB7EBBD008E6769 /* AllexWidget */,
+			);
+			name = AllexWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = AllexWidgetExtension;
+			productReference = D0C38AAA2DB7EBBD008E6769 /* AllexWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -134,6 +223,9 @@
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					D02E5D822D95094600534F24 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					D0C38AA92DB7EBBD008E6769 = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
@@ -161,6 +253,7 @@
 			projectRoot = "";
 			targets = (
 				D02E5D822D95094600534F24 /* ALLEX */,
+				D0C38AA92DB7EBBD008E6769 /* AllexWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -174,6 +267,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D0C38AA82DB7EBBD008E6769 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -184,7 +284,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D0C38AA62DB7EBBD008E6769 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D0C38AB92DB7EBBD008E6769 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C38AA92DB7EBBD008E6769 /* AllexWidgetExtension */;
+			targetProxy = D0C38AB82DB7EBBD008E6769 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		D02E5D972D95094700534F24 /* Debug */ = {
@@ -193,6 +308,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ALLEX/ALLEX.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9ZR9M5J9M6;
@@ -227,6 +343,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ALLEX/ALLEX.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9ZR9M5J9M6;
@@ -378,6 +495,62 @@
 			};
 			name = Release;
 		};
+		D0C38ABC2DB7EBBD008E6769 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AllexWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9ZR9M5J9M6;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AllexWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AllexWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.scp.ALLEX.AllexWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D0C38ABD2DB7EBBD008E6769 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AllexWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9ZR9M5J9M6;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AllexWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AllexWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.scp.ALLEX.AllexWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -395,6 +568,15 @@
 			buildConfigurations = (
 				D02E5D972D95094700534F24 /* Debug */,
 				D02E5D982D95094700534F24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D0C38ABE2DB7EBBD008E6769 /* Build configuration list for PBXNativeTarget "AllexWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D0C38ABC2DB7EBBD008E6769 /* Debug */,
+				D0C38ABD2DB7EBBD008E6769 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
