@@ -230,7 +230,6 @@ extension ModifyViewModel {
             .max(by: { $0.gradeLevel < $1.gradeLevel })
         
         let bestGradeDifficulty = bestGrade?.difficulty ?? "VB"
-        compareToDate(exerciseDate, bestGradeDifficulty: bestGradeDifficulty)
         
         // 3. 결과 데이터 변환
         let routeResults = boulderingData[0].items.map { element in
@@ -265,30 +264,7 @@ extension ModifyViewModel {
             date: exerciseDate
         )
     }
-    
-    private func compareToDate(_ exerciseDate: Date, bestGradeDifficulty: String) {
-        let today = Date()
-        
-        // 위젯용 최신 데이터 그레이드 저장
-        let calendar = Calendar.current
-        
-        // 날짜 부분만 비교 (시간을 제외한 비교)
-        let startOfConvertedDate = calendar.startOfDay(for: exerciseDate)
-        let startOfToday = calendar.startOfDay(for: today)
-        
-        let comparisonResult = startOfConvertedDate.compare(startOfToday)
-        
-  
-        // 수기로 입력시, 최신 기록 체크
-        switch comparisonResult {
-        case .orderedAscending:
-            break
-        case .orderedDescending, .orderedSame:
-            UserDefaultManager.latestGrade = bestGradeDifficulty
-        }
-        
-    }
-    
+
     
     private func dateConvertor(_ dateString: String) -> Date {
         let dateFormats = [

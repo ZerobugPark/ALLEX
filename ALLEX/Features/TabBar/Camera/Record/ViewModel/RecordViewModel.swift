@@ -224,9 +224,6 @@ extension RecordViewModel {
         
         let bestGradeDifficulty = bestGrade?.difficulty ?? "VB"
         
-        // 위젯용 최신 데이터 그레이드 저장
-        UserDefaultManager.latestGrade = bestGradeDifficulty
-        
         // 3. 결과 데이터 변환
         let routeResults = gymGradeList.map { element in
             RouteResult(
@@ -260,55 +257,7 @@ extension RecordViewModel {
             date: currentDate
         )
     }
-    
-    func savedData2() {
-        
-        
-        var result: [RouteResult] = []
-        
-        for element in gymGradeList {
-            result.append(RouteResult(level: element.gradeLevel, color: element.color, difficulty: element.difficulty, totalClimbCount: element.tryCount, totalSuccessCount: element.successCount))
-        }
-        
-        let info = sharedData.getData(for: String.self)!
-        
-        
-        let highestGrade = gymGradeList
-            .filter({ $0.successCount > 0 }) // successCount가 1 이상인 항목만 필터링
-            .max(by: { $0.gradeLevel < $1.gradeLevel })
-        
-        
-        // info[0] = brand, info[1] = gymid
-        let timeMinute = timeCount / 60
-        let boulderingList = BoulderingList(brandId: info[0], gymId: info[1], climbTime: timeMinute, climbDate: Date(), bestGrade: highestGrade?.difficulty ?? "VB", routeResults: result)
-        
-        // List로 감싸서 전달
-        let boulderingListList = List<BoulderingList>()
-        boulderingListList.append(boulderingList)
-        
-        
-        let data = ClimbingResultTable(boulderingLists: [boulderingList])
-        
-        repository.create(data)
-        
-        
-        let totalClimbCount = gymGradeList
-            .filter { $0.tryCount > 0 }
-            .reduce(0) { $0 + $1.tryCount }
-        
-        let totalSuccessCount = gymGradeList
-            .filter { $0.successCount > 0 }
-            .reduce(0) { $0 + $1.successCount }
 
-    
-        monthlyRepository.updateMonthlyStatistics(climbCount: totalClimbCount, successCount: totalSuccessCount, climbTime: timeMinute, lastGrade: highestGrade?.difficulty ?? "VB", date: Date())
-        
-     
-        
-        
-    }
-    
-    
 }
 
 

@@ -72,6 +72,23 @@
 			);
 			target = D02E5D822D95094600534F24 /* ALLEX */;
 		};
+		D07F6AB12DB8E457004B7FCE /* Exceptions for "ALLEX" folder in "AllexWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Core/Extension/String+Extension.swift",
+				Core/Services/UserDefaultManager.swift,
+				Resources/Languages/Localizable.xcstrings,
+				Resources/Languages/LocalizedKey.swift,
+			);
+			target = D0C38AA92DB7EBBD008E6769 /* AllexWidgetExtension */;
+		};
+		D07F6AEA2DB8EEA0004B7FCE /* Exceptions for "AllexWidget" folder in "ALLEX" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CustomModifier/SmallWidgetText.swift,
+			);
+			target = D02E5D822D95094600534F24 /* ALLEX */;
+		};
 		D0C38ABF2DB7EBBD008E6769 /* Exceptions for "AllexWidget" folder in "AllexWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -86,6 +103,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				D02E5D952D95094700534F24 /* Exceptions for "ALLEX" folder in "ALLEX" target */,
+				D07F6AB12DB8E457004B7FCE /* Exceptions for "ALLEX" folder in "AllexWidgetExtension" target */,
 			);
 			path = ALLEX;
 			sourceTree = "<group>";
@@ -93,6 +111,7 @@
 		D0C38AB02DB7EBBD008E6769 /* AllexWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				D07F6AEA2DB8EEA0004B7FCE /* Exceptions for "AllexWidget" folder in "ALLEX" target */,
 				D0C38ABF2DB7EBBD008E6769 /* Exceptions for "AllexWidget" folder in "AllexWidgetExtension" target */,
 			);
 			path = AllexWidget;
@@ -324,7 +343,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.scp.ALLEX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -359,7 +378,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.scp.ALLEX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -513,7 +532,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.scp.ALLEX.AllexWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -541,7 +560,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.scp.ALLEX.AllexWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

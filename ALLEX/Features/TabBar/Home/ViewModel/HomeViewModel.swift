@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 
 import RealmSwift
-
+import WidgetKit
 
 final class HomeViewModel: BaseViewModel {
     
@@ -34,7 +34,7 @@ final class HomeViewModel: BaseViewModel {
         let successCount: String
         let successRate: String
         let totalTime: String
-        let bestGrade: String
+        let latestBestGrade: String // 마지막 기록 중 최고 기록
         
     }
     
@@ -63,7 +63,6 @@ final class HomeViewModel: BaseViewModel {
         NotificationCenterManager.isChangedUserInfo.addObserverVoid().bind(with: self) { owner, _ in
             
             let name = UserDefaultManager.nickname
-            print(UserDefaultManager.startDate)
             let startDate = owner.convertStringToDate(UserDefaultManager.startDate)
             let date = LocalizedKey.userId.rawValue.localized(with: (owner.daysBetween(startDate, Date()) + 1))
             owner.isChangedName.accept((name,date))
@@ -81,7 +80,7 @@ final class HomeViewModel: BaseViewModel {
         
       
         
-        let emptyData = HomeData(nickName: "", date: "", tryCount: "", successCount: "", successRate: "", totalTime: "", bestGrade: "")
+        let emptyData = HomeData(nickName: "", date: "", tryCount: "", successCount: "", successRate: "", totalTime: "", latestBestGrade: "")
         
         input.viewdidLoad.flatMap {
             NetworkManger.shared.callRequest()
@@ -132,11 +131,22 @@ extension HomeViewModel {
     func getUIData() -> HomeData {
         
         let data = repository.getCurrentMonthStatistics()
+        print(data)
         let startDate = convertStringToDate(UserDefaultManager.startDate)
         let date = LocalizedKey.userId.rawValue.localized(with: (daysBetween(startDate, Date()) + 1))
         let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)
         
-        return HomeData(nickName: nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: String(format: "%.0f%%", data?.sucessRate ?? 0), totalTime: (data?.totalClimbTime ?? 0).toTimeFormat(), bestGrade: data?.lastGrade ?? "")
+        let totalMonthTime = (data?.totalClimbTime ?? 0).toTimeFormat()
+        let latestGrade = data?.lastGrade ?? ""
+        let successRate = String(format: "%.0f%%", data?.sucessRate ?? 0)
+        
+        
+        UserDefaultManager.latestGrade = latestGrade
+        UserDefaultManager.totalExTime = totalMonthTime
+        UserDefaultManager.successRate = successRate
+        WidgetCenter.shared.reloadTimelines(ofKind: "AllexWidget")
+        
+        return HomeData(nickName: nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: successRate, totalTime: totalMonthTime, latestBestGrade: latestGrade)
     }
     
     func convertToGyms<T: Mappable>(from googleSheetData: GoogleSheetData, type: T.Type) -> [T] {

@@ -61,7 +61,7 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
             owner.mainView.completionRateLabel.text = data.successRate
             
             owner.mainView.timeValueLabel.text = data.totalTime
-            owner.mainView.difficultyValueLabel.text = data.bestGrade
+            owner.mainView.difficultyValueLabel.text = data.latestBestGrade
             
 
             

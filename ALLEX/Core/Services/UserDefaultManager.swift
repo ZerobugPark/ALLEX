@@ -23,31 +23,37 @@ import Foundation
     
     var wrappedValue: T {
         get {
-            UserDefaults.standard.object(forKey: key) as? T ?? empty
+            defaults.object(forKey: key) as? T ?? empty
         }
         set {
-            UserDefaults.standard.setValue(newValue, forKey: key)
+            defaults.setValue(newValue, forKey: key)
         }
     }
 }
 
 enum UserDefaultManager {
     enum Key: String {
-        case isLoggedIn, nickname, startDate, latestGrade
+        case isLoggedIn, nickname, startDate, latestGrade, totalExTime, successRate
     }
     
     @AllexUserDefaultManager(key: Key.isLoggedIn.rawValue, empty: false)
     static var isLoggedIn
     
-    @AllexUserDefaultManager(key: Key.nickname.rawValue, empty: "")
+    @AllexUserDefaultManager(key: Key.nickname.rawValue, empty: "", useAppGroup: true)
     static var nickname
     
     @AllexUserDefaultManager(key: Key.startDate.rawValue, empty: "")
     static var startDate
     
     
-    @AllexUserDefaultManager(key: Key.latestGrade.rawValue, empty: "", useAppGroup: true)
+    @AllexUserDefaultManager(key: Key.latestGrade.rawValue, empty: "VB", useAppGroup: true)
     static var latestGrade
+    
+    @AllexUserDefaultManager(key: Key.totalExTime.rawValue, empty: "", useAppGroup: true)
+    static var totalExTime
+    
+    @AllexUserDefaultManager(key: Key.successRate.rawValue, empty: "", useAppGroup: true)
+    static var successRate
    
     
 }
