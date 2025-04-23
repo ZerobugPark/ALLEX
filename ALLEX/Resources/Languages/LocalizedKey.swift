@@ -62,6 +62,12 @@ enum LocalizedKey: String {
     case Record_Success = "Record_Success"
     case Record_HighestGrade = "Record_HighestGrade"
     case Record_Send = "Record_Send"
+    
+    //위젯 관련
+    case Widget_Latest_Title = "Widget_Latest_Title"
+    case Widget_SuccessRate = "Widget_SuccessRate"
+    case Widget_ExTime = "Widget_ExTime"
+
 }
 
 

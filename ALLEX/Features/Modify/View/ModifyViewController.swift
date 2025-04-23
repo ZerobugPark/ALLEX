@@ -19,7 +19,7 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
     
     
     private let selectedGym = PublishRelay<(String, String)>()
-    private let countType = PublishRelay<(CountType, String)>()
+    private let countType = PublishRelay<(CountType, Int)>()
     
     typealias listDataSource = RxCollectionViewSectionedReloadDataSource<BoulderingSection>
     typealias collectionViewDataSource = CollectionViewSectionedDataSource<BoulderingSection>
@@ -101,7 +101,7 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         
         
         
-        let input = ModifyViewModel.Input(spaceTextField: mainView.spaceTextField.rx.text.orEmpty, doneButtonTapped: mainView.doneButton.rx.tap.withLatestFrom(timeSelected), selectedGym: selectedGym.asDriver(onErrorJustReturn: ("", "")), countType: countType.asDriver(onErrorJustReturn: (.successMinus, "")), saveButtonTapped: barButtonItem.rx.tap.withLatestFrom(inputFields))
+        let input = ModifyViewModel.Input(spaceTextField: mainView.spaceTextField.rx.text.orEmpty, doneButtonTapped: mainView.doneButton.rx.tap.withLatestFrom(timeSelected), selectedGym: selectedGym.asDriver(onErrorJustReturn: ("", "")), countType: countType.asDriver(onErrorJustReturn: (.successMinus, 0)), saveButtonTapped: barButtonItem.rx.tap.withLatestFrom(inputFields))
         
         let output = viewModel.transform(input: input)
         
@@ -112,7 +112,6 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         
         output.dismiss.drive(with: self) { owner, _ in
             
-            print(owner.coordinator)
             owner.coordinator?.dismiss()
             
         }.disposed(by: disposeBag)

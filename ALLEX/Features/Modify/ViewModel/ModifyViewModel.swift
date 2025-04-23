@@ -12,15 +12,16 @@ import RxSwift
 import RxDataSources
 import RealmSwift
 
-struct BoulderingWithCount {
-    let brandID: String
-    let gradeLevel: String
-    let color: String
-    let difficulty : String
-    var tryCount: Int
-    var successCount: Int
-    
-}
+//struct BoulderingWithCount {
+//    let brandID: String
+//    let gradeLevel: String
+//    let color: String
+//    let difficulty : String
+//    var tryCount: Int
+//    var successCount: Int
+//    
+//}
+
 
 
 struct BoulderingSection {
@@ -30,7 +31,7 @@ struct BoulderingSection {
 
 // SectionModelType 프로토콜 준수
 extension BoulderingSection: SectionModelType {
-    typealias Item = BoulderingWithCount
+    typealias Item = BoulderingAttempt
     
     init(original: BoulderingSection, items: [Item]) {
         self = original
@@ -49,7 +50,7 @@ final class ModifyViewModel: BaseViewModel {
         let spaceTextField: ControlProperty<String>
         let doneButtonTapped: Observable<TimeInterval>
         let selectedGym: Driver<(String, String)>
-        let countType: Driver<(CountType, String)>
+        let countType: Driver<(CountType, Int)>
         let saveButtonTapped: Observable<(ControlProperty<String>.Element, ControlProperty<String>.Element, ControlProperty<String>.Element)>
     }
     
@@ -70,10 +71,11 @@ final class ModifyViewModel: BaseViewModel {
     
     var sharedData: SharedDataModel
     
-    private var currnetGym: (String, String) = ("","")
+    private var currentGym: (String, String) = ("","")
     
     private var gymList: [Gym] = []
     
+    // 첫번째 인덱스만 사용함
     private var boulderingData: [BoulderingSection] = []
     var totalMinutes = 0
     
@@ -102,11 +104,11 @@ final class ModifyViewModel: BaseViewModel {
         
         input.selectedGym.drive(with: self) { owner, value in
             
-            let bouldering = owner.sharedData.getData(for: Bouldering.self)!.filter {  $0.brandID == value.0 }.map { BoulderingWithCount(brandID: $0.brandID, gradeLevel: $0.GradeLevel, color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0) }
+            let bouldering = owner.sharedData.getData(for: Bouldering.self)!.filter {  $0.brandID == value.0 }.map { BoulderingAttempt(gradeLevel: Int($0.GradeLevel)!, color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0) }
             
             // 0 == brand id, 1 == gymid
-            owner.currnetGym.0 = value.0
-            owner.currnetGym.1 = value.1
+            owner.currentGym.0 = value.0
+            owner.currentGym.1 = value.1
             
             owner.boulderingData = [BoulderingSection(header: "", items: bouldering)]
             
@@ -160,7 +162,7 @@ final class ModifyViewModel: BaseViewModel {
 
 extension ModifyViewModel {
     
-    private func updateTryCount(for type: CountType, for gradeLevel: String) {
+    private func updateTryCount(for type: CountType, for gradeLevel: Int) {
         boulderingData = boulderingData.map { section in
             let updatedItems = section.items.map { item in
                 var modified = item
@@ -202,51 +204,67 @@ extension ModifyViewModel {
 
 extension ModifyViewModel {
     
+    
     func savedData(for date: String) {
+        // 1. 필요한 데이터 준비
+        let brandId = currentGym.0
+        let gymId = currentGym.1
+        let timeMinute = totalMinutes
+        let exerciseDate = dateConvertor(date)
         
-        var result: [RouteResult] = []
-        
-        for element in boulderingData[0].items {
-            result.append(RouteResult(level: Int(element.gradeLevel)!, color: element.color, difficulty: element.difficulty, totalClimbCount: element.tryCount, totalSuccessCount: element.successCount))
-        }
-        
-        let highestGrade = boulderingData[0].items
-            .filter({ $0.successCount > 0 }) // successCount가 1 이상인 항목만 필터링
+        // 2. 통계 계산 (한 번의 순회로 여러 값 계산)
+        var totalClimbCount = 0
+        var totalSuccessCount = 0
+        let bestGrade = boulderingData[0].items
+            .filter { grade in
+                // 시도 및 성공 횟수 계산
+                if grade.tryCount > 0 {
+                    totalClimbCount += grade.tryCount
+                }
+                if grade.successCount > 0 {
+                    totalSuccessCount += grade.successCount
+                    return true  // 성공한 항목만 반환
+                }
+                return false
+            }
             .max(by: { $0.gradeLevel < $1.gradeLevel })
         
-        let excersiseDate = dateConvertor(date)
+        let bestGradeDifficulty = bestGrade?.difficulty ?? "VB"
         
+        // 3. 결과 데이터 변환
+        let routeResults = boulderingData[0].items.map { element in
+            RouteResult(
+                level: element.gradeLevel,
+                color: element.color,
+                difficulty: element.difficulty,
+                totalClimbCount: element.tryCount,
+                totalSuccessCount: element.successCount
+            )
+        }
         
-        // info[0] = brand, info[1] = gymid
-        let timeMinute = totalMinutes
-        let boulderingList = BoulderingList(brandId: currnetGym.0, gymId: currnetGym.1, climbTime: timeMinute, climbDate: excersiseDate, bestGrade: highestGrade?.difficulty ?? "VB", routeResults: result)
-        
-        // List로 감싸서 전달
-        let boulderingListList = List<BoulderingList>()
-        boulderingListList.append(boulderingList)
-        
+        // 4. 데이터 저장
+        let boulderingList = BoulderingList(
+            brandId: brandId,
+            gymId: gymId,
+            climbTime: timeMinute,
+            climbDate: exerciseDate,
+            bestGrade: bestGradeDifficulty,
+            routeResults: routeResults
+        )
         
         let data = ClimbingResultTable(boulderingLists: [boulderingList])
-        
         repository.create(data)
         
-        
-        let totalClimbCount = boulderingData[0].items
-            .filter { $0.tryCount > 0 }
-            .reduce(0) { $0 + $1.tryCount }
-        
-        let totalSuccessCount = boulderingData[0].items
-            .filter { $0.successCount > 0 }
-            .reduce(0) { $0 + $1.successCount }
-        
-        
-        monthlyRepository.updateMonthlyStatistics(climbCount: totalClimbCount, successCount: totalSuccessCount, climbTime: timeMinute, lastGrade: highestGrade?.difficulty ?? "VB", date: excersiseDate)
-        
-        
-        
-        
+        // 5. 월간 통계 업데이트
+        monthlyRepository.updateMonthlyStatistics(
+            climbCount: totalClimbCount,
+            successCount: totalSuccessCount,
+            climbTime: timeMinute,
+            lastGrade: bestGradeDifficulty,
+            date: exerciseDate
+        )
     }
-    
+
     
     private func dateConvertor(_ dateString: String) -> Date {
         let dateFormats = [

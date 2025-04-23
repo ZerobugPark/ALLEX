@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Allex" : {
+
+    },
     "Button_Save_Record" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -500,6 +503,9 @@
         }
       }
     },
+    "The latest Climbing record" : {
+
+    },
     "User_ID" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -513,6 +519,60 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "클라이밍과 함께한 지 %d일 째!"
+          }
+        }
+      }
+    },
+    "Widget_ExTime" : {
+      "comment" : "이번달 운동 시간",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ExT: "
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "운동 시간: "
+          }
+        }
+      }
+    },
+    "Widget_Latest_Title" : {
+      "comment" : "최근 기록",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latest: "
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 기록: "
+          }
+        }
+      }
+    },
+    "Widget_SuccessRate" : {
+      "comment" : "이번달 성공률",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SR: "
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완등률:  "
           }
         }
       }
