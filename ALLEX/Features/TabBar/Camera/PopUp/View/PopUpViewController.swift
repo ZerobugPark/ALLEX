@@ -7,6 +7,7 @@
 
 import UIKit
 
+import FirebaseAnalytics
 
 
 final class PopUpViewController: UIViewController {
@@ -36,10 +37,23 @@ final class PopUpViewController: UIViewController {
     
     
     @objc private func showWriteRecord() {
+        
+        Analytics.logEvent(AnalyticsEventSelectContent, parameters: [
+            AnalyticsParameterItemID: "recordWriteButton",
+            AnalyticsParameterItemName: "Write Record Button",
+            AnalyticsParameterContentType: "button"
+        ])
         coordinator?.didSelectCondition(.recordWrite)
     }
     
     @objc private func showVidoRecord() {
+        
+        Analytics.logEvent(AnalyticsEventSelectContent, parameters: [
+            AnalyticsParameterItemID: "recordVideoButton",
+            AnalyticsParameterItemName: "Video Record Button",
+            AnalyticsParameterContentType: "button"
+        ])
+        
         coordinator?.didSelectCondition(.recordVideo)
     }
     
