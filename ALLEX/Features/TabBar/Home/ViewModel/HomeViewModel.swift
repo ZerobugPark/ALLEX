@@ -78,8 +78,6 @@ final class HomeViewModel: BaseViewModel {
         
         let stopIndicator = PublishRelay<Void>()
         
-      
-        
         let emptyData = HomeData(nickName: "", date: "", tryCount: "", successCount: "", successRate: "", totalTime: "", latestBestGrade: "")
         
         input.viewdidLoad.flatMap {
@@ -131,7 +129,7 @@ extension HomeViewModel {
     func getUIData() -> HomeData {
         
         let data = repository.getCurrentMonthStatistics()
-        print(data)
+        
         let startDate = convertStringToDate(UserDefaultManager.startDate)
         let date = LocalizedKey.userId.rawValue.localized(with: (daysBetween(startDate, Date()) + 1))
         let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)

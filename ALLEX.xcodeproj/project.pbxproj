@@ -11,6 +11,8 @@
 		D07C532C2DA4FF1800EF53F8 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = D07C532B2DA4FF1800EF53F8 /* RxDataSources */; };
 		D07C53352DA50CEE00EF53F8 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D0CEC67B2DA444C7003D50B1 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D09F9D232DA684FB00A0AA69 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = D09F9D222DA684FB00A0AA69 /* Lottie */; };
+		D0A0D57A2DB9099C00881A1A /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = D0A0D5792DB9099C00881A1A /* FirebaseAnalyticsWithoutAdIdSupport */; };
+		D0A0D57C2DB9099C00881A1A /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = D0A0D57B2DB9099C00881A1A /* FirebaseCrashlytics */; };
 		D0C38AAD2DB7EBBD008E6769 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C38AAC2DB7EBBD008E6769 /* WidgetKit.framework */; };
 		D0C38AAF2DB7EBBD008E6769 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C38AAE2DB7EBBD008E6769 /* SwiftUI.framework */; };
 		D0C38ABA2DB7EBBD008E6769 /* AllexWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D0C38AAA2DB7EBBD008E6769 /* AllexWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -128,6 +130,8 @@
 				D0CEC6772DA444A2003D50B1 /* RxCocoa in Frameworks */,
 				D0CEC6742DA4448C003D50B1 /* SnapKit in Frameworks */,
 				D07C532C2DA4FF1800EF53F8 /* RxDataSources in Frameworks */,
+				D0A0D57A2DB9099C00881A1A /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
+				D0A0D57C2DB9099C00881A1A /* FirebaseCrashlytics in Frameworks */,
 				D0CEC6792DA444A2003D50B1 /* RxSwift in Frameworks */,
 				D09F9D232DA684FB00A0AA69 /* Lottie in Frameworks */,
 			);
@@ -187,6 +191,7 @@
 				D02E5D812D95094600534F24 /* Resources */,
 				D0C187D72D9EE69100383EED /* Embed Frameworks */,
 				D0C38ABB2DB7EBBD008E6769 /* Embed Foundation Extensions */,
+				D0A0D57E2DB90B3300881A1A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -204,6 +209,8 @@
 				D0CEC67B2DA444C7003D50B1 /* RealmSwift */,
 				D07C532B2DA4FF1800EF53F8 /* RxDataSources */,
 				D09F9D222DA684FB00A0AA69 /* Lottie */,
+				D0A0D5792DB9099C00881A1A /* FirebaseAnalyticsWithoutAdIdSupport */,
+				D0A0D57B2DB9099C00881A1A /* FirebaseCrashlytics */,
 			);
 			productName = ALLEX;
 			productReference = D02E5D832D95094600534F24 /* ALLEX.app */;
@@ -265,6 +272,7 @@
 				D0CEC67A2DA444C7003D50B1 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				D07C532A2DA4FF1800EF53F8 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 				D09F9D212DA684FB00A0AA69 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				D0A0D5782DB9099C00881A1A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D02E5D842D95094600534F24 /* Products */;
@@ -294,6 +302,32 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D0A0D57E2DB90B3300881A1A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}.debug.dylib",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D02E5D7F2D95094600534F24 /* Sources */ = {
@@ -330,6 +364,7 @@
 				CODE_SIGN_ENTITLEMENTS = ALLEX/ALLEX.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 9ZR9M5J9M6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ALLEX/Application/Info.plist;
@@ -619,6 +654,14 @@
 				minimumVersion = 4.5.1;
 			};
 		};
+		D0A0D5782DB9099C00881A1A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.12.0;
+			};
+		};
 		D0CEC6722DA4448C003D50B1 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -655,6 +698,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D09F9D212DA684FB00A0AA69 /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
+		};
+		D0A0D5792DB9099C00881A1A /* FirebaseAnalyticsWithoutAdIdSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D0A0D5782DB9099C00881A1A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsWithoutAdIdSupport;
+		};
+		D0A0D57B2DB9099C00881A1A /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D0A0D5782DB9099C00881A1A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 		D0CEC6732DA4448C003D50B1 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;

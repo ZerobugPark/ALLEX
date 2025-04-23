@@ -7,8 +7,11 @@
 
 import UIKit
 
+import FirebaseAnalytics
 import RxCocoa
 import RxSwift
+
+
 
 
 final class CalendarViewController: BaseViewController<CalendarView, CalendarViewModel> {
@@ -77,6 +80,13 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         }.disposed(by: disposeBag)
         
         rightBarButton.rx.tap.bind(with: self) { owner, _ in
+            
+            Analytics.logEvent(AnalyticsEventSelectContent, parameters: [
+                AnalyticsParameterItemID: "manualRecordButton",
+                AnalyticsParameterItemName: "Manual Record Button",
+                AnalyticsParameterContentType: "button"
+            ])
+
             
             owner.coordinator?.showModify()
             
