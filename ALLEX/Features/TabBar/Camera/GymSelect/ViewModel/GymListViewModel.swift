@@ -25,6 +25,7 @@ final class GymListViewModel: BaseViewModel {
         let dismiss: Driver<Void>
     }
     
+    
     var disposeBag =  DisposeBag()
     private var gymList: [Gym] = []
     
@@ -60,10 +61,12 @@ final class GymListViewModel: BaseViewModel {
         input.selectedGym.drive(with: self) { owner, value in
             owner.sharedData.updateData(data: value, for: String.self)
             
-            NotificationCenterManager.isSelected.post()
+            NotificationCenterManager.isGymSelected.post()
             
             dismiss.accept(())
         }.disposed(by: disposeBag)
+        
+        
     
         return Output(list: list.asDriver(onErrorJustReturn: []), dismiss: dismiss.asDriver(onErrorJustReturn: ()))
     }

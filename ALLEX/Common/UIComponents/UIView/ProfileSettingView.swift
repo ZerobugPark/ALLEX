@@ -9,18 +9,18 @@ import UIKit
 
 final class ProfileSettingView: BaseView {
     
-    private let titleLabel = TitleLabel(key: .profileTitle , title: "")
+    private let titleLabel = TitleLabel(key: .Setting_ProfileTitle , title: "")
     private let circleView = UIView()
-    private let nicknameLabel = SubTitleLabel(key: .nicknameTitle, title: "")
+    private let nicknameLabel = SubTitleLabel(key: .Setting_Nickname_Title, title: "")
     
-    private let dateLabel = SubTitleLabel(key: .startDate, title: "")
+    private let dateLabel = SubTitleLabel(key: .Setting_Start_Date, title: "")
     
     let nicknameTextField = BaseTextField()
     let countLabel = TertiaryLabel(title: "0/7")
-    let infoLabel = TertiaryLabel(key: .unVerifiedNickName, title: "")
+    let infoLabel = TertiaryLabel(key: .Setting_UnVerified_NickName, title: "")
 
     let dateTextField = DateTextField()
-    let startButton = BaseButton(key: .start)
+    let startButton = BaseButton(key: .Button_Start_Login)
     
     override func configureHierarchy() {
         self.addSubviews(titleLabel, nicknameLabel, circleView, nicknameTextField, countLabel, infoLabel, dateLabel, dateTextField, startButton)
@@ -53,7 +53,6 @@ final class ProfileSettingView: BaseView {
     
         nicknameTextField.snp.makeConstraints { make in
             make.top.equalTo(nicknameLabel.snp.bottom).offset(12)
-            make.leading.equalToSuperview().offset(32)
             make.horizontalEdges.equalToSuperview().inset(32)
             make.height.equalTo(50)
           
@@ -78,7 +77,7 @@ final class ProfileSettingView: BaseView {
         }
    
         startButton.snp.makeConstraints { make in
-            make.top.equalTo(dateTextField.snp.bottom).offset(44)
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-44)
             make.horizontalEdges.equalToSuperview().inset(32)
         }
 

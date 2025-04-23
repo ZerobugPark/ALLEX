@@ -22,33 +22,22 @@ final class ProfileSettingViewController: BaseViewController<SignUpView, SignUpV
     
     override func bind() {
         
-        let edited = mainView.profile.nicknameTextField.rx.controlEvent(.editingDidEnd).withLatestFrom(mainView.profile.nicknameTextField.rx.text.orEmpty)
-        
         let startButton = mainView.profile.startButton.rx.tap.withLatestFrom(Observable.combineLatest(mainView.profile.nicknameTextField.rx.text.orEmpty, mainView.profile.dateTextField.rx.text.orEmpty))
         
         let input = SignUpViewModel.Input(currentText: mainView.profile.nicknameTextField.rx.text.orEmpty,
-                                          edited: edited,
-                                          startButtonTapped: startButton)
+                                          signUpTapped: startButton)
         
         let output = viewModel.transform(input: input)
         
-        output.changedCountLable.drive(with: self) { owner, value in
+        output.nicknameLength.drive(with: self) { owner, length in
+            owner.verifiedNickName(length: length)
             
-            owner.mainView.profile.countLabel.text = "\(value)/7"
-            
-            if value < 2 {
-                
-                owner.mainView.profile.infoLabel.text = LocalizedKey.unVerifiedNickName.rawValue.localized(with: "")
-            } else {
-                
-                owner.mainView.profile.infoLabel.text = LocalizedKey.verifiedNickName.rawValue.localized(with: "")
-            }
-            owner.mainView.profile.infoLabel.updateTextColorBasedOnLength(count: value)
+
         }.disposed(by: disposeBag)
         
         
         
-        output.vaildStatus.drive(with: self) { owner, status in
+        output.isNicknameValid.drive(with: self) { owner, status in
             
             owner.mainView.profile.startButton.isEnabled = status
             
@@ -79,6 +68,28 @@ final class ProfileSettingViewController: BaseViewController<SignUpView, SignUpV
         self.view.endEditing(true)
     }
     
+    deinit {
+        coordinator = nil
+        print("\(description) Deinit")
+    }
+}
+
+// MARK: ViewModel Setting Func
+extension ProfileSettingViewController {
+    
+    private func verifiedNickName(length: Int) {
+        mainView.profile.countLabel.text = "\(length)/7"
+        
+        if length < 2 {
+            
+            mainView.profile.infoLabel.text = LocalizedKey.Setting_UnVerified_NickName.rawValue.localized(with: "")
+        } else {
+            
+            mainView.profile.infoLabel.text = LocalizedKey.Setting_Verified_NickName.rawValue.localized(with: "")
+        }
+        
+        mainView.profile.infoLabel.updateTextColorBasedOnLength(count: length)
+    }
     
 }
 

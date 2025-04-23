@@ -47,7 +47,6 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = true
-        tabBarController?.tabBar.isHidden = true
         self.view.layoutIfNeeded()
     }
     
@@ -55,7 +54,6 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.isHidden = false
-        tabBarController?.tabBar.isHidden = false
     }
     override func bind() {
         

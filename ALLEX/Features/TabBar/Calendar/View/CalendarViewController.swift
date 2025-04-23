@@ -7,8 +7,11 @@
 
 import UIKit
 
+import FirebaseAnalytics
 import RxCocoa
 import RxSwift
+
+
 
 
 final class CalendarViewController: BaseViewController<CalendarView, CalendarViewModel> {
@@ -24,6 +27,8 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
     
     private let currentDate = PublishRelay<Date>()
     private let changedMonth = PublishRelay<(Int,Int)>()
+    
+    private let rightBarButton = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: nil, action: nil)
     
     override func viewDidLoad() {
        
@@ -41,12 +46,12 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         restrictDateRange()
       
       
+        navigationItem.rightBarButtonItem = rightBarButton
       
    
     }
     
-  
-    
+
     
     override func bind() {
         
@@ -70,33 +75,30 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         
         
         mainView.tableView.rx.modelSelected(ClimbingInfo.self).bind(with: self) { owner, value in
+           
             owner.coordinator?.showDetail(id: value.id)
+        }.disposed(by: disposeBag)
+        
+        rightBarButton.rx.tap.bind(with: self) { owner, _ in
             
+            Analytics.logEvent(AnalyticsEventSelectContent, parameters: [
+                AnalyticsParameterItemID: "manualRecordButton",
+                AnalyticsParameterItemName: "Manual Record Button",
+                AnalyticsParameterContentType: "button"
+            ])
+
+            
+            owner.coordinator?.showModify()
             
         }.disposed(by: disposeBag)
         
     }
-    
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.isHidden = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.navigationController?.navigationBar.isHidden = false
-    }
-    
-    
-    
-    deinit {
         
-        print("CalendarViewController Deinit")
+    deinit {
         coordinator = nil
+        print("\(description) Deinit")
     }
-
-
+    
     
 }
 
@@ -184,7 +186,7 @@ extension CalendarViewController: UICalendarViewDelegate {
         } != nil
         
         if hasEvent {
-            print("✅ 이벤트 있음: \(dateComponents)")
+            //print("✅ 이벤트 있음: \(dateComponents)")
             return UICalendarView.Decoration.customView {
                 let view = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 6))
                 view.backgroundColor = .red
@@ -192,7 +194,7 @@ extension CalendarViewController: UICalendarViewDelegate {
                 return view
             }
         } else {
-            print("❌ 이벤트 없음: \(dateComponents)")
+            //print("❌ 이벤트 없음: \(dateComponents)")
         }
         
         
@@ -225,7 +227,7 @@ extension CalendarViewController: UICalendarViewDelegate {
         
         
         if #available(iOS 17.0, *) {
-            print("🔴 이벤트 날짜: \(eventDates)")
+            //print("🔴 이벤트 날짜: \(eventDates)")
             mainView.calendarView.reloadDecorations(forDateComponents: Array(eventDates), animated: true)
         } else {
             
@@ -260,7 +262,7 @@ extension CalendarViewController: UICalendarSelectionSingleDateDelegate {
             mainView.calendarView.reloadDecorations(forDateComponents: [dateComponents], animated: true)
         }
         
-        print("현재 TimeZone: \(TimeZone.current.identifier)")
+        //print("현재 TimeZone: \(TimeZone.current.identifier)")
         
         // DateComponents에 시간대 정보 추가
         if var fullDateComponents = dateComponents {

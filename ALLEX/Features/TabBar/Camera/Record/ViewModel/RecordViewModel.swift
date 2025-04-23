@@ -188,7 +188,7 @@ final class RecordViewModel: BaseViewModel {
     
     
     deinit {
-        print(String(describing: self) + "Deinit")
+        print("\(type(of: self)) Deinit")
     }
     
 }
@@ -198,53 +198,66 @@ final class RecordViewModel: BaseViewModel {
 extension RecordViewModel {
     
     func savedData() {
-        
-        
-        var result: [RouteResult] = []
-        
-        for element in gymGradeList {
-            result.append(RouteResult(level: element.gradeLevel, color: element.color, difficulty: element.difficulty, totalClimbCount: element.tryCount, totalSuccessCount: element.successCount))
-        }
-        
+        // 1. 필요한 데이터 준비
         let info = sharedData.getData(for: String.self)!
+        let brandId = info[0]
+        let gymId = info[1]
+        let timeMinute = timeCount / 60
+        let currentDate = Date()
         
-        
-        let highestGrade = gymGradeList
-            .filter({ $0.successCount > 0 }) // successCount가 1 이상인 항목만 필터링
+        // 2. 통계 계산 (한 번의 순회로 여러 값 계산)
+        var totalClimbCount = 0
+        var totalSuccessCount = 0
+        let bestGrade = gymGradeList
+            .filter { grade in
+                // 시도 및 성공 횟수 계산
+                if grade.tryCount > 0 {
+                    totalClimbCount += grade.tryCount
+                }
+                if grade.successCount > 0 {
+                    totalSuccessCount += grade.successCount
+                    return true  // 성공한 항목만 반환
+                }
+                return false
+            }
             .max(by: { $0.gradeLevel < $1.gradeLevel })
         
+        let bestGradeDifficulty = bestGrade?.difficulty ?? "VB"
         
-        // info[0] = brand, info[1] = gymid
-        let timeMinute = timeCount / 60
-        let boulderingList = BoulderingList(brandId: info[0], gymId: info[1], climbTime: timeMinute, climbDate: Date(), bestGrade: highestGrade?.difficulty ?? "VB", routeResults: result)
+        // 3. 결과 데이터 변환
+        let routeResults = gymGradeList.map { element in
+            RouteResult(
+                level: element.gradeLevel,
+                color: element.color,
+                difficulty: element.difficulty,
+                totalClimbCount: element.tryCount,
+                totalSuccessCount: element.successCount
+            )
+        }
         
-        // List로 감싸서 전달
-        let boulderingListList = List<BoulderingList>()
-        boulderingListList.append(boulderingList)
-        
+        // 4. 데이터 저장
+        let boulderingList = BoulderingList(
+            brandId: brandId,
+            gymId: gymId,
+            climbTime: timeMinute,
+            climbDate: currentDate,
+            bestGrade: bestGradeDifficulty,
+            routeResults: routeResults
+        )
         
         let data = ClimbingResultTable(boulderingLists: [boulderingList])
-        
         repository.create(data)
         
-        
-        let totalClimbCount = gymGradeList
-            .filter { $0.tryCount > 0 }
-            .reduce(0) { $0 + $1.tryCount }
-        
-        let totalSuccessCount = gymGradeList
-            .filter { $0.successCount > 0 }
-            .reduce(0) { $0 + $1.successCount }
-
-    
-        monthlyRepository.updateMonthlyStatistics(climbCount: totalClimbCount, successCount: totalSuccessCount, climbTime: timeMinute, lastGrade: highestGrade?.difficulty ?? "VB")
-        
-        
-        
-        
+        // 5. 월간 통계 업데이트
+        monthlyRepository.updateMonthlyStatistics(
+            climbCount: totalClimbCount,
+            successCount: totalSuccessCount,
+            climbTime: timeMinute,
+            lastGrade: bestGradeDifficulty,
+            date: currentDate
+        )
     }
-    
-    
+
 }
 
 

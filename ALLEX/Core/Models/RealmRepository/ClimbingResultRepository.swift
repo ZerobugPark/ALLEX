@@ -10,6 +10,7 @@ import Foundation
 import RealmSwift
 
 protocol ClimbingResultRepository: Repository where T == ClimbingResultTable {
+    func findLastBoulderingLists(limit: Int) -> [BoulderingList]
     func findLastBoulderingList() -> BoulderingList?
     func findBoulderingList(for date: Date) -> [BoulderingList]
     func findBoulderingMonthList(in monthString: String) -> [String]
@@ -18,17 +19,23 @@ protocol ClimbingResultRepository: Repository where T == ClimbingResultTable {
 
 final class RealmClimbingResultRepository: RealmRepository<ClimbingResultTable>, ClimbingResultRepository {
     
-    //마지막 기록
-    func findLastBoulderingList() -> BoulderingList? {
+
+    func findLastBoulderingLists(limit: Int) -> [BoulderingList] {
         let climbingResults = realm.objects(ClimbingResultTable.self)
 
-        let lastBoulderingList = climbingResults
-            .flatMap { $0.boulderingLists } // 모든 boulderingLists를 하나의 배열로 펼치기
-            .sorted { $0.climbDate > $1.climbDate } // climbDate 기준 최신순 정렬
-            .first // 가장 최신 기록 가져오기
-        
-        return lastBoulderingList
+        let lastBoulderingLists = climbingResults
+            .flatMap { $0.boulderingLists }
+            .sorted { $0.climbDate > $1.climbDate }
+            .prefix(limit)
+
+        return Array(lastBoulderingLists)
     }
+    
+    //마지막 기록
+    func findLastBoulderingList() -> BoulderingList? {
+        return findLastBoulderingLists(limit: 1).first
+    }
+    
 
     func findBoulderingList(for date: Date) -> [BoulderingList] {
         let calendar = Calendar.current
@@ -68,6 +75,8 @@ final class RealmClimbingResultRepository: RealmRepository<ClimbingResultTable>,
         return uniqueDateStrings.sorted() // 정렬된 배열로 반환
     }
     
+    
+    //선택한 클라이밍 기록
     func findBoulderingSelectedList(by id: ObjectId) -> BoulderingList? {
         
         

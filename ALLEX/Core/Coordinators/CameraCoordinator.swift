@@ -88,22 +88,21 @@ final class CameraCoordinator: Coordinator {
         navigationController.present(vc, animated: true)
     }
     
-    private func showCamera() {
-        
+
+    func showCamera() {
         guard let navigationController = extractNavigationController() else {
             handleNavigationControllerMissing()
             return
         }
         
-        
         let vm = VideoCaptureViewModel(sharedData)
         let vc = VideoCaptureViewController(viewModel: vm)
         vc.coordinator = self
-        vc.modalPresentationStyle = .fullScreen
+        vc.modalPresentationStyle = .overFullScreen // fullScreen은 화면을 덮기 때문에, 탭바가 Nil이 되는 현상이 발생 (탭바를 삭제한다는 느낌?)
+        // overFullScreen은 그 화면을 유지한채 사용
         navigationController.present(vc, animated: true)
-        
-        
     }
+
     
     func showResult() {
         presentingController.dismiss(animated: true) { [weak self] in
@@ -124,7 +123,7 @@ final class CameraCoordinator: Coordinator {
     }
     
     func dismiss() {
-        presentingController.dismiss(animated: true)
+        presentingController.dismiss(animated: true) 
     }
     
     deinit {

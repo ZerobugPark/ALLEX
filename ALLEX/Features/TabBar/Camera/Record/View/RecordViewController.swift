@@ -23,13 +23,15 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        mainView.recordView.tableView.register(RecordTableViewCell.self, forCellReuseIdentifier: RecordTableViewCell.id)
+        mainView.recordView.tableView.register(RecordEntryTableViewCell.self, forCellReuseIdentifier: RecordEntryTableViewCell.id)
         
-        mainView.hiddenView.tableView.register(HiddenTableViewCell.self, forCellReuseIdentifier: HiddenTableViewCell.id)
+        mainView.hiddenView.tableView.register(HiddenDifficultyTableViewCell.self, forCellReuseIdentifier: HiddenDifficultyTableViewCell.id)
         
         
         mainView.recordView.tableView.rx.setDelegate(self)
             .disposed(by: disposeBag)
+  
+        
     }
     
     override func bind() {
@@ -41,7 +43,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         
         let output = viewModel.transform(input: input)
         
-        output.gymGrade.drive(mainView.recordView.tableView.rx.items(cellIdentifier: RecordTableViewCell.id, cellType: RecordTableViewCell.self)){  [weak self] row, element, cell in
+        output.gymGrade.drive(mainView.recordView.tableView.rx.items(cellIdentifier: RecordEntryTableViewCell.id, cellType: RecordEntryTableViewCell.self)){  [weak self] row, element, cell in
             
             guard let self = self else { return }
             
@@ -60,7 +62,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
             
         }.disposed(by: disposeBag)
         
-        output.hiddenData.drive(mainView.hiddenView.tableView.rx.items(cellIdentifier: HiddenTableViewCell.id, cellType: HiddenTableViewCell.self)) { [weak self] row, element, cell in
+        output.hiddenData.drive(mainView.hiddenView.tableView.rx.items(cellIdentifier: HiddenDifficultyTableViewCell.id, cellType: HiddenDifficultyTableViewCell.self)) { [weak self] row, element, cell in
             
             guard let self = self else { return }
             cell.setupData(element)
@@ -84,7 +86,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
             .bind(to: mainView.timeRecord.timeLabel.rx.text)
             .disposed(by: disposeBag)
         
-        output.updateTitle.bind(to: mainView.titleLable.rx.text).disposed(by: disposeBag)
+        output.updateTitle.bind(to: mainView.gymNameLabel.rx.text).disposed(by: disposeBag)
         
         output.updateUI.drive(with: self) { owner, _ in
             
@@ -110,6 +112,15 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
             owner.updateHiddenLayer()
         }.disposed(by: disposeBag)
         
+        
+        mainView.timeRecord.timeButton.rx.tap.bind(with: self) { owner, _ in
+            if owner.mainView.timeRecord.animationImageView.isAnimationPlaying {
+                owner.mainView.timeRecord.animationImageView.pause()
+            } else {
+                owner.mainView.timeRecord.animationImageView.play()
+            }
+        }.disposed(by: disposeBag)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -127,7 +138,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         print("RecordViewController Deinit")
         
         coordinator = nil
-        print(coordinator)
+       // print(coordinator)
     }
     
     

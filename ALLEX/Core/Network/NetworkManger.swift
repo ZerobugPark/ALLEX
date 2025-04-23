@@ -23,15 +23,6 @@ final class NetworkManger: GoogleSheetRepository {
     }
     
     
-    
-    
-//    func fetchGoogleData() async throws -> [GoogleSheetData] {
-//        let response = try await fetchAsyncLet()
-//        
-//        return response
-//    }
-    
-    
     private func fetchAsyncAwait(api: GoogleSheetRequest) async throws -> GoogleSheetResponse  {
         
         guard let request = api.asURLRequest() else {
@@ -58,37 +49,21 @@ final class NetworkManger: GoogleSheetRepository {
     }
     
     
-    
-//    private func fetchAsyncLet() async throws -> [GoogleSheetData] {
-//        async let brand = NetworkManger.shared.fetchAsyncAwait(api: .brand).transform()
-//        async let gym = NetworkManger.shared.fetchAsyncAwait(api: .gym).transform()
-//        async let grade = NetworkManger.shared.fetchAsyncAwait(api: .gymGrades).transform()
-//        async let route = NetworkManger.shared.fetchAsyncAwait(api: .boulderingRoutes).transform()
-//        
-//        do {
-//            return try await [brand, gym, grade, route]
-//        } catch {
-//            let results = await [try? brand, try? gym, try? grade, try? route]
-//            
-//            let validResults = results.compactMap { $0 }
-//            if validResults.isEmpty {
-//                throw error
-//            }
-//            return validResults
-//        }
-//        
-//    }
-    
     func callRequest() -> Single<Result<[GoogleSheetData], NetworkError>> {
         
-        return Single<Result<[GoogleSheetData],NetworkError>>.create { value in
+        return Single<Result<[GoogleSheetData],NetworkError>>.create { [weak self] value in
+          
+            guard let self = self else {
+                value(.success(.failure(.unknown(statusCode: 0, message: "Instance has been deallocated"))))
+                return Disposables.create()
+            }
             
             Task {
                 do {
-                    async let brand = NetworkManger.shared.fetchAsyncAwait(api: .brand).transform()
-                    async let gym = NetworkManger.shared.fetchAsyncAwait(api: .gym).transform()
-                    async let grade = NetworkManger.shared.fetchAsyncAwait(api: .gymGrades).transform()
-                    async let route = NetworkManger.shared.fetchAsyncAwait(api: .boulderingRoutes).transform()
+                    async let brand = self.fetchAsyncAwait(api: .brand).transform()
+                    async let gym = self.fetchAsyncAwait(api: .gym).transform()
+                    async let grade = self.fetchAsyncAwait(api: .gymGrades).transform()
+                    async let route = self.fetchAsyncAwait(api: .boulderingRoutes).transform()
                     
                     let results = try await [brand, gym, grade, route]
                     
@@ -97,10 +72,10 @@ final class NetworkManger: GoogleSheetRepository {
                 } catch let error as NetworkError {
                     
                     let results = await [
-                        try? NetworkManger.shared.fetchAsyncAwait(api: .brand).transform(),
-                        try? NetworkManger.shared.fetchAsyncAwait(api: .gym).transform(),
-                        try? NetworkManger.shared.fetchAsyncAwait(api: .gymGrades).transform(),
-                        try? NetworkManger.shared.fetchAsyncAwait(api: .boulderingRoutes).transform()
+                        try? self.fetchAsyncAwait(api: .brand).transform(),
+                        try? self.fetchAsyncAwait(api: .gym).transform(),
+                        try? self.fetchAsyncAwait(api: .gymGrades).transform(),
+                        try? self.fetchAsyncAwait(api: .boulderingRoutes).transform()
                     ]
                     
                     let validResults = results.compactMap { $0 }
@@ -170,7 +145,6 @@ final class NetworkManger: GoogleSheetRepository {
         let fileID = String(url[range])
         let downloadURL = "https://drive.google.com/uc?id=\(fileID)"
         
-        print("변환된 URL: \(downloadURL)")
         return downloadURL
     }
 }

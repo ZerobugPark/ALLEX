@@ -82,7 +82,7 @@ final class SearchListViewModel: BaseViewModel {
     }
     
     deinit {
-        print(String(describing: self) + "Deinit")
+        print("\(type(of: self)) Deinit")
     }
 }
 

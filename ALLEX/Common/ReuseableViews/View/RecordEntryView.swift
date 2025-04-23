@@ -7,62 +7,61 @@
 
 import UIKit
 
-final class BoulderingAttemptView: BaseView {
-    
-    // MARK: - Properties
-    private let eyeButtonContainer = CustomView()
-    let eyeButton = BaseButton()
-    
+
+// 실시간 클라이밍 기록  (셀에 들어가는 뷰)
+final class RecordEntryView: BaseView {
+        
     private let stackView = UIStackView()
-    
     
     private let colorIndicatorContainer = CustomView()
     let colorIndicator = CustomView()
     
     private let tryCountContainer = CustomView()
-    let tryCountButton = CountButton()
+    let tryCountButton = RecordCountButton()
     let tryMinusButton = UIButton()
     
     
     private let successCountContainer = CustomView()
-    let successCountButton = CountButton()
+    let successCountButton = RecordCountButton()
     let successMinusButton = UIButton()
     
     let gradeLabel = TertiaryLabel(title: "")
+    
+    private let containerHeight: CGFloat = 70
+    private let indicatorSize: CGFloat = 40
+    private let buttonSize: CGFloat = 24
+    private let buttonOffset: CGFloat = -8
+    
     
     override func configureHierarchy() {
         self.addSubview(stackView)
         
         stackView.addArrangedSubviews(colorIndicatorContainer, tryCountContainer, successCountContainer)
-        
-        eyeButtonContainer.addSubview(eyeButton)
+
         colorIndicatorContainer.addSubview(colorIndicator)
         colorIndicator.addSubview(gradeLabel)
         
-        
         tryCountContainer.addSubviews(tryCountButton, tryMinusButton)
-        
         successCountContainer.addSubviews(successCountButton, successMinusButton)
-        
-        
+                
     }
     
     override func configureLayout() {
         
         stackView.snp.makeConstraints { make in
             make.horizontalEdges.equalTo(self.safeAreaLayoutGuide)
-            make.height.equalTo(70)
+            make.height.equalTo(containerHeight)
         }
         
         colorIndicatorContainer.snp.makeConstraints { make in
             make.width.equalToSuperview().multipliedBy(0.2)
-            make.height.equalTo(70)
+            make.height.equalTo(containerHeight)
         }
         
         // Color indicator constraints
         colorIndicator.snp.makeConstraints { make in
             make.center.equalTo(colorIndicatorContainer)
-            make.size.equalTo(40)
+            make.size.equalTo(indicatorSize)
         }
         
         gradeLabel.snp.makeConstraints { make in
@@ -72,7 +71,7 @@ final class BoulderingAttemptView: BaseView {
         // Try count container constraints
         tryCountContainer.snp.makeConstraints { make in
             make.width.equalToSuperview().multipliedBy(0.4)
-            make.height.equalTo(70)
+            make.height.equalTo(containerHeight)
         }
         
         // Try count button constraints
@@ -84,14 +83,14 @@ final class BoulderingAttemptView: BaseView {
         // Try minus button constraints
         tryMinusButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-8)
-            make.width.height.equalTo(24)
+            make.trailing.equalToSuperview().offset(buttonOffset)
+            make.size.equalTo(buttonSize)
         }
         
         // Success count container constraints
         successCountContainer.snp.makeConstraints { make in
             make.width.equalToSuperview().multipliedBy(0.4)
-            make.height.equalTo(70)
+            make.height.equalTo(containerHeight)
         }
         
         // Success count button constraints
@@ -103,8 +102,8 @@ final class BoulderingAttemptView: BaseView {
         // Success minus button constraints
         successMinusButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-8)
-            make.width.height.equalTo(24)
+            make.trailing.equalToSuperview().offset(buttonOffset)
+            make.size.equalTo(buttonSize)
         }
     }
     
@@ -115,18 +114,19 @@ final class BoulderingAttemptView: BaseView {
 
         // Color indicator
         colorIndicator.clipsToBounds = true
+        colorIndicator.layer.cornerRadius = indicatorSize / 2
         
         gradeLabel.font = .setAllexFont(.bold_12)
         gradeLabel.textAlignment = .center
         
         // Configure minus buttons
-        tryMinusButton.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
-        successMinusButton.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
-        
-        tryMinusButton.tintColor = .systemRed
-        successMinusButton.tintColor = .systemRed
+        configureMinusButton(tryMinusButton)
+        configureMinusButton(successMinusButton)
     }
     
-    
+    private func configureMinusButton(_ button: UIButton) {
+        button.setImage(.setAllexSymbol(.minusCircleFill), for: .normal)
+        button.tintColor = .systemRed
+    }
     
 }

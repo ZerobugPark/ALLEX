@@ -32,13 +32,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "This app requires access to your camera for taking photos and videos.\""
+            "value" : "\"This app requires access to your camera for taking photos and videos.\""
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "\"이 앱은 사진과 비디오 촬영을 위해 카메라 접근 권한이 필요합니다.\""
+            "value" : "\"이 앱은 클라이밍 세션을 기록하고 중요한 순간을 촬영하기 위해 카메라 접근 권한이 필요합니다.\""
           }
         }
       }
@@ -50,31 +50,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\"This app requires access to your microphone for recording audio.\""
+            "value" : "\"This app requires access to your microphone to record audio while capturing climbing sessions and videos.\""
           }
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "\"이 앱은 오디오 녹음을 위해 마이크 접근 권한이 필요합니다.\""
-          }
-        }
-      }
-    },
-    "NSPhotoLibraryAddUsageDescription" : {
-      "comment" : "Privacy - Photo Library Additions Usage Description",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\"This app requires access to your photo library to select and save photos.\""
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "\"이 앱은 사진을 선택하고 저장하기 위해 사진 라이브러리 접근 권한이 필요합니다.\""
+            "state" : "translated",
+            "value" : "이 앱은 클라이밍 세션 및 영상 촬영 중 오디오를 녹음하기 위해 마이크 접근 권한이 필요합니다"
           }
         }
       }
@@ -86,13 +68,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\"This app requires access to your photo library to select and save photos.\""
+            "value" : "\"To save your climbing record videos, this app requires access to your photo library.\""
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“이 앱은 사진을 선택하거나 접근하기 위해 사진 라이브러리 권한이 필요합니다”"
+            "value" : "“클라이밍 기록 영상을 저장하려면 사진 보관함 접근 권한이 필요합니다.”"
           }
         }
       }

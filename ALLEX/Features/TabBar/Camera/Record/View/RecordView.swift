@@ -12,12 +12,12 @@ import SnapKit
 final class RecordView: BaseView {
     
     let backButton = BaseButton()
-    let titleLable = TitleLabel()
+    let gymNameLabel = TitleLabel()
     let timeRecord = TimeRecordView()
-    let recordView = RecordTableView()
+    let recordView = RecordEntryTableView()
     
     
-    let saveButton = BaseButton(key: .saveRecord)
+    let saveButton = BaseButton(key: .Button_Save_Record)
     let eyeButton = BaseButton()
     
     
@@ -26,7 +26,7 @@ final class RecordView: BaseView {
     var hiddenViewHeightConstraint: Constraint?
     
     override func configureHierarchy() {
-        self.addSubviews(backButton, titleLable, timeRecord, recordView, eyeButton, saveButton, hiddenView)
+        self.addSubviews(backButton, gymNameLabel, timeRecord, recordView, eyeButton, saveButton, hiddenView)
     }
     
     override func configureLayout() {
@@ -37,22 +37,21 @@ final class RecordView: BaseView {
             make.size.equalTo(44)
         }
         
-        titleLable.snp.makeConstraints { make in
+        gymNameLabel.snp.makeConstraints { make in
             make.top.equalTo(self.safeAreaLayoutGuide).offset(44)
             make.centerX.equalTo(self.safeAreaLayoutGuide)
             
         }
         
         timeRecord.snp.makeConstraints { make in
-            make.top.equalTo(titleLable.snp.bottom).offset(16)
+            make.top.equalTo(gymNameLabel.snp.bottom).offset(16)
             make.centerX.equalTo(self.safeAreaLayoutGuide)
-            make.width.equalTo(120)
-            make.height.equalTo(40)
+            make.width.equalToSuperview()
+            make.height.equalTo(70)
         }
-        
-        
+                
         recordView.snp.makeConstraints { make in
-            make.top.equalTo(timeRecord.snp.bottom).offset(16)
+            make.top.equalTo(timeRecord.snp.bottom).offset(4)
             make.horizontalEdges.equalTo(self.safeAreaLayoutGuide)
             make.bottom.equalTo(self.saveButton.snp.top).offset(-16)
         }
@@ -81,10 +80,9 @@ final class RecordView: BaseView {
         backButton.setImage(.setAllexSymbol(.xmark), for: .normal)
         backButton.tintColor = .setAllexColor(.textSecondary)
         
-        titleLable.font = .setAllexFont(.bold_14)
+        gymNameLabel.font = .setAllexFont(.bold_16)
         
         hiddenView.layer.cornerRadius = 10
-        //hiddenView.clipsToBounds = true
         hiddenView.layer.masksToBounds = false
         hiddenView.isHidden = true
         

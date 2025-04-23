@@ -64,7 +64,7 @@ final class GymHeaderCollectionViewCell: BaseCollectionViewCell {
         }
         
         instaButton.snp.makeConstraints { make in
-            make.top.equalTo(addressLabel.snp.bottom).offset(8)
+            make.bottom.equalTo(contentView.safeAreaLayoutGuide).offset(-4)
             make.leading.equalTo(instaImageView.snp.trailing).offset(8)
         }
 
@@ -87,7 +87,7 @@ final class GymHeaderCollectionViewCell: BaseCollectionViewCell {
         instaImageView.layer.cornerRadius = 17
         
         instaImageView.image = UIImage(resource: .instagram)
-        instaButton.tintColor = .setAllexColor(.textPirmary)
+        instaButton.setTitleColor(.setAllexColor(.textPirmary), for: .normal)
         
         copyButton.tintColor = .setAllexColor(.textPirmary)
         copyButton.setImage(.setAllexSymbol(.document), for: .normal)

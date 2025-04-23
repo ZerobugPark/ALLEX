@@ -15,7 +15,6 @@ class BaseCollectionViewCell: UICollectionViewCell {
         configureHierarchy()
         configureLayout()
         configureView()
-        
     }
     
     func configureHierarchy() { }
@@ -31,7 +30,7 @@ class BaseCollectionViewCell: UICollectionViewCell {
     }
     
     deinit {
-        print(String(describing: self) + "DeInit")
+        print("\(description) Deinit")
     }
     
 }

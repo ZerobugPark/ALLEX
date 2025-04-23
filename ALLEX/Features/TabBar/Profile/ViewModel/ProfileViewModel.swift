@@ -52,7 +52,7 @@ final class ProfileViewModel: BaseViewModel {
     }
     
     deinit {
-        print(String(describing: self) + "Deinit")
+        print("\(type(of: self)) Deinit")
     }
 }
 

@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 
 import RealmSwift
-
+import WidgetKit
 
 final class HomeViewModel: BaseViewModel {
     
@@ -34,34 +34,57 @@ final class HomeViewModel: BaseViewModel {
         let successCount: String
         let successRate: String
         let totalTime: String
-        let bestGrade: String
+        let latestBestGrade: String // 마지막 기록 중 최고 기록
         
     }
     
     var disposeBag = DisposeBag()
+    
+    private let setupUI = PublishRelay<HomeData>()
+    private let isChangedName = PublishRelay<(String, String)>()
+    
     private var sharedData: SharedDataModel
     
     let repository: any MonthlyClimbingStatisticsRepository = RealmMonthlyClimbingStatisticsRepository()
     
     init(_ sharedData: SharedDataModel) {
         self.sharedData = sharedData
+        
+        //기록화면이후 화면 업데이트
+        NotificationCenterManager.isUpdatedRecored.addObserverVoid().bind(with: self) { owner, _ in
+            
+            let data = owner.getUIData()
+            owner.setupUI.accept(data)
+            
+        }.disposed(by: disposeBag)
+        
+        
+        //프로필 업데이트
+        NotificationCenterManager.isChangedUserInfo.addObserverVoid().bind(with: self) { owner, _ in
+            
+            let name = UserDefaultManager.nickname
+            let startDate = owner.convertStringToDate(UserDefaultManager.startDate)
+            let date = LocalizedKey.userId.rawValue.localized(with: (owner.daysBetween(startDate, Date()) + 1))
+            owner.isChangedName.accept((name,date))
+            
+        }.disposed(by: disposeBag)
+        
+        
     }
-
+    
     
     
     func transform(input: Input) -> Output {
         
         let stopIndicator = PublishRelay<Void>()
-        let setupUI = PublishRelay<HomeData>()
-        let isChangedName = PublishRelay<(String, String)>()
         
-        let emptyData = HomeData(nickName: "", date: "", tryCount: "", successCount: "", successRate: "", totalTime: "", bestGrade: "")
+        let emptyData = HomeData(nickName: "", date: "", tryCount: "", successCount: "", successRate: "", totalTime: "", latestBestGrade: "")
         
         input.viewdidLoad.flatMap {
             NetworkManger.shared.callRequest()
             
         }.observe(on: MainScheduler.instance).bind(with: self) { owner, response in
-        
+            
             switch response {
             case .success(let value):
                 
@@ -77,7 +100,7 @@ final class HomeViewModel: BaseViewModel {
                 
                 let data = owner.getUIData()
                 
-                setupUI.accept(data)
+                owner.setupUI.accept(data)
                 stopIndicator.accept(())
                 
             case .failure(let error):
@@ -87,35 +110,18 @@ final class HomeViewModel: BaseViewModel {
             
         }.disposed(by: disposeBag)
         
-        NotificationCenterManager.isChangedUserInfo.addObserverVoid().bind(with: self) { owner, _ in
-            
-            let name = UserDefaultManager.nickname
-            print(UserDefaultManager.startDate)
-            let startDate = owner.convertStringToDate(UserDefaultManager.startDate)
-            let date = LocalizedKey.userId.rawValue.localized(with: (owner.daysBetween(startDate, Date()) + 1))
-            isChangedName.accept((name,date))
-            
-        }.disposed(by: disposeBag)
-        
-        
-//        상세기록화면이후 화면 업데이트
-        NotificationCenterManager.isUpdatedRecored.addObserverVoid().bind(with: self) { owner, _ in
-            
-            let data = owner.getUIData()
-            setupUI.accept(data)
-            
-        }.disposed(by: disposeBag)
-        
-    
+
         
         return Output(setupUI: setupUI.asDriver(onErrorJustReturn: emptyData), stopIndicator: stopIndicator.asDriver(onErrorJustReturn: ()), isChangedName: isChangedName.asDriver(onErrorJustReturn: (("",""))))
     }
     
     deinit {
-        print(String(describing: self) + "Deinit")
+        print("\(type(of: self)) Deinit")
     }
 }
 
+
+// MARK: Logic Function
 
 extension HomeViewModel {
     
@@ -123,11 +129,22 @@ extension HomeViewModel {
     func getUIData() -> HomeData {
         
         let data = repository.getCurrentMonthStatistics()
+        
         let startDate = convertStringToDate(UserDefaultManager.startDate)
         let date = LocalizedKey.userId.rawValue.localized(with: (daysBetween(startDate, Date()) + 1))
         let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)
-    
-        return HomeData(nickName: nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: String(format: "%.0f%%", data?.sucessRate ?? 0), totalTime: convertToTimeFormat(data?.totalClimbTime ?? 0), bestGrade: data?.lastGrade ?? "")
+        
+        let totalMonthTime = (data?.totalClimbTime ?? 0).toTimeFormat()
+        let latestGrade = data?.lastGrade ?? ""
+        let successRate = String(format: "%.0f%%", data?.sucessRate ?? 0)
+        
+        
+        UserDefaultManager.latestGrade = latestGrade
+        UserDefaultManager.totalExTime = totalMonthTime
+        UserDefaultManager.successRate = successRate
+        WidgetCenter.shared.reloadTimelines(ofKind: "AllexWidget")
+        
+        return HomeData(nickName: nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: successRate, totalTime: totalMonthTime, latestBestGrade: latestGrade)
     }
     
     func convertToGyms<T: Mappable>(from googleSheetData: GoogleSheetData, type: T.Type) -> [T] {
@@ -148,7 +165,7 @@ extension HomeViewModel {
         for format in formats {
             formatter.dateFormat = format
             if let date = formatter.date(from: dateString) {
-                print(date)
+                //print(date)
                 return date
             }
         }
@@ -164,19 +181,6 @@ extension HomeViewModel {
         return components.day ?? 0
     }
     
+
     
-    private func convertToTimeFormat(_ time: Int) -> String {
-        
-        // 시와 분으로 변환
-        let hours = time / 60
-        let minutes = time % 60
-        
-        // 두 자릿수로 포맷팅
-        return String(format: "%02d:%02d", hours, minutes)
-        
-        
-    }
-    
-    
- 
 }

@@ -15,12 +15,12 @@ final class PopUpView: BaseView {
     private let viewContainer = CustomView(radius: 10, bgColor: .setAllexColor(.backGroundSecondary))
 
     private let imageView = UIImageView(image: .setAllexSymbol(.list))
-    private let writeTitle = SubTitleLabel(key: .writeRecord, title: "")
-    private let subWriteTitle = SubTitleLabel(key: .writeRecordSub, title: "")
+    private let writeTitle = SubTitleLabel(key: .Info_Write_Record, title: "")
+    private let subWriteTitle = SubTitleLabel(key: .Info_Write_RecordSub, title: "")
    
     private let imageView2 = UIImageView(image: .setAllexSymbol(.video))
-    private let recodeTitle = SubTitleLabel(key: .videoRecord, title: "")
-    private let subRecodeTitle = TertiaryLabel(key: .videoRecordSub, title: "")
+    private let recodeTitle = SubTitleLabel(key: .Info_Video_Record, title: "")
+    private let subRecodeTitle = TertiaryLabel(key: .Info_Video_RecordSub, title: "")
     
     private let stackView = UIStackView()
     let writeRecord = CustomView(radius: 20, bgColor: .setAllexColor(.backGroundTertiary))
@@ -151,10 +151,10 @@ final class PopUpView: BaseView {
             .paragraphStyle: paragraphStyle
         ]
 
-        var attributedString = NSAttributedString(string: LocalizedKey.writeRecordSub.rawValue.localized, attributes: attributes)
+        var attributedString = NSAttributedString(string: LocalizedKey.Info_Write_RecordSub.rawValue.localized, attributes: attributes)
         subWriteTitle.attributedText = attributedString
         
-        attributedString = NSAttributedString(string: LocalizedKey.videoRecordSub.rawValue.localized, attributes: attributes)
+        attributedString = NSAttributedString(string: LocalizedKey.Info_Video_RecordSub.rawValue.localized, attributes: attributes)
         subRecodeTitle.attributedText = attributedString
         
         // 이미지뷰 설정

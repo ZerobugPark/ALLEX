@@ -12,61 +12,67 @@ import RxSwift
 
 
 final class SignUpViewModel: BaseViewModel {
-
     
-
     struct Input {
-        let currentText: ControlProperty<String>
-        let edited: Observable<ControlProperty<String>.Element>
-        let startButtonTapped: Observable<(ControlProperty<String>.Element, ControlProperty<String>.Element)>
+        let currentText: ControlProperty<String> //현재 입력된 텍스트
+        let signUpTapped: Observable<(ControlProperty<String>.Element, ControlProperty<String>.Element)>
     }
     
     struct Output {
-        let changedCountLable: Driver<Int>
-        let vaildStatus: Driver<Bool>
+        let nicknameLength: Driver<Int>
+        let isNicknameValid: Driver<Bool>
         let showHome: Driver<Void>
     }
     
     var disposeBag = DisposeBag()
     
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone.current
+        return formatter
+    }()
+    
+    
+    
     func transform(input: Input) -> Output {
         
-        let changedCountLable =  PublishRelay<Int>()
-        let vaildStatus = PublishRelay<Bool>()
+        let nicknameLength =  BehaviorRelay<Int>(value: 0)
+        
+        let isNicknameValid = BehaviorRelay<Bool>(value: false)
         let showHome = PublishRelay<Void>()
         
+        
         input.currentText.bind(with: self) { owner, str in
-          
-            changedCountLable.accept(str.count)
-            
+            nicknameLength.accept(str.count)
+            isNicknameValid.accept(owner.isValidNickname(str))
         }.disposed(by: disposeBag)
         
-        input.edited.bind(with: self) { owner, str in
-            vaildStatus.accept(owner.vaildString(str))
-            
-        }.disposed(by: disposeBag)
-
-        input.startButtonTapped.bind(with: self) { owner, value in
+        
+        input.signUpTapped.bind(with: self) { owner, value in
             
             UserDefaultManager.isLoggedIn = true
             UserDefaultManager.nickname = value.0
+            UserDefaultManager.startDate = value.1.isEmpty ? owner.getCurrentDateString() : value.1
             
-            if value.1.isEmpty {
-                UserDefaultManager.startDate = owner.getCurrentDateString()
-            } else {
-                UserDefaultManager.startDate = value.1
-                print(value.1)
-            }
-            
-            
-        
             showHome.accept(())
             
         }.disposed(by: disposeBag)
         
-        return Output(changedCountLable: changedCountLable.asDriver(onErrorJustReturn: 0),
-                      vaildStatus: vaildStatus.asDriver(onErrorJustReturn: false),
-                      showHome: showHome.asDriver(onErrorJustReturn: ()))
+        return Output(
+            nicknameLength: nicknameLength.asDriver(onErrorRecover: { error in
+                print("nicknameLength error: \(error)")
+                return Driver.just(0)
+            }),
+            isNicknameValid: isNicknameValid.asDriver(onErrorRecover: { error in
+                print("isNicknameValid error: \(error)")
+                return Driver.just(false)
+            }),
+            showHome: showHome.asDriver(onErrorRecover: { error in
+                print("showHome error: \(error)")
+                return Driver.just(())
+            })
+        )
     }
     
     deinit {
@@ -75,23 +81,16 @@ final class SignUpViewModel: BaseViewModel {
 }
 
 
+// MARK: Logic Function
 extension SignUpViewModel {
     
+    //만약 유저가 시작 날짜를 등록하지 않을 경우 회원 가입 날짜 등록
     private func getCurrentDateString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = TimeZone.current
-        return formatter.string(from: Date())
+        return dateFormatter.string(from: Date())
     }
-
- 
-    private func vaildString(_ str: String) -> Bool {
-        
-        if str.count > 1 && str.count < 8 {
-            return true
-        } else {
-            return false
-        }
-        
+    
+    //닉네임 유효성 검사
+    private func isValidNickname(_ str: String) -> Bool {
+        return str.count > 1 && str.count < 8
     }
 }
