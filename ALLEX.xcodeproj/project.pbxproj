@@ -191,7 +191,7 @@
 				D02E5D812D95094600534F24 /* Resources */,
 				D0C187D72D9EE69100383EED /* Embed Frameworks */,
 				D0C38ABB2DB7EBBD008E6769 /* Embed Foundation Extensions */,
-				D0A0D57E2DB90B3300881A1A /* ShellScript */,
+				D0A0D57E2DB90B3300881A1A /* FireBase Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -304,7 +304,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		D0A0D57E2DB90B3300881A1A /* ShellScript */ = {
+		D0A0D57E2DB90B3300881A1A /* FireBase Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 12;
@@ -320,6 +320,7 @@
 				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
 				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}.debug.dylib",
 			);
+			name = "FireBase Crashlytics";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -558,7 +559,7 @@
 				CODE_SIGN_ENTITLEMENTS = AllexWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 9ZR9M5J9M6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AllexWidget/Info.plist;
