@@ -10,6 +10,7 @@
 		D02E5D9C2D95096500534F24 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = D02E5D9B2D95096500534F24 /* .gitignore */; };
 		D07C532C2DA4FF1800EF53F8 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = D07C532B2DA4FF1800EF53F8 /* RxDataSources */; };
 		D07C53352DA50CEE00EF53F8 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D0CEC67B2DA444C7003D50B1 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		D098D8AE2DC76C75005781D1 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D098D8AD2DC76C75005781D1 /* Kingfisher */; };
 		D09F9D232DA684FB00A0AA69 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = D09F9D222DA684FB00A0AA69 /* Lottie */; };
 		D0A0D57A2DB9099C00881A1A /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = D0A0D5792DB9099C00881A1A /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		D0A0D57C2DB9099C00881A1A /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = D0A0D57B2DB9099C00881A1A /* FirebaseCrashlytics */; };
@@ -129,6 +130,7 @@
 				D0CEC67C2DA444C7003D50B1 /* RealmSwift in Frameworks */,
 				D0CEC6772DA444A2003D50B1 /* RxCocoa in Frameworks */,
 				D0CEC6742DA4448C003D50B1 /* SnapKit in Frameworks */,
+				D098D8AE2DC76C75005781D1 /* Kingfisher in Frameworks */,
 				D07C532C2DA4FF1800EF53F8 /* RxDataSources in Frameworks */,
 				D0A0D57A2DB9099C00881A1A /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				D0A0D57C2DB9099C00881A1A /* FirebaseCrashlytics in Frameworks */,
@@ -211,6 +213,7 @@
 				D09F9D222DA684FB00A0AA69 /* Lottie */,
 				D0A0D5792DB9099C00881A1A /* FirebaseAnalyticsWithoutAdIdSupport */,
 				D0A0D57B2DB9099C00881A1A /* FirebaseCrashlytics */,
+				D098D8AD2DC76C75005781D1 /* Kingfisher */,
 			);
 			productName = ALLEX;
 			productReference = D02E5D832D95094600534F24 /* ALLEX.app */;
@@ -273,6 +276,7 @@
 				D07C532A2DA4FF1800EF53F8 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 				D09F9D212DA684FB00A0AA69 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				D0A0D5782DB9099C00881A1A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				D098D8AC2DC76C75005781D1 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D02E5D842D95094600534F24 /* Products */;
@@ -649,6 +653,14 @@
 				minimumVersion = 5.0.2;
 			};
 		};
+		D098D8AC2DC76C75005781D1 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.2;
+			};
+		};
 		D09F9D212DA684FB00A0AA69 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
@@ -696,6 +708,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D07C532A2DA4FF1800EF53F8 /* XCRemoteSwiftPackageReference "RxDataSources" */;
 			productName = RxDataSources;
+		};
+		D098D8AD2DC76C75005781D1 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D098D8AC2DC76C75005781D1 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 		D09F9D222DA684FB00A0AA69 /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
