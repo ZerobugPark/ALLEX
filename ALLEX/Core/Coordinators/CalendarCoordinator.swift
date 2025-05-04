@@ -30,7 +30,7 @@ final class CalendarCoordinator: Coordinator {
     }
     
     func showDetail(id: ObjectId) {
-        let vm = DetailInfoViewModel(sharedData, id)
+        let vm = DetailInfoViewModel(sharedData, mode: .detail(id))
         let vc = DetailInfoViewController(viewModel: vm)
         navigationController.pushViewController(vc, animated: true)
         

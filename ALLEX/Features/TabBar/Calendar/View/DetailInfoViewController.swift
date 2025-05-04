@@ -12,7 +12,7 @@ class DetailInfoViewController: BaseViewController<ResultView, DetailInfoViewMod
     override func viewDidLoad() {
         super.viewDidLoad()
 
-     
+        navigationItem.title = "Result"
     }
     
     override func bind() {
@@ -50,4 +50,9 @@ class DetailInfoViewController: BaseViewController<ResultView, DetailInfoViewMod
         }.disposed(by: disposeBag)
         
     }
+      
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        navigationController?.navigationBar.isHidden = false
+//    }
 }
