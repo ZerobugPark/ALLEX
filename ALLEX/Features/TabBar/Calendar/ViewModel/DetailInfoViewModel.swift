@@ -12,37 +12,41 @@ import RxSwift
 
 import RealmSwift
 
+// 클라이밍을 최신기록을 보여줄 건지, 특정 기록을 보여줄건지
+enum ResultMode {
+    case latest
+    case detail(ObjectId)
+}
+
 
 final class DetailInfoViewModel: BaseViewModel {
     
-    enum Mode {
-        case latest
-        case detail(ObjectId)
-    }
-    
     
     struct Input {
-        
+        let modifyButtonTapped: ControlEvent<Void>
     }
     
     struct Output {
         let setupUI: Driver<ResultData>
-        
+        let modifyButton: Driver<ObjectId>
     }
     
     
     var disposeBag = DisposeBag()
     
-    var sharedData: SharedDataModel
+    private let sharedData: SharedDataModel
+    private let mode: ResultMode
+    private var objectID: ObjectId = ObjectId()
+
     
-    
-    private let mode: Mode
     private let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
+    
     private let empty = ResultData(space: "", date: "", totalTryCount: "", totalSuccessCount: "", totalSuccessRate: "", bestGrade: "", excersieTime: "", results: [])
+    
     private var result: ResultData
     
     
-    init(_ sharedData: SharedDataModel, mode: Mode) {
+    init(_ sharedData: SharedDataModel, mode: ResultMode) {
         self.sharedData = sharedData
         self.mode = mode
         self.result = empty
@@ -61,8 +65,15 @@ final class DetailInfoViewModel: BaseViewModel {
         
         
         let setupUI = BehaviorRelay<ResultData>(value: result)
+        let modifyButton = PublishRelay<ObjectId>()
         
-        return Output(setupUI: setupUI.asDriver(onErrorJustReturn: empty))
+        
+        input.modifyButtonTapped.bind(with: self) { owner, _ in
+            modifyButton.accept(owner.objectID)
+        }.disposed(by: disposeBag)
+        
+        
+        return Output(setupUI: setupUI.asDriver(onErrorJustReturn: empty), modifyButton: modifyButton.asDriver(onErrorJustReturn: ObjectId()))
     }
     
     
@@ -102,6 +113,7 @@ extension DetailInfoViewModel {
             case .latest:
                 return repository.findLastBoulderingList()
             case .detail(let id):
+                objectID = id
                 return repository.findBoulderingSelectedList(by: id)
             }
         }()

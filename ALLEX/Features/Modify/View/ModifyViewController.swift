@@ -15,7 +15,7 @@ import RxDataSources
 final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel> {
     
     
-    weak var coordinator: CalendarCoordinator?
+    weak var coordinator: ModifyCoordinating?
     
     
     private let selectedGym = PublishRelay<(String, String)>()
@@ -24,7 +24,7 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
     typealias listDataSource = RxCollectionViewSectionedReloadDataSource<BoulderingSection>
     typealias collectionViewDataSource = CollectionViewSectionedDataSource<BoulderingSection>
     
-    private let barButtonItem = UIBarButtonItem(title: "저장", style: .plain, target: nil, action: nil)
+    private let barButtonItem = UIBarButtonItem(title: "저장", style: .done, target: nil, action: nil)
     
     private lazy var dataSource: listDataSource = listDataSource (configureCell: { [weak self] dataSource, collectionView, indexPath, item in
         
@@ -101,7 +101,7 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         
         
         
-        let input = ModifyViewModel.Input(spaceTextField: mainView.spaceTextField.rx.text.orEmpty, doneButtonTapped: mainView.doneButton.rx.tap.withLatestFrom(timeSelected), selectedGym: selectedGym.asDriver(onErrorJustReturn: ("", "")), countType: countType.asDriver(onErrorJustReturn: (.successMinus, 0)), saveButtonTapped: barButtonItem.rx.tap.withLatestFrom(inputFields))
+        let input = ModifyViewModel.Input(viewDidLoadTrigger: Observable.just(()), spaceTextField: mainView.spaceTextField.rx.text.orEmpty, doneButtonTapped: mainView.doneButton.rx.tap.withLatestFrom(timeSelected), selectedGym: selectedGym.asDriver(onErrorJustReturn: ("", "")), countType: countType.asDriver(onErrorJustReturn: (.successMinus, 0)), saveButtonTapped: barButtonItem.rx.tap.withLatestFrom(inputFields))
         
         let output = viewModel.transform(input: input)
         
@@ -112,7 +112,7 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         
         output.dismiss.drive(with: self) { owner, _ in
             
-            owner.coordinator?.dismiss()
+            owner.coordinator?.popView()
             
         }.disposed(by: disposeBag)
         

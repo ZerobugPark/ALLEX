@@ -12,17 +12,6 @@ import RxSwift
 import RxDataSources
 import RealmSwift
 
-//struct BoulderingWithCount {
-//    let brandID: String
-//    let gradeLevel: String
-//    let color: String
-//    let difficulty : String
-//    var tryCount: Int
-//    var successCount: Int
-//    
-//}
-
-
 
 struct BoulderingSection {
     var header: String
@@ -43,10 +32,17 @@ enum CountType {
     case successPlus, successMinus, tryPlus, tryMinus
 }
 
+enum ModifyMode {
+    case add
+    case modify(id: ObjectId)
+}
 
 final class ModifyViewModel: BaseViewModel {
     
+
+    
     struct Input {
+        let viewDidLoadTrigger: Observable<Void>
         let spaceTextField: ControlProperty<String>
         let doneButtonTapped: Observable<TimeInterval>
         let selectedGym: Driver<(String, String)>
@@ -69,18 +65,19 @@ final class ModifyViewModel: BaseViewModel {
     
     var disposeBag = DisposeBag()
     
-    var sharedData: SharedDataModel
+    private let sharedData: SharedDataModel
+    private let mode: ModifyMode
     
     private var currentGym: (String, String) = ("","")
-    
     private var gymList: [Gym] = []
     
     // 첫번째 인덱스만 사용함
     private var boulderingData: [BoulderingSection] = []
     var totalMinutes = 0
     
-    init(_ sharedData: SharedDataModel) {
+    init(_ sharedData: SharedDataModel, mode: ModifyMode) {
         self.sharedData = sharedData
+        self.mode = mode
         
     }
     
@@ -93,6 +90,20 @@ final class ModifyViewModel: BaseViewModel {
         let gradeList = BehaviorRelay(value: boulderingData)
         let errorMsg = PublishRelay<Void>()
         let dismiss = PublishRelay<Void>()
+        
+        
+        input.viewDidLoadTrigger.bind(with: self) { owner, _ in
+            
+            switch owner.mode {
+            case .add:
+                break
+            case .modify(id: let id):
+                //Nil
+                dump(owner.repository.findBoulderingSelectedList(by: id))
+            }
+            
+            
+        }.disposed(by: disposeBag)
         
         input.spaceTextField.bind(with: self) { owner, _ in
             

@@ -6,3 +6,10 @@
 //
 
 import Foundation
+import RealmSwift
+
+protocol ModifyCoordinating: AnyObject {
+    func showDetail(mode: ResultMode)
+    func showModify(mode: ModifyMode)
+    func popView()
+}
