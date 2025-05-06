@@ -28,6 +28,7 @@ extension UIImage {
         case chevronRight = "chevron.right"
         case document = "document.on.document"
         case minusCircleFill = "minus.circle.fill"
+        case modify = "square.and.pencil"
     }
 
     

@@ -97,7 +97,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         
         output.dismissView.drive(with: self) { owner, _ in
             
-            owner.coordinator?.showResult() //dismiss()
+            owner.coordinator?.showDetail(mode: .latest) //dismiss()
             
         }.disposed(by: disposeBag)
         
@@ -136,9 +136,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
     
     deinit {
         print("RecordViewController Deinit")
-        
         coordinator = nil
-       // print(coordinator)
     }
     
     
@@ -180,12 +178,9 @@ extension RecordViewController: UITableViewDelegate {
 
 extension RecordViewController {
     
+    // MARK: Func: 난이도 숨김
     private func updateHiddenLayer() {
-        
         let isHidden =  mainView.isHiddenViewVisible
         self.mainView.toggleHiddenView(isHidden: isHidden)
-        
-        
-        
     }
 }

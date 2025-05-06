@@ -96,6 +96,7 @@ extension GymSelectionViewModel {
     
     private func recentVisit() -> [Gym] {
         
+        // 최근 기록 방문 짐
         let data = repository.findLastBoulderingLists(limit: 10)
         
         var gymSet: Set<Gym> = []

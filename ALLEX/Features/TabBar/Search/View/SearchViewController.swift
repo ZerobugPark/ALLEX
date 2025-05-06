@@ -58,6 +58,7 @@ final class SearchViewController: BaseViewController<SearchListView, SearchListV
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = false
+        tabBarController?.tabBar.isHidden = false
         setupSearchController()
        
     }

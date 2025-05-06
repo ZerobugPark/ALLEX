@@ -202,7 +202,7 @@ extension RecordViewModel {
         let info = sharedData.getData(for: String.self)!
         let brandId = info[0]
         let gymId = info[1]
-        let timeMinute = timeCount / 60
+        let timeMinute = max(1, timeCount / 60)
         let currentDate = Date()
         
         // 2. 통계 계산 (한 번의 순회로 여러 값 계산)

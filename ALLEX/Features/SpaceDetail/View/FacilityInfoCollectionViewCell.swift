@@ -49,8 +49,8 @@ final class FacilityInfoCollectionViewCell: BaseCollectionViewCell {
     func configure(with info: FacilityInfo) {
         iconView.image = .setFacilitySymbol(from: info.facility)
         
-        let currentLanguage = Locale.preferredLanguageCode
-        let localizedFacility = Facility(rawValue: info.facility)?.localizedName(for: currentLanguage) ?? info.facility
+        
+        let localizedFacility = Facility(rawValue: info.facility)?.localizedName() ?? info.facility
         nameLabel.text = localizedFacility
     }
     

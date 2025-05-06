@@ -43,15 +43,15 @@ extension UIImage {
 enum Facility: String {
     case Toilet, Footbath, Shower, Locker, StretchingZone, Training, Towel
     
-    func localizedName(for language: String) -> String {
+    func localizedName() -> String {
         switch self {
-        case .Toilet: return language == "en" ?  "Toilet" : "화장실"
-        case .Footbath: return language == "en" ?  "Footbath" : "세족실"
-        case .Shower: return language == "en" ? "Shower" : "샤워실"
-        case .Locker: return language == "en" ? "Locker" : "라커룸"
-        case .StretchingZone: return language == "en" ? "Stretching Zone" : "스트레칭 존"
-        case .Training: return language == "en" ?  "Training Area" : "트레이닝 구역"
-        case .Towel: return language == "en" ? "Towel Service" : "수건 제공"
+        case .Toilet: return Locale.isEnglish ?  "Toilet" : "화장실"
+        case .Footbath: return Locale.isEnglish ?  "Footbath" : "세족실"
+        case .Shower: return Locale.isEnglish ? "Shower" : "샤워실"
+        case .Locker: return Locale.isEnglish ? "Locker" : "라커룸"
+        case .StretchingZone: return Locale.isEnglish ? "Stretching Zone" : "스트레칭 존"
+        case .Training: return Locale.isEnglish ?  "Training Area" : "트레이닝 구역"
+        case .Towel: return Locale.isEnglish ? "Towel Service" : "수건 제공"
         }
     }
 }

@@ -8,8 +8,7 @@
 import UIKit
 
 
-final class CameraCoordinator: Coordinator {
-    
+final class CameraCoordinator: Coordinator, ModifyCoordinating {
     
     var childCoordinators: [Coordinator] = []
     
@@ -88,7 +87,7 @@ final class CameraCoordinator: Coordinator {
         navigationController.present(vc, animated: true)
     }
     
-
+    
     func showCamera() {
         guard let navigationController = extractNavigationController() else {
             handleNavigationControllerMissing()
@@ -102,28 +101,63 @@ final class CameraCoordinator: Coordinator {
         // overFullScreen은 그 화면을 유지한채 사용
         navigationController.present(vc, animated: true)
     }
+    
+    
+    func showDetail(mode: ResultMode) {
+        
+        switch mode {
+        case .latest:
+            // MARK: 현재화면을 dissMiss한 이후 네비게이션으로 이동
 
-    
-    func showResult() {
-        presentingController.dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-            
-            guard let navigationController = extractNavigationController() else {
-                handleNavigationControllerMissing()
-                return
+            presentingController.dismiss(animated: true) { [weak self] in
+                guard let self = self else { return }
+                
+                guard let navigationController = extractNavigationController() else {
+                    handleNavigationControllerMissing()
+                    return
+                }
+                
+                let vm = DetailInfoViewModel(sharedData, mode: .latest)
+                let vc = DetailInfoViewController(viewModel: vm)
+                vc.coordinator = self
+                vc.hidesBottomBarWhenPushed = true // 탭바 숨김
+                navigationController.pushViewController(vc, animated: true)
+                
+                
             }
-            
-            let vm = ResultViewModel(sharedData)
-            let vc = ResultViewController(viewModel: vm)
-            vc.hidesBottomBarWhenPushed = true
-            navigationController.pushViewController(vc, animated: true)
-            
-    
+        case .detail(_):
+            break
         }
+        
+    }
+    
+    func showModify(mode: ModifyMode) {
+        
+        guard let navigationController = extractNavigationController() else {
+            handleNavigationControllerMissing()
+            return
+        }
+        
+        let vm = ModifyViewModel(sharedData, mode: mode)
+        let vc = ModifyViewController(viewModel: vm)
+        vc.coordinator = self
+        navigationController.pushViewController(vc, animated: true)
+        
+    }
+    
+    func popView() {
+        
+        guard let navigationController = extractNavigationController() else {
+            handleNavigationControllerMissing()
+            return
+        }
+        
+        navigationController.popViewController(animated: true)
+    
     }
     
     func dismiss() {
-        presentingController.dismiss(animated: true) 
+        presentingController.dismiss(animated: true)
     }
     
     deinit {

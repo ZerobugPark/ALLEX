@@ -45,9 +45,9 @@ extension GymInfoSectionModel: SectionModelType {
     typealias Item = GymInfoSectionItem
     
 
-    
     init(original: GymInfoSectionModel, items: [GymInfoSectionItem]) {
         self = GymInfoSectionModel(section: original.section, items: items)
     }
+    
 }
 
