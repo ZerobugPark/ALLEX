@@ -54,10 +54,6 @@ final class CalendarCoordinator: Coordinator, ModifyCoordinating {
         
     }
     
-    func dismiss() {
-        navigationController.popViewController(animated: true)
-    }
-    
     func popView() {
         navigationController.popViewController(animated: true)
     }

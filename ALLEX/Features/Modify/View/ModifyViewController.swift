@@ -14,7 +14,7 @@ import RxDataSources
 
 final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel> {
     
-    
+
     weak var coordinator: ModifyCoordinating?
     
     
@@ -34,28 +34,39 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         
         cell.setupData(item)
         
-        cell.bouldering.successCountButton.minusButton.rx.tap.bind(with: self) { owner, _ in
-            
-            owner.countType.accept((.successMinus, item.gradeLevel))
-            
-        }.disposed(by: cell.disposeBag)
+        let gradeLevel = item.gradeLevel
         
-        cell.bouldering.successCountButton.plusButton.rx.tap.bind(with: self) { owner, _ in
-            
-            owner.countType.accept((.successPlus, item.gradeLevel))
-            
-        }.disposed(by: cell.disposeBag)
+        bindCountButton(cell.bouldering.successCountButton.minusButton, countType: .successMinus, gradeLevel: gradeLevel, disposeBag: cell.disposeBag)
         
-        cell.bouldering.tryCountButton.minusButton.rx.tap.bind(with: self) { owner, _ in
-            owner.countType.accept((.tryMinus, item.gradeLevel))
-            
-        }.disposed(by: cell.disposeBag)
+        bindCountButton(cell.bouldering.successCountButton.plusButton, countType: .successPlus, gradeLevel: gradeLevel, disposeBag: cell.disposeBag)
         
-        cell.bouldering.tryCountButton.plusButton.rx.tap.bind(with: self) { owner, _ in
-            owner.countType.accept((.tryPlus, item.gradeLevel))
-            
-        }.disposed(by: cell.disposeBag)
+        bindCountButton(cell.bouldering.tryCountButton.minusButton, countType: .tryMinus, gradeLevel: gradeLevel, disposeBag: cell.disposeBag)
         
+        bindCountButton(cell.bouldering.tryCountButton.plusButton, countType: .tryPlus, gradeLevel: gradeLevel, disposeBag: cell.disposeBag)
+        
+        
+//    cell.bouldering.successCountButton.minusButton.rx.tap.bind(with: self) { owner, _ in
+//        
+//        owner.countType.accept((.successMinus, item.gradeLevel))
+//        
+//    }.disposed(by: cell.disposeBag)
+//    
+//    cell.bouldering.successCountButton.plusButton.rx.tap.bind(with: self) { owner, _ in
+//        
+//        owner.countType.accept((.successPlus, item.gradeLevel))
+//        
+//    }.disposed(by: cell.disposeBag)
+//    
+//    cell.bouldering.tryCountButton.minusButton.rx.tap.bind(with: self) { owner, _ in
+//        owner.countType.accept((.tryMinus, item.gradeLevel))
+//        
+//    }.disposed(by: cell.disposeBag)
+//    
+//    cell.bouldering.tryCountButton.plusButton.rx.tap.bind(with: self) { owner, _ in
+//        owner.countType.accept((.tryPlus, item.gradeLevel))
+//        
+//    }.disposed(by: cell.disposeBag)
+//        
         return cell
         
     },      configureSupplementaryView: { dataSource, collectionView, kind, indexPath in
@@ -71,18 +82,13 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         
     })
                                                                   
- 
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        registerCollectionView()
-        
-        navigationItem.rightBarButtonItem = barButtonItem
-        
-        mainView.spaceTextField.delegate = self
-        mainView.timeTxetFiled.delegate = self
-        
+        setupNavigation()
+        setupCollectionView()
+        setupTextFieldDelegates()
     }
     
     
@@ -92,13 +98,14 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         let timeSelected = mainView.timePicker.rx
             .controlEvent(.valueChanged)
             .map { [weak mainView] in mainView?.timePicker.countDownDuration ?? 0 }
-        
-        let dateText = mainView.dateTextField.rx.text.orEmpty
-        let nameText = mainView.timeTxetFiled.rx.text.orEmpty
-        let gradeText = mainView.spaceTextField.rx.text.orEmpty
+     
 
-        let inputFields = Observable.combineLatest(dateText, nameText, gradeText)
-        
+        let inputFields = Observable
+             .combineLatest(
+                 mainView.dateTextField.rx.text.orEmpty,
+                 mainView.timeTxetFiled.rx.text.orEmpty,
+                 mainView.spaceTextField.rx.text.orEmpty
+             )
         
         
         let input = ModifyViewModel.Input(viewDidLoadTrigger: Observable.just(()), spaceTextField: mainView.spaceTextField.rx.text.orEmpty, doneButtonTapped: mainView.doneButton.rx.tap.withLatestFrom(timeSelected), selectedGym: selectedGym.asDriver(onErrorJustReturn: ("", "")), countType: countType.asDriver(onErrorJustReturn: (.successMinus, 0)), saveButtonTapped: barButtonItem.rx.tap.withLatestFrom(inputFields))
@@ -108,18 +115,16 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         output.gymList.drive(mainView.tableView.rx.items(cellIdentifier: GymListTableViewCell.id, cellType: GymListTableViewCell.self)) { row, element , cell in
             
             cell.setupUI(data: element)
+            
         }.disposed(by: disposeBag)
         
-        output.dismiss.drive(with: self) { owner, _ in
-            
+        output.popView.drive(with: self) { owner, _ in
             owner.coordinator?.popView()
-            
         }.disposed(by: disposeBag)
         
         
         output.timeTextField.drive(with: self) { owner, time in
             owner.mainView.timeTxetFiled.text = time
-            
             owner.mainView.timeTxetFiled.resignFirstResponder()
             
         }.disposed(by: disposeBag)
@@ -136,6 +141,15 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
             
         }.disposed(by: disposeBag)
         
+        
+        output.modifyInit.drive(with: self) { owner, value in
+            owner.mainView.timeTxetFiled.text = value.time
+            owner.mainView.spaceTextField.text = value.space
+            owner.mainView.dateTextField.text = value.date
+        
+            
+        }.disposed(by: disposeBag)
+        
         mainView.tableView.rx.modelSelected(Gym.self).bind(with: self) { owner, data in
             
             owner.selectedGym.accept((data.brandID, data.gymID))
@@ -145,16 +159,13 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
             
         }.disposed(by: disposeBag)
         
-        
+
     }
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
-    
-  
-
     
 }
 
@@ -166,13 +177,10 @@ extension ModifyViewController: UITextFieldDelegate {
 
 extension ModifyViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        
-        return CGSize(width: view.frame.width, height: 70)
-        
-        
-    }
     
+        return CGSize(width: view.frame.width, height: 70)
+
+    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
@@ -180,21 +188,34 @@ extension ModifyViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension ModifyViewController {
+private extension ModifyViewController {
     
-    private func registerCollectionView() {
-        mainView.tableView.register(GymListTableViewCell.self, forCellReuseIdentifier: GymListTableViewCell.id)
-        
-        
-        mainView.collectionView.register(
-            ModifyCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: ModifyCollectionReusableView.reuseId)
-        
-        
-        mainView.collectionView.register(ModifyCollectionViewCell.self, forCellWithReuseIdentifier: ModifyCollectionViewCell.id)
-        
-        mainView.collectionView.rx.setDelegate(self).disposed(by: disposeBag)
+    func setupNavigation() {
+        navigationItem.rightBarButtonItem = barButtonItem
+    }
+
+    func setupTextFieldDelegates() {
+        mainView.spaceTextField.delegate = self
+        mainView.timeTxetFiled.delegate = self
     }
     
+    func setupCollectionView() {
+        mainView.tableView.register(GymListTableViewCell.self, forCellReuseIdentifier: GymListTableViewCell.id)
+        
+        mainView.collectionView.register(ModifyCollectionViewCell.self, forCellWithReuseIdentifier: ModifyCollectionViewCell.id)
+        mainView.collectionView.register(ModifyCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: ModifyCollectionReusableView.reuseId)
+        mainView.collectionView.rx.setDelegate(self).disposed(by: disposeBag)
+    }
+        
+    
+    // MARK: DRY원칙 적용 (Don't Repeat Yourself)
+    // 1. 동일한 로직을 사용하는 대신에, 함수로 묶어서 하나의 메서드로 처리
+    private func bindCountButton(_ button: UIButton, countType: CountType, gradeLevel: Int, disposeBag: DisposeBag) {
+        button.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.countType.accept((countType, gradeLevel))
+            }
+            .disposed(by: disposeBag)
+    }
     
 }

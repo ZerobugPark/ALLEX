@@ -51,12 +51,12 @@ final class ModifyViewModel: BaseViewModel {
     }
     
     struct Output {
-        
+        let modifyInit: Driver<ModifyInit>
         let gymList: Driver<[Gym]>
         let timeTextField: Driver<String>
         let bouldering: Driver<[BoulderingSection]>
         let errorMessage: Driver<Void>
-        let dismiss: Driver<Void>
+        let popView: Driver<Void>
     }
     
     let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
@@ -86,20 +86,26 @@ final class ModifyViewModel: BaseViewModel {
     func transform(input: Input) -> Output {
         
         let outputGymList = BehaviorRelay(value: gymList)
-        let userExcersisetime = PublishRelay<String>()
+        let userExcersisetime = BehaviorRelay<String>(value: "")
         let gradeList = BehaviorRelay(value: boulderingData)
         let errorMsg = PublishRelay<Void>()
-        let dismiss = PublishRelay<Void>()
-        
+        let popView = PublishRelay<Void>()
+        let modifyInit = BehaviorRelay(value: ModifyInit())
         
         input.viewDidLoadTrigger.bind(with: self) { owner, _ in
             
             switch owner.mode {
             case .add:
                 break
-            case .modify(id: let id):
-                //Nil
-                dump(owner.repository.findBoulderingSelectedList(by: id))
+            case .modify(let id):
+                let data = owner.setupModifyInitialValues(id: id)
+                modifyInit.accept(data)
+                
+                
+                owner.boulderingData = [BoulderingSection(header: "", items: data.bouldering)]
+                gradeList.accept(owner.boulderingData)
+                
+                
             }
             
             
@@ -145,15 +151,15 @@ final class ModifyViewModel: BaseViewModel {
             } else {
                 
                 owenr.savedData(for: value.0)
-                dismiss.accept(())
+                popView.accept(())
                 NotificationCenterManager.isUpdatedRecored.post()
                 
             }
             
         }.disposed(by: disposeBag)
         
+        // MARK: 타임피커의 시간을 받음
         input.doneButtonTapped.bind(with: self) { owner, timeValue in
-            
             let time = owner.donePressed(time: timeValue)
             userExcersisetime.accept(time)
             
@@ -161,7 +167,7 @@ final class ModifyViewModel: BaseViewModel {
         
         
         
-        return Output(gymList: outputGymList.asDriver(onErrorJustReturn: []), timeTextField: userExcersisetime.asDriver(onErrorJustReturn: ""), bouldering: gradeList.asDriver(onErrorJustReturn: []), errorMessage: errorMsg.asDriver(onErrorJustReturn: ()), dismiss: dismiss.asDriver(onErrorJustReturn: ()))
+        return Output(modifyInit: modifyInit.asDriver(onErrorJustReturn: ModifyInit()), gymList: outputGymList.asDriver(onErrorJustReturn: []), timeTextField: userExcersisetime.asDriver(onErrorJustReturn: ""), bouldering: gradeList.asDriver(onErrorJustReturn: []), errorMessage: errorMsg.asDriver(onErrorJustReturn: ()), popView: popView.asDriver(onErrorJustReturn: ()))
     }
     
     
@@ -171,8 +177,67 @@ final class ModifyViewModel: BaseViewModel {
 }
 
 
+// MARK: 수정일 때, 초기값 설정
 extension ModifyViewModel {
     
+    struct ModifyInit {
+        var date: String = ""
+        var time: String = ""
+        var bouldering: [BoulderingAttempt] = []
+        var space: String = ""
+    }
+    
+    private func setupModifyInitialValues(id: ObjectId) -> ModifyInit {
+    
+        // nil일때도 있음
+        let data = repository.findBoulderingSelectedList(by: id)!
+        
+        let timeValue = TimeInterval(data.climbTime) * 60
+        let time = donePressed(time: timeValue)
+     
+        let date = dateToString(data.climbDate)
+        
+        let space = sharedData.getData(for: Gym.self)!.filter { $0.gymID == data.gymId }.first!
+            
+    
+        let languageCode = Locale.preferredLanguageCode
+        
+        var localizedSpace: String
+      
+        
+        switch languageCode {
+        case "ko":
+            localizedSpace = space.nameKo
+        case "en":
+            localizedSpace = space.nameEn
+        default:
+            localizedSpace = space.nameKo
+        }
+        
+        
+        
+       
+        let bouldering = Array(data.routeResults.map {  BoulderingAttempt(gradeLevel: $0.level, color: $0.color, difficulty: $0.difficulty, tryCount: $0.totalClimbCount, successCount: $0.totalSuccessCount)
+            
+        })
+      
+        // 0 == brand id, 1 == gymid
+        currentGym.0 = data.brandId
+        currentGym.1 = data.gymId
+        
+        
+        //gradeList.accept(owner.boulderingData)
+        return ModifyInit(date: date, time: time, bouldering: bouldering, space: localizedSpace)
+
+    }
+}
+
+
+
+// MARK: Action
+extension ModifyViewModel {
+    
+    // 난이도별 카운트 횟수
     private func updateTryCount(for type: CountType, for gradeLevel: Int) {
         boulderingData = boulderingData.map { section in
             let updatedItems = section.items.map { item in
@@ -204,6 +269,7 @@ extension ModifyViewModel {
     }
     
     
+    // 타임 피커 -> 텍스트
     private func donePressed(time: Double) -> String {
         totalMinutes = Int(time) / 60
         let hours = totalMinutes / 60
@@ -295,6 +361,23 @@ extension ModifyViewModel {
         
         // 실패 시 현재 시간 반환 (예외 처리 or 경고 로그도 가능)
         return Date()
+    }
+    
+    
+    private func dateToString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        
+        let languageCode = Locale.preferredLanguageCode
+
+        if languageCode == "ko" {
+            formatter.dateFormat = "yyyy. M. d."
+            formatter.locale = Locale(identifier: "ko_KR")
+        } else {
+            formatter.dateFormat = "MMM d, yyyy"
+            formatter.locale = Locale(identifier: "en_US")
+        }
+
+        return formatter.string(from: date)
     }
     
 }
