@@ -220,7 +220,7 @@ extension ModifyViewModel {
         let space = sharedData.getData(for: Gym.self)!.filter { $0.gymID == data.gymId }.first!
         
         
-        var localizedSpace =  Locale.isEnglish ? space.nameEn : space.nameKo
+        let localizedSpace =  Locale.isEnglish ? space.nameEn : space.nameKo
         
         
         let bouldering = Array(data.routeResults.map {  BoulderingAttempt(gradeLevel: $0.level, color: $0.color, difficulty: $0.difficulty, tryCount: $0.totalClimbCount, successCount: $0.totalSuccessCount)
@@ -301,7 +301,7 @@ extension ModifyViewModel {
         let brandId = currentGym.0
         let gymId = currentGym.1
         let timeMinute = totalMinutes
-        
+        print(brandId, gymId)
         let exerciseDate = date.isEmpty ? defaultDate : dateConvertor(date)
         
         
@@ -353,20 +353,19 @@ extension ModifyViewModel {
             let data = ClimbingResultTable(boulderingLists: [boulderingList])
             repository.create(data)
         case .modify(let id):
-            
-            repository.updateBoulderingList(id: id, newBoulderingList: [boulderingList])
+            repository.updateBoulderingList(id: id, newBoulderingList: boulderingList)
         }
         
         
         
         // 5. 월간 통계 업데이트
-        //        monthlyRepository.updateMonthlyStatistics(
-        //            climbCount: totalClimbCount,
-        //            successCount: totalSuccessCount,
-        //            climbTime: timeMinute,
-        //            lastGrade: bestGradeDifficulty,
-        //            date: exerciseDate
-        //        )
+//                monthlyRepository.updateMonthlyStatistics(
+//                    climbCount: totalClimbCount,
+//                    successCount: totalSuccessCount,
+//                    climbTime: timeMinute,
+//                    lastGrade: bestGradeDifficulty,
+//                    date: exerciseDate
+//                )
     }
     
     

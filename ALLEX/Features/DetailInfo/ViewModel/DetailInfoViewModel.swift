@@ -69,6 +69,7 @@ final class DetailInfoViewModel: BaseViewModel {
         
         
         input.modifyButtonTapped.bind(with: self) { owner, _ in
+            print(owner.objectID)
             modifyButton.accept(owner.objectID)
         }.disposed(by: disposeBag)
         

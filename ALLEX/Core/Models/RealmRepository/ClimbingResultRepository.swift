@@ -15,7 +15,7 @@ protocol ClimbingResultRepository: Repository where T == ClimbingResultTable {
     func findBoulderingList(for date: Date) -> [BoulderingList]
     func findBoulderingMonthList(in monthString: String) -> [String]
     func findBoulderingSelectedList(by id: ObjectId) -> BoulderingList?
-    func updateBoulderingList(id: ObjectId, newBoulderingList: [BoulderingList])
+    func updateBoulderingList(id: ObjectId, newBoulderingList: BoulderingList)
 }
 
 final class RealmClimbingResultRepository: RealmRepository<ClimbingResultTable>, ClimbingResultRepository {
@@ -79,31 +79,27 @@ final class RealmClimbingResultRepository: RealmRepository<ClimbingResultTable>,
     //선택한 클라이밍 기록
     func findBoulderingSelectedList(by id: ObjectId) -> BoulderingList? {
         
-        
-        let climbingResults = realm.objects(ClimbingResultTable.self)
-        for climbingResult in climbingResults {
-            if let data = climbingResult.boulderingLists.first(where: { $0.id == id }) {
-                return data
-            }
-        }
-        
-        return nil
+        return realm.objects(ClimbingResultTable.self)
+            .flatMap { $0.boulderingLists }
+            .first(where: { $0.id == id })
     }
     
-    func updateBoulderingList(id: ObjectId, newBoulderingList: [BoulderingList]) {
-        // 1. 해당 id로 ClimbingResultTable 객체 찾기
-        if let existingData = realm.objects(ClimbingResultTable.self).filter("id == %@", id).first {
-            do {
-                try realm.write {
-                    // 2. 기존 boulderingLists 수정 (기존 목록에 새로운 항목으로 덮어쓰기)
-                    existingData.boulderingLists.removeAll() // 기존 목록 비우기
-                    existingData.boulderingLists.append(objectsIn: newBoulderingList) // 새로운 목록 추가
+    func updateBoulderingList(id: ObjectId, newBoulderingList: BoulderingList) {
+        let climbingResults = realm.objects(ClimbingResultTable.self)
+        
+        for climbingResult in climbingResults {
+            if let index = climbingResult.boulderingLists.firstIndex(where: { $0.id == id }) {
+                do {
+                    try realm.write {
+                        climbingResult.boulderingLists.remove(at: index)
+                        climbingResult.boulderingLists.append(newBoulderingList)
+                    }
+                    return // ✅ 업데이트 성공 시 종료
+                } catch {
+                    print("⚠️ Realm update failed: \(error)")
+                    return
                 }
-            } catch {
-                print("⚠️ Realm update failed: \(error)")
             }
-        } else {
-            print("해당 id의 데이터가 없습니다.")
         }
     }
 
