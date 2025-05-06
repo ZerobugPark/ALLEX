@@ -39,12 +39,7 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.isHidden = false
     }
-    
-    
-    
-    
-
-    
+  
     override func bind() {
         
         

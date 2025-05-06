@@ -15,10 +15,10 @@ protocol ClimbingResultRepository: Repository where T == ClimbingResultTable {
     func findBoulderingList(for date: Date) -> [BoulderingList]
     func findBoulderingMonthList(in monthString: String) -> [String]
     func findBoulderingSelectedList(by id: ObjectId) -> BoulderingList?
+    func updateBoulderingList(id: ObjectId, newBoulderingList: [BoulderingList])
 }
 
 final class RealmClimbingResultRepository: RealmRepository<ClimbingResultTable>, ClimbingResultRepository {
-    
 
     func findLastBoulderingLists(limit: Int) -> [BoulderingList] {
         let climbingResults = realm.objects(ClimbingResultTable.self)
@@ -88,6 +88,23 @@ final class RealmClimbingResultRepository: RealmRepository<ClimbingResultTable>,
         }
         
         return nil
+    }
+    
+    func updateBoulderingList(id: ObjectId, newBoulderingList: [BoulderingList]) {
+        // 1. 해당 id로 ClimbingResultTable 객체 찾기
+        if let existingData = realm.objects(ClimbingResultTable.self).filter("id == %@", id).first {
+            do {
+                try realm.write {
+                    // 2. 기존 boulderingLists 수정 (기존 목록에 새로운 항목으로 덮어쓰기)
+                    existingData.boulderingLists.removeAll() // 기존 목록 비우기
+                    existingData.boulderingLists.append(objectsIn: newBoulderingList) // 새로운 목록 추가
+                }
+            } catch {
+                print("⚠️ Realm update failed: \(error)")
+            }
+        } else {
+            print("해당 id의 데이터가 없습니다.")
+        }
     }
 
 }

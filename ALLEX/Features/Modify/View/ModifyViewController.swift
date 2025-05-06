@@ -24,7 +24,7 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
     typealias listDataSource = RxCollectionViewSectionedReloadDataSource<BoulderingSection>
     typealias collectionViewDataSource = CollectionViewSectionedDataSource<BoulderingSection>
     
-    private let barButtonItem = UIBarButtonItem(title: "저장", style: .done, target: nil, action: nil)
+    private let saveButton = UIBarButtonItem(title: "저장", style: .done, target: nil, action: nil)
     
     private lazy var dataSource: listDataSource = listDataSource (configureCell: { [weak self] dataSource, collectionView, indexPath, item in
         
@@ -44,29 +44,7 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         
         bindCountButton(cell.bouldering.tryCountButton.plusButton, countType: .tryPlus, gradeLevel: gradeLevel, disposeBag: cell.disposeBag)
         
-        
-//    cell.bouldering.successCountButton.minusButton.rx.tap.bind(with: self) { owner, _ in
-//        
-//        owner.countType.accept((.successMinus, item.gradeLevel))
-//        
-//    }.disposed(by: cell.disposeBag)
-//    
-//    cell.bouldering.successCountButton.plusButton.rx.tap.bind(with: self) { owner, _ in
-//        
-//        owner.countType.accept((.successPlus, item.gradeLevel))
-//        
-//    }.disposed(by: cell.disposeBag)
-//    
-//    cell.bouldering.tryCountButton.minusButton.rx.tap.bind(with: self) { owner, _ in
-//        owner.countType.accept((.tryMinus, item.gradeLevel))
-//        
-//    }.disposed(by: cell.disposeBag)
-//    
-//    cell.bouldering.tryCountButton.plusButton.rx.tap.bind(with: self) { owner, _ in
-//        owner.countType.accept((.tryPlus, item.gradeLevel))
-//        
-//    }.disposed(by: cell.disposeBag)
-//        
+    
         return cell
         
     },      configureSupplementaryView: { dataSource, collectionView, kind, indexPath in
@@ -108,7 +86,7 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
              )
         
         
-        let input = ModifyViewModel.Input(viewDidLoadTrigger: Observable.just(()), spaceTextField: mainView.spaceTextField.rx.text.orEmpty, doneButtonTapped: mainView.doneButton.rx.tap.withLatestFrom(timeSelected), selectedGym: selectedGym.asDriver(onErrorJustReturn: ("", "")), countType: countType.asDriver(onErrorJustReturn: (.successMinus, 0)), saveButtonTapped: barButtonItem.rx.tap.withLatestFrom(inputFields))
+        let input = ModifyViewModel.Input(viewDidLoadTrigger: Observable.just(()), spaceTextField: mainView.spaceTextField.rx.text.orEmpty, doneButtonTapped: mainView.doneButton.rx.tap.withLatestFrom(timeSelected), selectedGym: selectedGym.asDriver(onErrorJustReturn: ("", "")), countType: countType.asDriver(onErrorJustReturn: (.successMinus, 0)), saveButtonTapped: saveButton.rx.tap.withLatestFrom(inputFields))
         
         let output = viewModel.transform(input: input)
         
@@ -154,7 +132,8 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
             
             owner.selectedGym.accept((data.brandID, data.gymID))
             
-            owner.mainView.spaceTextField.text = data.nameKo
+            
+            owner.mainView.spaceTextField.text = Locale.isEnglish ? data.nameEn : data.nameKo
             owner.mainView.spaceTextField.resignFirstResponder()
             
         }.disposed(by: disposeBag)
@@ -191,7 +170,7 @@ extension ModifyViewController: UICollectionViewDelegateFlowLayout {
 private extension ModifyViewController {
     
     func setupNavigation() {
-        navigationItem.rightBarButtonItem = barButtonItem
+        navigationItem.rightBarButtonItem = saveButton
     }
 
     func setupTextFieldDelegates() {

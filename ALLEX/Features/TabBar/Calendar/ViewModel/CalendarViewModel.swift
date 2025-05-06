@@ -168,7 +168,7 @@ extension CalendarViewModel {
             
             return ClimbingInfo(
                 id: climbingElement.id,
-                gym: Locale.preferredLanguageCode == "en" ? gym.nameEn : gym.nameKo,
+                gym: Locale.isEnglish ? gym.nameEn : gym.nameKo,
                 excersieTime: climbingElement.climbTime.toTimeFormat(),
                 climbDate: climbingElement.climbDate.toFormattedString(),
                 totalClimbCount: totalClimbCount,

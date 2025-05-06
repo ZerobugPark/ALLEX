@@ -85,28 +85,6 @@ final class DetailInfoViewModel: BaseViewModel {
 
 extension DetailInfoViewModel {
     
-    
-//    func formatData() -> ResultData {
-//        
-//        let data = repository.findBoulderingSelectedList(by: id)
-//        
-//        guard let climbingElements = data else {
-//            return empty
-//        }
-//        
-//        let gymInfo = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == climbingElements.gymId }.first!
-//        
-//        return ResultData(space: Locale.preferredLanguageCode == "en" ? gymInfo.nameEn : gymInfo.nameKo,
-//                          date: climbingElements.climbDate.toFormattedString(),
-//                          totalTryCount:  String(climbingElements.totalClimb),
-//                          totalSuccessCount: String(climbingElements.totalSuccess),
-//                          totalSuccessRate: String(format: "%.0f%%", climbingElements.successRate),
-//                          bestGrade: climbingElements.bestGrade,
-//                          excersieTime: climbingElements.climbTime.toTimeFormat(),
-//                          results: climbingElements.toClimbingResults())
-////    }
-    
-    
     private func formatData() -> ResultData {
         let data = {
             switch mode {
@@ -126,7 +104,7 @@ extension DetailInfoViewModel {
         let gymInfo = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == climbingElements.gymId }.first!
         
 
-        return ResultData(space: Locale.preferredLanguageCode == "en" ? gymInfo.nameEn : gymInfo.nameKo,
+        return ResultData(space: Locale.isEnglish ? gymInfo.nameEn : gymInfo.nameKo,
                                          date: climbingElements.climbDate.toFormattedString(),
                                          totalTryCount:  String(climbingElements.totalClimb),
                                          totalSuccessCount: String(climbingElements.totalSuccess),

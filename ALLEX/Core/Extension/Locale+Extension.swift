@@ -8,6 +8,11 @@
 import Foundation
 
 extension Locale {
+    
+    static var isEnglish: Bool {
+        return preferredLanguageCode == "en"
+    }
+    
     static let preferredLanguageCode: String = {
         return (Locale.preferredLanguages.first ?? "en").split(separator: "-").first.map(String.init) ?? "en"
     }()

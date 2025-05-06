@@ -39,7 +39,7 @@ enum ModifyMode {
 
 final class ModifyViewModel: BaseViewModel {
     
-
+    
     
     struct Input {
         let viewDidLoadTrigger: Observable<Void>
@@ -73,7 +73,12 @@ final class ModifyViewModel: BaseViewModel {
     
     // 첫번째 인덱스만 사용함
     private var boulderingData: [BoulderingSection] = []
-    var totalMinutes = 0
+    
+    private var totalMinutes = 0
+    
+    //Modify 전용
+    private var defaultDate: Date = Date()
+    
     
     init(_ sharedData: SharedDataModel, mode: ModifyMode) {
         self.sharedData = sharedData
@@ -124,8 +129,7 @@ final class ModifyViewModel: BaseViewModel {
             let bouldering = owner.sharedData.getData(for: Bouldering.self)!.filter {  $0.brandID == value.0 }.map { BoulderingAttempt(gradeLevel: Int($0.GradeLevel)!, color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0) }
             
             // 0 == brand id, 1 == gymid
-            owner.currentGym.0 = value.0
-            owner.currentGym.1 = value.1
+            owner.updateGymInfo(brandID: value.0, gymID: value.1)
             
             owner.boulderingData = [BoulderingSection(header: "", items: bouldering)]
             
@@ -144,17 +148,28 @@ final class ModifyViewModel: BaseViewModel {
             
         }.disposed(by: disposeBag)
         
-        input.saveButtonTapped.bind(with: self) { owenr, value  in
+        input.saveButtonTapped.bind(with: self) { owner, value  in
             
-            if value.0.isEmpty || value.1.isEmpty || value.2.isEmpty {
-                errorMsg.accept(())
-            } else {
+            switch owner.mode {
+            case .add:
+                if value.0.isEmpty || value.1.isEmpty || value.2.isEmpty {
+                    errorMsg.accept(())
+                } else {
+                    
+                    owner.savedData(for: value.0, self.mode)
+                    popView.accept(())
+                    NotificationCenterManager.isUpdatedRecored.post()
+                    
+                }
+            case .modify:
                 
-                owenr.savedData(for: value.0)
+                owner.savedData(for: value.0, self.mode)
                 popView.accept(())
                 NotificationCenterManager.isUpdatedRecored.post()
-                
             }
+            
+            
+            
             
         }.disposed(by: disposeBag)
         
@@ -180,6 +195,8 @@ final class ModifyViewModel: BaseViewModel {
 // MARK: 수정일 때, 초기값 설정
 extension ModifyViewModel {
     
+    
+    
     struct ModifyInit {
         var date: String = ""
         var time: String = ""
@@ -188,47 +205,35 @@ extension ModifyViewModel {
     }
     
     private func setupModifyInitialValues(id: ObjectId) -> ModifyInit {
-    
+        
         // nil일때도 있음
         let data = repository.findBoulderingSelectedList(by: id)!
         
-        let timeValue = TimeInterval(data.climbTime) * 60
-        let time = donePressed(time: timeValue)
-     
-        let date = dateToString(data.climbDate)
+        
+        // 문자열 변환시 60으로 나누어진 값을 넣기 때문에, 60을 곱해줌
+        totalMinutes = Int(TimeInterval(data.climbTime) * 60)
+        let time = donePressed(time: Double(totalMinutes))
+        
+        defaultDate = data.climbDate
+        let date = dateToString(defaultDate)
         
         let space = sharedData.getData(for: Gym.self)!.filter { $0.gymID == data.gymId }.first!
-            
-    
-        let languageCode = Locale.preferredLanguageCode
-        
-        var localizedSpace: String
-      
-        
-        switch languageCode {
-        case "ko":
-            localizedSpace = space.nameKo
-        case "en":
-            localizedSpace = space.nameEn
-        default:
-            localizedSpace = space.nameKo
-        }
         
         
+        var localizedSpace =  Locale.isEnglish ? space.nameEn : space.nameKo
         
-       
+        
         let bouldering = Array(data.routeResults.map {  BoulderingAttempt(gradeLevel: $0.level, color: $0.color, difficulty: $0.difficulty, tryCount: $0.totalClimbCount, successCount: $0.totalSuccessCount)
             
         })
-      
+        
         // 0 == brand id, 1 == gymid
-        currentGym.0 = data.brandId
-        currentGym.1 = data.gymId
+        updateGymInfo(brandID: data.brandId, gymID: data.gymId)
         
         
         //gradeList.accept(owner.boulderingData)
         return ModifyInit(date: date, time: time, bouldering: bouldering, space: localizedSpace)
-
+        
     }
 }
 
@@ -236,6 +241,14 @@ extension ModifyViewModel {
 
 // MARK: Action
 extension ModifyViewModel {
+    
+    //브랜드 및 짐 정보 업데이트
+    private func updateGymInfo(brandID: String, gymID: String) {
+        currentGym.0 = brandID
+        currentGym.1 = gymID
+        
+    }
+    
     
     // 난이도별 카운트 횟수
     private func updateTryCount(for type: CountType, for gradeLevel: Int) {
@@ -271,6 +284,7 @@ extension ModifyViewModel {
     
     // 타임 피커 -> 텍스트
     private func donePressed(time: Double) -> String {
+        
         totalMinutes = Int(time) / 60
         let hours = totalMinutes / 60
         let minutes = totalMinutes % 60
@@ -282,12 +296,14 @@ extension ModifyViewModel {
 extension ModifyViewModel {
     
     
-    func savedData(for date: String) {
+    func savedData(for date: String, _ mode: ModifyMode) {
         // 1. 필요한 데이터 준비
         let brandId = currentGym.0
         let gymId = currentGym.1
         let timeMinute = totalMinutes
-        let exerciseDate = dateConvertor(date)
+        
+        let exerciseDate = date.isEmpty ? defaultDate : dateConvertor(date)
+        
         
         // 2. 통계 계산 (한 번의 순회로 여러 값 계산)
         var totalClimbCount = 0
@@ -329,19 +345,30 @@ extension ModifyViewModel {
             routeResults: routeResults
         )
         
-        let data = ClimbingResultTable(boulderingLists: [boulderingList])
-        repository.create(data)
+        
+        
+        
+        switch mode {
+        case .add:
+            let data = ClimbingResultTable(boulderingLists: [boulderingList])
+            repository.create(data)
+        case .modify(let id):
+            
+            repository.updateBoulderingList(id: id, newBoulderingList: [boulderingList])
+        }
+        
+        
         
         // 5. 월간 통계 업데이트
-        monthlyRepository.updateMonthlyStatistics(
-            climbCount: totalClimbCount,
-            successCount: totalSuccessCount,
-            climbTime: timeMinute,
-            lastGrade: bestGradeDifficulty,
-            date: exerciseDate
-        )
+        //        monthlyRepository.updateMonthlyStatistics(
+        //            climbCount: totalClimbCount,
+        //            successCount: totalSuccessCount,
+        //            climbTime: timeMinute,
+        //            lastGrade: bestGradeDifficulty,
+        //            date: exerciseDate
+        //        )
     }
-
+    
     
     private func dateConvertor(_ dateString: String) -> Date {
         let dateFormats = [
@@ -353,7 +380,7 @@ extension ModifyViewModel {
             let formatter = DateFormatter()
             formatter.dateFormat = format
             formatter.locale = Locale(identifier: "en_US_POSIX")
-           
+            
             if let date = formatter.date(from: dateString) {
                 return date
             }
@@ -367,16 +394,16 @@ extension ModifyViewModel {
     private func dateToString(_ date: Date) -> String {
         let formatter = DateFormatter()
         
-        let languageCode = Locale.preferredLanguageCode
-
-        if languageCode == "ko" {
-            formatter.dateFormat = "yyyy. M. d."
-            formatter.locale = Locale(identifier: "ko_KR")
-        } else {
+        
+        
+        if Locale.isEnglish  {
             formatter.dateFormat = "MMM d, yyyy"
             formatter.locale = Locale(identifier: "en_US")
+        } else {
+            formatter.dateFormat = "yyyy. M. d."
+            formatter.locale = Locale(identifier: "ko_KR") 
         }
-
+        
         return formatter.string(from: date)
     }
     
