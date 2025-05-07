@@ -41,8 +41,6 @@ final class RecordViewModel: BaseViewModel {
     var disposeBag =  DisposeBag()
     
     let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
-    let monthlyRepository: any MonthlyClimbingStatisticsRepository = RealmMonthlyClimbingStatisticsRepository()
-    
     
     private let timerSubject = PublishSubject<String>()
     private var timerSubscription: Disposable?
@@ -247,14 +245,6 @@ extension RecordViewModel {
         
         repository.createMonthlyClimbingResult(boulderingList: boulderingList, date: currentDate)
         
-        // 5. 월간 통계 업데이트
-        monthlyRepository.updateMonthlyStatistics(
-            climbCount: totalClimbCount,
-            successCount: totalSuccessCount,
-            climbTime: timeMinute,
-            lastGrade: bestGradeDifficulty,
-            date: currentDate
-        )
     }
 
 }

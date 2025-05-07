@@ -60,8 +60,6 @@ final class ModifyViewModel: BaseViewModel {
     }
     
     let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
-    let monthlyRepository: any MonthlyClimbingStatisticsRepository = RealmMonthlyClimbingStatisticsRepository()
-    
     
     var disposeBag = DisposeBag()
     

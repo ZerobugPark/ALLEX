@@ -18,11 +18,13 @@ protocol MonthlyClimbingResultRepository: Repository where T == MonthlyClimbingR
     func findBoulderingSelectedList(for query: ClimbingRecordQuery) -> BoulderingList?
     
     func updateClimbingRecord(with newList: BoulderingList, query: ClimbingRecordQuery)
+    
+    func statistics() -> MonthlyClimbingStatistics
 }
 
 final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbingResultTable>, MonthlyClimbingResultRepository {
-    
-    
+ 
+
     // 월별 데이터 생성
     func createMonthlyClimbingResult(boulderingList: BoulderingList, date: Date) {
         
@@ -75,36 +77,36 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
         guard let result = realm.objects(MonthlyClimbingResultTable.self).filter(predicate).first else {
             return []
         }
-
+        
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-
+        
         let dateStrings = result.boulderingLists.map { formatter.string(from: $0.climbDate) }
         
         // 중복 제거 + 정렬
         return Array(Set(dateStrings)).sorted()
     }
-
-
+    
+    
     // 날짜별 볼더링 기록 조회
     func findBoulderingList(for date: Date) -> [BoulderingList] {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
-
+        
         let month = queryDateFormat(date)
-
+        
         // 월별 데이터를 Realm에서 가져오기
         let predicate = NSPredicate(format: "month == %@", month)
         guard let monthlyData = realm.objects(MonthlyClimbingResultTable.self).filter(predicate).first else {
             return []
         }
-
+        
         // 해당 날짜 범위의 데이터만 필터링
         let results = monthlyData.boulderingLists.filter {
             $0.climbDate >= startOfDay && $0.climbDate < endOfDay
         }
-
+        
         return Array(results)
     }
     
@@ -125,10 +127,10 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
         
         return nil  // 해당 월에 대한 데이터가 없거나 objectId에 맞는 데이터가 없을 경우 nil 반환
     }
-
+    
     // 업데이트 로직
     func updateClimbingRecord(with newList: BoulderingList, query: ClimbingRecordQuery) {
-      
+        
         let month = queryDateFormat(query.date)
         let predicate = NSPredicate(format: "month == %@", month)  // 월별 데이터를 찾기 위한 조건
         
@@ -146,10 +148,43 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
         }
         
     }
-
-
-
     
+    // 월별 통계
+    func statistics() -> MonthlyClimbingStatistics {
+        
+        let month = queryDateFormat(Date())
+
+        let predicate = NSPredicate(format: "month == %@", month)
+        
+        guard let monthlyResult = realm.objects(MonthlyClimbingResultTable.self)
+            .filter(predicate)
+            .first else {
+            return MonthlyClimbingStatistics()
+        }
+        
+        let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)
+        let startDate = DateFormatterHelper.convertStringToDate(UserDefaultManager.startDate)
+        let date = LocalizedKey.userId.rawValue.localized(with: (DateFormatterHelper.daysBetween(startDate, Date()) + 1))
+        
+        let totalClimbTime = monthlyResult.boulderingLists.reduce(0) { $0 + $1.climbTime }.toTimeFormat()
+        let totalClimbCount = monthlyResult.boulderingLists.reduce(0) { $0 + $1.totalClimb }
+        let totalSuccessCount = monthlyResult.boulderingLists.reduce(0) { $0 + $1.totalSuccess }
+        let successRateDouble = totalClimbCount == 0 ? 0 : (Double(totalSuccessCount) / Double(totalClimbCount)) * 100
+        let successRate = String(format: "%.0f%%", successRateDouble)
+        
+        let lastGrade = monthlyResult.boulderingLists
+            .max(by: { $0.climbDate < $1.climbDate })?
+            .bestGrade ?? "VB"
+        
+        return MonthlyClimbingStatistics(nickName: nickname, date: date, tryCount: String(totalClimbCount), successCount: String(totalSuccessCount), successRate: successRate, totalTime: totalClimbTime, latestBestGrade: lastGrade)
+    }
+    
+    
+
+}
+
+// MARK: Helper
+extension RealmMonthlyClimbingResultRepository {
     
     private func fetch(predicate: NSPredicate) -> MonthlyClimbingResultTable? {
         return realm.objects(MonthlyClimbingResultTable.self).filter(predicate).first
@@ -163,4 +198,11 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
         dateFormatter.dateFormat = "yyyy-MM"
         return dateFormatter.string(from: date)
     }
+
+    
+    
+
+    
 }
+
+

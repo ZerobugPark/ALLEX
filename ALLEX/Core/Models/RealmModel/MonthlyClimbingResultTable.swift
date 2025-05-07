@@ -23,28 +23,6 @@ class MonthlyClimbingResultTable: Object {
         self.boulderingLists.append(objectsIn: boulderingLists)
     }
     
-        var totalClimbTime: Int {
-            return boulderingLists.reduce(0) { $0 + $1.climbTime }
-        }
-    
-        var totalClimbCount: Int {
-            return boulderingLists.reduce(0) { $0 + $1.totalClimb }
-        }
-    
-        var totalSuccessCount: Int {
-            return boulderingLists.reduce(0) { $0 + $1.totalSuccess }
-        }
-    
-        var successRate: Double {
-            let totalClimbs = totalClimbCount
-            let totalSuccess = totalSuccessCount
-            return totalClimbs == 0 ? 0 : (Double(totalSuccess) / Double(totalClimbs)) * 100
-        }
-    
-        var lastGrade: String? {
-            return boulderingLists.last?.bestGrade
-        }
-    
 }
 
 // 개별 등반 기록

@@ -21,31 +21,20 @@ final class HomeViewModel: BaseViewModel {
     }
     
     struct Output {
-        let setupUI: Driver<HomeData>
+        let setupUI: Driver<MonthlyClimbingStatistics>
         let stopIndicator: Driver<Void>
         let isChangedName: Driver<(String, String)>
     }
     
     
-    struct HomeData {
-        let nickName: String
-        let date: String
-        let tryCount: String
-        let successCount: String
-        let successRate: String
-        let totalTime: String
-        let latestBestGrade: String // 마지막 기록 중 최고 기록
-        
-    }
-    
     var disposeBag = DisposeBag()
     
-    private let setupUI = PublishRelay<HomeData>()
+    private let setupUI = PublishRelay<MonthlyClimbingStatistics>()
     private let isChangedName = PublishRelay<(String, String)>()
     
     private var sharedData: SharedDataModel
     
-    let repository: any MonthlyClimbingStatisticsRepository = RealmMonthlyClimbingStatisticsRepository()
+    let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
     
     init(_ sharedData: SharedDataModel) {
         self.sharedData = sharedData
@@ -63,8 +52,8 @@ final class HomeViewModel: BaseViewModel {
         NotificationCenterManager.isChangedUserInfo.addObserverVoid().bind(with: self) { owner, _ in
             
             let name = UserDefaultManager.nickname
-            let startDate = owner.convertStringToDate(UserDefaultManager.startDate)
-            let date = LocalizedKey.userId.rawValue.localized(with: (owner.daysBetween(startDate, Date()) + 1))
+            let startDate = DateFormatterHelper.convertStringToDate(UserDefaultManager.startDate)
+            let date = LocalizedKey.userId.rawValue.localized(with: (DateFormatterHelper.daysBetween(startDate, Date()) + 1))
             owner.isChangedName.accept((name,date))
             
         }.disposed(by: disposeBag)
@@ -77,8 +66,6 @@ final class HomeViewModel: BaseViewModel {
     func transform(input: Input) -> Output {
         
         let stopIndicator = PublishRelay<Void>()
-        
-        let emptyData = HomeData(nickName: "", date: "", tryCount: "", successCount: "", successRate: "", totalTime: "", latestBestGrade: "")
         
         input.viewdidLoad.flatMap {
             NetworkManger.shared.callRequest()
@@ -112,7 +99,7 @@ final class HomeViewModel: BaseViewModel {
         
 
         
-        return Output(setupUI: setupUI.asDriver(onErrorJustReturn: emptyData), stopIndicator: stopIndicator.asDriver(onErrorJustReturn: ()), isChangedName: isChangedName.asDriver(onErrorJustReturn: (("",""))))
+        return Output(setupUI: setupUI.asDriver(onErrorJustReturn: MonthlyClimbingStatistics()), stopIndicator: stopIndicator.asDriver(onErrorJustReturn: ()), isChangedName: isChangedName.asDriver(onErrorJustReturn: (("",""))))
     }
     
     deinit {
@@ -126,61 +113,16 @@ final class HomeViewModel: BaseViewModel {
 extension HomeViewModel {
     
     
-    func getUIData() -> HomeData {
-        
-        let data = repository.getCurrentMonthStatistics()
-        
-        let startDate = convertStringToDate(UserDefaultManager.startDate)
-        let date = LocalizedKey.userId.rawValue.localized(with: (daysBetween(startDate, Date()) + 1))
-        let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)
-        
-        let totalMonthTime = (data?.totalClimbTime ?? 0).toTimeFormat()
-        let latestGrade = data?.lastGrade ?? ""
-        let successRate = String(format: "%.0f%%", data?.sucessRate ?? 0)
-        
-        
-        UserDefaultManager.latestGrade = latestGrade
-        UserDefaultManager.totalExTime = totalMonthTime
-        UserDefaultManager.successRate = successRate
+    func getUIData() -> MonthlyClimbingStatistics {
+    
         WidgetCenter.shared.reloadTimelines(ofKind: "AllexWidget")
         
-        return HomeData(nickName: nickname, date: date, tryCount: "\(data?.totalClimbCount ?? 0)", successCount: "\(data?.totalSuccessCount ?? 0)", successRate: successRate, totalTime: totalMonthTime, latestBestGrade: latestGrade)
+        return repository.statistics()
     }
     
     func convertToGyms<T: Mappable>(from googleSheetData: GoogleSheetData, type: T.Type) -> [T] {
         // 첫 번째 행(헤더)은 제외하고 나머지 데이터를 Gym 객체로 변환
         return googleSheetData.values.dropFirst().map { T(from: $0) }
     }
-    
-    func convertStringToDate(_ dateString: String) -> Date? {
-        let formats = [
-            "yyyy-MM-dd", // 2025-04-06 형식
-            "MMM d, yyyy",// Apr 6, 2025 형식
-            "yyyy. M. d." // 2025. 4. 6
-        ]
-        
-        let formatter = DateFormatter()
-        formatter.timeZone = TimeZone.current
-        
-        for format in formats {
-            formatter.dateFormat = format
-            if let date = formatter.date(from: dateString) {
-                //print(date)
-                return date
-            }
-        }
-        
-        return nil
-    }
-    
-    func daysBetween(_ startDate: Date?, _ endDate: Date) -> Int {
-        
-        guard let startDate = startDate else { return 0 }
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.day], from: startDate, to: endDate)
-        return components.day ?? 0
-    }
-    
-
     
 }
