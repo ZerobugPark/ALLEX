@@ -30,7 +30,7 @@ final class GymSelectionViewModel: BaseViewModel {
     
     
     private let updateGym = PublishRelay<String>()
-    let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
+    let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
     
     var recentGymList: [Gym] = []
     
@@ -56,7 +56,7 @@ final class GymSelectionViewModel: BaseViewModel {
         }.disposed(by: disposeBag)
         
         
-        self.recentGymList = recentVisit()
+        //self.recentGymList = recentVisit()
     }
     
     
@@ -94,19 +94,19 @@ final class GymSelectionViewModel: BaseViewModel {
 
 extension GymSelectionViewModel {
     
-    private func recentVisit() -> [Gym] {
-        
-        // 최근 기록 방문 짐
-        let data = repository.findLastBoulderingLists(limit: 10)
-        
-        var gymSet: Set<Gym> = []
-        
-        for item in data {
-            let gyms = sharedData.getData(for: Gym.self)!.filter { $0.gymID == item.gymId }
-            gymSet.formUnion(gyms)
-        }
-        
-        return Array(gymSet)
-    }
-    
+//    private func recentVisit() -> [Gym] {
+//        
+//        // 최근 기록 방문 짐
+//        let data = repository.findLastBoulderingLists(limit: 10)
+//        
+//        var gymSet: Set<Gym> = []
+//        
+//        for item in data {
+//            let gyms = sharedData.getData(for: Gym.self)!.filter { $0.gymID == item.gymId }
+//            gymSet.formUnion(gyms)
+//        }
+//        
+//        return Array(gymSet)
+//    }
+//    
 }

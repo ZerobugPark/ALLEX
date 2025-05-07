@@ -57,8 +57,8 @@ final class DetailInfoViewController: BaseViewController<ResultView, DetailInfoV
         }.disposed(by: disposeBag)
         
         
-        output.modifyButton.drive(with: self) { owner, id in
-            owner.coordinator?.showModify(mode: .modify(id: id))
+        output.modifyButton.drive(with: self) { owner, query in
+            owner.coordinator?.showModify(mode: .modify(query))
            
         }.disposed(by: disposeBag)
                 

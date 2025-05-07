@@ -34,7 +34,7 @@ enum CountType {
 
 enum ModifyMode {
     case add
-    case modify(id: ObjectId)
+    case modify(_ data: ClimbingRecordQuery)
 }
 
 final class ModifyViewModel: BaseViewModel {
@@ -59,7 +59,7 @@ final class ModifyViewModel: BaseViewModel {
         let popView: Driver<Void>
     }
     
-    let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
+    let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
     let monthlyRepository: any MonthlyClimbingStatisticsRepository = RealmMonthlyClimbingStatisticsRepository()
     
     
@@ -103,13 +103,13 @@ final class ModifyViewModel: BaseViewModel {
             case .add:
                 break
             case .modify(let id):
-                let data = owner.setupModifyInitialValues(id: id)
-                modifyInit.accept(data)
-                
-                
-                owner.boulderingData = [BoulderingSection(header: "", items: data.bouldering)]
-                gradeList.accept(owner.boulderingData)
-                
+//                let data = owner.setupModifyInitialValues(id: id)
+//                modifyInit.accept(data)
+//                
+//                
+//                owner.boulderingData = [BoulderingSection(header: "", items: data.bouldering)]
+//                gradeList.accept(owner.boulderingData)
+                break
                 
             }
             
@@ -204,37 +204,37 @@ extension ModifyViewModel {
         var space: String = ""
     }
     
-    private func setupModifyInitialValues(id: ObjectId) -> ModifyInit {
-        
-        // nil일때도 있음
-        let data = repository.findBoulderingSelectedList(by: id)!
-        
-        
-        // 문자열 변환시 60으로 나누어진 값을 넣기 때문에, 60을 곱해줌
-        totalMinutes = Int(TimeInterval(data.climbTime) * 60)
-        let time = donePressed(time: Double(totalMinutes))
-        
-        defaultDate = data.climbDate
-        let date = dateToString(defaultDate)
-        
-        let space = sharedData.getData(for: Gym.self)!.filter { $0.gymID == data.gymId }.first!
-        
-        
-        let localizedSpace =  Locale.isEnglish ? space.nameEn : space.nameKo
-        
-        
-        let bouldering = Array(data.routeResults.map {  BoulderingAttempt(gradeLevel: $0.level, color: $0.color, difficulty: $0.difficulty, tryCount: $0.totalClimbCount, successCount: $0.totalSuccessCount)
-            
-        })
-        
-        // 0 == brand id, 1 == gymid
-        updateGymInfo(brandID: data.brandId, gymID: data.gymId)
-        
-        
-        //gradeList.accept(owner.boulderingData)
-        return ModifyInit(date: date, time: time, bouldering: bouldering, space: localizedSpace)
-        
-    }
+//    private func setupModifyInitialValues(id: ObjectId) -> ModifyInit {
+//        
+//        // nil일때도 있음
+//        let data = repository.findBoulderingSelectedList(by: id)!
+//
+//        
+//        // 문자열 변환시 60으로 나누어진 값을 넣기 때문에, 60을 곱해줌
+//        totalMinutes = Int(TimeInterval(data.climbTime) * 60)
+//        let time = donePressed(time: Double(totalMinutes))
+//        
+//        defaultDate = data.climbDate
+//        let date = dateToString(defaultDate)
+//        
+//        let space = sharedData.getData(for: Gym.self)!.filter { $0.gymID == data.gymId }.first!
+//        
+//        
+//        let localizedSpace =  Locale.isEnglish ? space.nameEn : space.nameKo
+//        
+//        
+//        let bouldering = Array(data.routeResults.map {  BoulderingAttempt(gradeLevel: $0.level, color: $0.color, difficulty: $0.difficulty, tryCount: $0.totalClimbCount, successCount: $0.totalSuccessCount)
+//            
+//        })
+//        
+//        // 0 == brand id, 1 == gymid
+//        updateGymInfo(brandID: data.brandId, gymID: data.gymId)
+//        
+//        
+//        //gradeList.accept(owner.boulderingData)
+//        return ModifyInit(date: date, time: time, bouldering: bouldering, space: localizedSpace)
+//        
+//    }
 }
 
 
@@ -350,10 +350,10 @@ extension ModifyViewModel {
         
         switch mode {
         case .add:
-            let data = ClimbingResultTable(boulderingLists: [boulderingList])
-            repository.create(data)
+            repository.createMonthlyClimbingResult(boulderingList: boulderingList, date: exerciseDate)
         case .modify(let id):
-            repository.updateBoulderingList(id: id, newBoulderingList: boulderingList)
+            break
+            //repository.updateBoulderingList(id: id, newBoulderingList: boulderingList)
         }
         
         
@@ -392,9 +392,7 @@ extension ModifyViewModel {
     
     private func dateToString(_ date: Date) -> String {
         let formatter = DateFormatter()
-        
-        
-        
+      
         if Locale.isEnglish  {
             formatter.dateFormat = "MMM d, yyyy"
             formatter.locale = Locale(identifier: "en_US")

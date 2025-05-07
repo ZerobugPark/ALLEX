@@ -17,7 +17,7 @@ struct ClimbingInfo {
     var id: ObjectId = ObjectId()
     var gym: String = ""
     var excersieTime: String = ""
-    var climbDate: String = ""
+    var climbDate: Date = Date()
     var totalClimbCount: Int = 0
     var totalSuccessCount: Int = 0
     
@@ -48,7 +48,7 @@ final class CalendarViewModel: BaseViewModel {
     
     var disposeBag =  DisposeBag()
     
-    private let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
+    private let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
     
     private var currentDateList: [ClimbingInfo] = []
     
@@ -70,7 +70,6 @@ final class CalendarViewModel: BaseViewModel {
         // 현재 날짜 데이터 로드 및 캘린더 설정
         let loadCurrentData = { [weak self] (date: Date) in
             guard let self = self else { return }
-            
             self.currentDateList = self.formatClimbingData(for: date)
             setupList.accept(self.currentDateList)
         }
@@ -139,8 +138,11 @@ extension CalendarViewModel {
         return (year, month)
     }
     
+    //이벤트가 있는 달에 체크 표시
     func calendarList(newYear: Int, newMonth: Int) -> CalendarList {
-        let data = repository.findBoulderingMonthList(in: "\(newYear)-\(newMonth)")
+        let formattedMonth = String(format: "%02d", newMonth)
+        let monthKey = "\(newYear)-\(formattedMonth)"
+        let data = repository.findClimbingDatesInMonth(monthKey)
         
         var result = CalendarList()
         
@@ -148,13 +150,15 @@ extension CalendarViewModel {
         result.newMonth = newMonth
         result.list = data
         
+        print(result)
+        
         return result
         
     }
     
     func formatClimbingData(for date: Date) -> [ClimbingInfo] {
         let climbingElements = repository.findBoulderingList(for: date)
-        
+
         if climbingElements.isEmpty {
             return []
         }
@@ -170,7 +174,7 @@ extension CalendarViewModel {
                 id: climbingElement.id,
                 gym: Locale.isEnglish ? gym.nameEn : gym.nameKo,
                 excersieTime: climbingElement.climbTime.toTimeFormat(),
-                climbDate: climbingElement.climbDate.toFormattedString(),
+                climbDate: climbingElement.climbDate,
                 totalClimbCount: totalClimbCount,
                 totalSuccessCount: totalSuccessCount
             )
