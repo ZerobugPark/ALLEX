@@ -16,6 +16,8 @@ protocol MonthlyClimbingResultRepository: Repository where T == MonthlyClimbingR
     func findClimbingDatesInMonth(_ month: String) -> [String]
     func findBoulderingList(for date: Date) -> [BoulderingList]
     func findBoulderingSelectedList(for query: ClimbingRecordQuery) -> BoulderingList?
+    
+    func updateClimbingRecord(with newList: BoulderingList, query: ClimbingRecordQuery)
 }
 
 final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbingResultTable>, MonthlyClimbingResultRepository {
@@ -46,6 +48,7 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
         }
     }
     
+    //가장 최근기록 불러오기 (사용자 기록 추가시)
     func fetchLatestBoulderingList() -> BoulderingList? {
         
         let month = queryDateFormat(Date())
@@ -108,7 +111,7 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
     
     // 선택된 날짜의 대한 데이터 조회
     func findBoulderingSelectedList(for query: ClimbingRecordQuery) -> BoulderingList? {
-        
+        print(query)
         let month = queryDateFormat(query.date)
         // 월별 데이터를 찾기 위한 predicate
         let predicate = NSPredicate(format: "month == %@", month)
@@ -123,6 +126,30 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
         return nil  // 해당 월에 대한 데이터가 없거나 objectId에 맞는 데이터가 없을 경우 nil 반환
     }
 
+    // 업데이트 로직
+    func updateClimbingRecord(with newList: BoulderingList, query: ClimbingRecordQuery) {
+      
+        let month = queryDateFormat(query.date)
+        let predicate = NSPredicate(format: "month == %@", month)  // 월별 데이터를 찾기 위한 조건
+        
+        // 월별 데이터 찾기
+        if let monthlyResult = realm.objects(MonthlyClimbingResultTable.self).filter(predicate).first {
+            // monthlyResult의 boulderingLists에서 해당 아이템을 찾아 삭제
+            if let index = monthlyResult.boulderingLists.firstIndex(where: { $0.id == query.objectId }) {
+                // 해당 리스트에서 삭제
+                try? realm.write {
+                    monthlyResult.boulderingLists.remove(at: index)
+                }
+            }
+            
+            createMonthlyClimbingResult(boulderingList: newList, date: newList.climbDate)
+        }
+        
+    }
+
+
+
+    
     
     private func fetch(predicate: NSPredicate) -> MonthlyClimbingResultTable? {
         return realm.objects(MonthlyClimbingResultTable.self).filter(predicate).first

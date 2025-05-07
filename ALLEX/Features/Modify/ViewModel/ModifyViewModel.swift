@@ -102,13 +102,13 @@ final class ModifyViewModel: BaseViewModel {
             switch owner.mode {
             case .add:
                 break
-            case .modify(let id):
-//                let data = owner.setupModifyInitialValues(id: id)
-//                modifyInit.accept(data)
-//                
-//                
-//                owner.boulderingData = [BoulderingSection(header: "", items: data.bouldering)]
-//                gradeList.accept(owner.boulderingData)
+            case .modify(let query):
+                let data = owner.setupModifyInitialValues(for: query)
+                modifyInit.accept(data)
+                
+                
+                owner.boulderingData = [BoulderingSection(header: "", items: data.bouldering)]
+                gradeList.accept(owner.boulderingData)
                 break
                 
             }
@@ -204,37 +204,37 @@ extension ModifyViewModel {
         var space: String = ""
     }
     
-//    private func setupModifyInitialValues(id: ObjectId) -> ModifyInit {
-//        
-//        // nil일때도 있음
-//        let data = repository.findBoulderingSelectedList(by: id)!
-//
-//        
-//        // 문자열 변환시 60으로 나누어진 값을 넣기 때문에, 60을 곱해줌
-//        totalMinutes = Int(TimeInterval(data.climbTime) * 60)
-//        let time = donePressed(time: Double(totalMinutes))
-//        
-//        defaultDate = data.climbDate
-//        let date = dateToString(defaultDate)
-//        
-//        let space = sharedData.getData(for: Gym.self)!.filter { $0.gymID == data.gymId }.first!
-//        
-//        
-//        let localizedSpace =  Locale.isEnglish ? space.nameEn : space.nameKo
-//        
-//        
-//        let bouldering = Array(data.routeResults.map {  BoulderingAttempt(gradeLevel: $0.level, color: $0.color, difficulty: $0.difficulty, tryCount: $0.totalClimbCount, successCount: $0.totalSuccessCount)
-//            
-//        })
-//        
-//        // 0 == brand id, 1 == gymid
-//        updateGymInfo(brandID: data.brandId, gymID: data.gymId)
-//        
-//        
-//        //gradeList.accept(owner.boulderingData)
-//        return ModifyInit(date: date, time: time, bouldering: bouldering, space: localizedSpace)
-//        
-//    }
+    private func setupModifyInitialValues(for query: ClimbingRecordQuery) -> ModifyInit {
+        
+        // nil일때도 있음
+        let data = repository.findBoulderingSelectedList(for: query)!
+
+        
+        // 문자열 변환시 60으로 나누어진 값을 넣기 때문에, 60을 곱해줌
+        totalMinutes = Int(TimeInterval(data.climbTime) * 60)
+        let time = donePressed(time: Double(totalMinutes))
+        
+        defaultDate = data.climbDate
+        let date = dateToString(defaultDate)
+        
+        let space = sharedData.getData(for: Gym.self)!.filter { $0.gymID == data.gymId }.first!
+        
+        
+        let localizedSpace =  Locale.isEnglish ? space.nameEn : space.nameKo
+        
+        
+        let bouldering = Array(data.routeResults.map {  BoulderingAttempt(gradeLevel: $0.level, color: $0.color, difficulty: $0.difficulty, tryCount: $0.totalClimbCount, successCount: $0.totalSuccessCount)
+            
+        })
+        
+        // 0 == brand id, 1 == gymid
+        updateGymInfo(brandID: data.brandId, gymID: data.gymId)
+        
+        
+        //gradeList.accept(owner.boulderingData)
+        return ModifyInit(date: date, time: time, bouldering: bouldering, space: localizedSpace)
+        
+    }
 }
 
 
@@ -351,21 +351,10 @@ extension ModifyViewModel {
         switch mode {
         case .add:
             repository.createMonthlyClimbingResult(boulderingList: boulderingList, date: exerciseDate)
-        case .modify(let id):
-            break
-            //repository.updateBoulderingList(id: id, newBoulderingList: boulderingList)
+        case .modify(let query):
+            repository.updateClimbingRecord(with: boulderingList, query: query)
         }
         
-        
-        
-        // 5. 월간 통계 업데이트
-//                monthlyRepository.updateMonthlyStatistics(
-//                    climbCount: totalClimbCount,
-//                    successCount: totalSuccessCount,
-//                    climbTime: timeMinute,
-//                    lastGrade: bestGradeDifficulty,
-//                    date: exerciseDate
-//                )
     }
     
     

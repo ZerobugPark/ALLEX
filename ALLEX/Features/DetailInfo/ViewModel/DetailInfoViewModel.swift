@@ -92,6 +92,7 @@ extension DetailInfoViewModel {
             case .latest:
                 return repository.fetchLatestBoulderingList()
             case .detail(let query):
+                climbingRecord = query
                 return repository.findBoulderingSelectedList(for: query)
             }
         }()
