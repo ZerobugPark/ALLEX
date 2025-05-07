@@ -40,9 +40,7 @@ final class RecordViewModel: BaseViewModel {
     
     var disposeBag =  DisposeBag()
     
-    let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
-    let monthlyRepository: any MonthlyClimbingStatisticsRepository = RealmMonthlyClimbingStatisticsRepository()
-    
+    let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
     
     private let timerSubject = PublishSubject<String>()
     private var timerSubscription: Disposable?
@@ -163,8 +161,7 @@ final class RecordViewModel: BaseViewModel {
             
         }.disposed(by: disposeBag)
         
-        
-        
+ 
         return Output(timerString: timerSubject.asObservable(), buttonStatus: buttonStatus.asDriver(onErrorJustReturn: (false)), updateTitle: Observable.just(gymTitle), gymGrade: gymGrade.asDriver(onErrorJustReturn: []), hiddenData: hiddenData.asDriver(onErrorJustReturn: []), updateUI: updateUI.asDriver(onErrorJustReturn: ()), dismissView: dismissView.asDriver(onErrorJustReturn: ()))
     }
     
@@ -245,17 +242,9 @@ extension RecordViewModel {
             routeResults: routeResults
         )
         
-        let data = ClimbingResultTable(boulderingLists: [boulderingList])
-        repository.create(data)
         
-        // 5. 월간 통계 업데이트
-        monthlyRepository.updateMonthlyStatistics(
-            climbCount: totalClimbCount,
-            successCount: totalSuccessCount,
-            climbTime: timeMinute,
-            lastGrade: bestGradeDifficulty,
-            date: currentDate
-        )
+        repository.createMonthlyClimbingResult(boulderingList: boulderingList, date: currentDate)
+        
     }
 
 }

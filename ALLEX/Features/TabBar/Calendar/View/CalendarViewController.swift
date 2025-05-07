@@ -75,8 +75,10 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         
         
         mainView.tableView.rx.modelSelected(ClimbingInfo.self).bind(with: self) { owner, value in
-           
-            owner.coordinator?.showDetail(mode: .detail(value.id))
+
+            let data = ClimbingRecordQuery(objectId: value.id, date: value.climbDate)
+            print(value.id)
+            owner.coordinator?.showDetail(mode: .detail(data))
             
         }.disposed(by: disposeBag)
         

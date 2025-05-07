@@ -176,7 +176,7 @@ extension ResultTableViewCell {
     
     // MARK: - Configuration
     func configure(with info: ClimbingInfo) {
-        dateLabel.text = info.climbDate
+        dateLabel.text = info.climbDate.toFormattedString()
         locationNameLabel.text = info.gym
     
         timeLabel.text = info.excersieTime

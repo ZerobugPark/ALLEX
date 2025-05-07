@@ -69,10 +69,6 @@ final class CameraCoordinator: Coordinator, ModifyCoordinating {
         
     }
     
-    
-    
-    
-    
     private func showRecord() {
         
         guard let navigationController = extractNavigationController() else {

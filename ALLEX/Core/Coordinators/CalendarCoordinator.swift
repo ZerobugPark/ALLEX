@@ -34,8 +34,9 @@ final class CalendarCoordinator: Coordinator, ModifyCoordinating {
         switch mode {
         case .latest:
             break
-        case .detail(let id):
-            let vm = DetailInfoViewModel(sharedData, mode: .detail(id))
+        case .detail(let query):
+            print(query)
+            let vm = DetailInfoViewModel(sharedData, mode: .detail(query))
             let vc = DetailInfoViewController(viewModel: vm)
             vc.coordinator = self
             navigationController.pushViewController(vc, animated: true)

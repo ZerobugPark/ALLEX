@@ -15,7 +15,7 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
 
     weak var coordinator: HomeCoordinator?
     
-    private let repository: RealmRepository = RealmClimbingResultRepository()
+    private let repository: RealmRepository = RealmMonthlyClimbingResultRepository()
     
     
 

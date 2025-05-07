@@ -15,7 +15,7 @@ import RealmSwift
 // 클라이밍을 최신기록을 보여줄 건지, 특정 기록을 보여줄건지
 enum ResultMode {
     case latest
-    case detail(ObjectId)
+    case detail(_ data: ClimbingRecordQuery)
 }
 
 
@@ -28,7 +28,7 @@ final class DetailInfoViewModel: BaseViewModel {
     
     struct Output {
         let setupUI: Driver<ResultData>
-        let modifyButton: Driver<ObjectId>
+        let modifyButton: Driver<ClimbingRecordQuery>
     }
     
     
@@ -36,10 +36,10 @@ final class DetailInfoViewModel: BaseViewModel {
     
     private let sharedData: SharedDataModel
     private let mode: ResultMode
-    private var objectID: ObjectId = ObjectId()
+    private var climbingRecord: ClimbingRecordQuery = ClimbingRecordQuery()
 
     
-    private let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
+    private let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
     
     private let empty = ResultData(space: "", date: "", totalTryCount: "", totalSuccessCount: "", totalSuccessRate: "", bestGrade: "", excersieTime: "", results: [])
     
@@ -52,11 +52,11 @@ final class DetailInfoViewModel: BaseViewModel {
         self.result = empty
         self.result = formatData()
         
-//        if case .latest = mode {
-//            NotificationCenterManager.isUpdatedRecored.post()
-//        }
+        if case .latest = mode {
+            NotificationCenterManager.isUpdatedRecored.post()
+        }
         
-        // NotificationCenterManager.isUpdatedRecored.post()
+         NotificationCenterManager.isUpdatedRecored.post()
     }
     
 
@@ -65,16 +65,16 @@ final class DetailInfoViewModel: BaseViewModel {
         
         
         let setupUI = BehaviorRelay<ResultData>(value: result)
-        let modifyButton = PublishRelay<ObjectId>()
+        let modifyButton = PublishRelay<ClimbingRecordQuery>()
         
         
         input.modifyButtonTapped.bind(with: self) { owner, _ in
-            print(owner.objectID)
-            modifyButton.accept(owner.objectID)
+            
+            modifyButton.accept(owner.climbingRecord)
         }.disposed(by: disposeBag)
         
         
-        return Output(setupUI: setupUI.asDriver(onErrorJustReturn: empty), modifyButton: modifyButton.asDriver(onErrorJustReturn: ObjectId()))
+        return Output(setupUI: setupUI.asDriver(onErrorJustReturn: empty), modifyButton: modifyButton.asDriver(onErrorJustReturn: ClimbingRecordQuery()))
     }
     
     
@@ -90,10 +90,10 @@ extension DetailInfoViewModel {
         let data = {
             switch mode {
             case .latest:
-                return repository.findLastBoulderingList()
-            case .detail(let id):
-                objectID = id
-                return repository.findBoulderingSelectedList(by: id)
+                return repository.fetchLatestBoulderingList()
+            case .detail(let query):
+                climbingRecord = query
+                return repository.findBoulderingSelectedList(for: query)
             }
         }()
         
