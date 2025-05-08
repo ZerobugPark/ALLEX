@@ -204,9 +204,7 @@ extension ModifyViewModel {
     
     private func setupModifyInitialValues(for query: ClimbingRecordQuery) -> ModifyInit {
         
-        // nil일때도 있음
         let data = repository.findBoulderingSelectedList(for: query)!
-
         
         // 문자열 변환시 60으로 나누어진 값을 넣기 때문에, 60을 곱해줌
         totalMinutes = Int(TimeInterval(data.climbTime) * 60)
@@ -301,7 +299,6 @@ extension ModifyViewModel {
         let timeMinute = totalMinutes
         print(brandId, gymId)
         let exerciseDate = date.isEmpty ? defaultDate : dateConvertor(date)
-        
         
         // 2. 통계 계산 (한 번의 순회로 여러 값 계산)
         var totalClimbCount = 0

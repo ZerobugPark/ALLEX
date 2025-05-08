@@ -108,5 +108,5 @@ extension GymSelectionViewModel {
 //        
 //        return Array(gymSet)
 //    }
-//    
+   
 }

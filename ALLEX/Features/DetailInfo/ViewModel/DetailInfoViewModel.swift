@@ -90,7 +90,9 @@ extension DetailInfoViewModel {
         let data = {
             switch mode {
             case .latest:
-                return repository.fetchLatestBoulderingList()
+                let data = repository.fetchLatestBoulderingList()
+                climbingRecord = ClimbingRecordQuery(objectId: data!.id, date: data!.climbDate)
+                return data
             case .detail(let query):
                 climbingRecord = query
                 return repository.findBoulderingSelectedList(for: query)

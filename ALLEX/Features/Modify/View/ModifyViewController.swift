@@ -86,18 +86,30 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
              )
         
         
-        let input = ModifyViewModel.Input(viewDidLoadTrigger: Observable.just(()), spaceTextField: mainView.spaceTextField.rx.text.orEmpty, doneButtonTapped: mainView.doneButton.rx.tap.withLatestFrom(timeSelected), selectedGym: selectedGym.asDriver(onErrorJustReturn: ("", "")), countType: countType.asDriver(onErrorJustReturn: (.successMinus, 0)), saveButtonTapped: saveButton.rx.tap.withLatestFrom(inputFields))
+        let input = ModifyViewModel.Input(
+            viewDidLoadTrigger: Observable.just(()),
+            spaceTextField: mainView.spaceTextField.rx.text.orEmpty,
+            doneButtonTapped: mainView.doneButton.rx.tap.withLatestFrom(timeSelected),
+            selectedGym: selectedGym.asDriver(onErrorJustReturn: ("", "")),
+            countType: countType.asDriver(onErrorJustReturn: (.successMinus, 0)),
+            saveButtonTapped: saveButton.rx.tap.withLatestFrom(inputFields)
+        )
         
         let output = viewModel.transform(input: input)
         
-        output.gymList.drive(mainView.tableView.rx.items(cellIdentifier: GymListTableViewCell.id, cellType: GymListTableViewCell.self)) { row, element , cell in
+        output.gymList.drive(
+            mainView.tableView.rx
+                .items(cellIdentifier: GymListTableViewCell.id, cellType: GymListTableViewCell.self)
+        ) { row, element , cell in
             
             cell.setupUI(data: element)
             
         }.disposed(by: disposeBag)
         
         output.popView.drive(with: self) { owner, _ in
+            
             owner.coordinator?.popView()
+            
         }.disposed(by: disposeBag)
         
         
