@@ -2,7 +2,14 @@
   "sourceLanguage" : "en",
   "strings" : {
     "Allex" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allex"
+          }
+        }
+      }
     },
     "Button_Save_Record" : {
       "extractionState" : "manual",
@@ -409,7 +416,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "누리이름"
+            "value" : "닉네임"
           }
         }
       }
@@ -504,7 +511,14 @@
       }
     },
     "The latest Climbing record" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 기록"
+          }
+        }
+      }
     },
     "User_ID" : {
       "extractionState" : "manual",
@@ -523,6 +537,24 @@
         }
       }
     },
+    "Widget_BestRecord" : {
+      "comment" : "역대 최고 기록",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Best: "
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최고 기록: "
+          }
+        }
+      }
+    },
     "Widget_ExTime" : {
       "comment" : "이번달 운동 시간",
       "extractionState" : "manual",
@@ -537,24 +569,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "운동 시간: "
-          }
-        }
-      }
-    },
-    "Widget_Latest_Title" : {
-      "comment" : "최근 기록",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Latest: "
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "최근 기록: "
           }
         }
       }

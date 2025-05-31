@@ -29,7 +29,6 @@ struct Provider: TimelineProvider {
         let currentDate = Date()
         
         let userName = UserDefaultManager.nickname
-        
         let latestGrade = UserDefaultManager.latestGrade
         
         let successRate = UserDefaultManager.successRate
@@ -72,7 +71,7 @@ struct AllexWidgetEntryView : View {
             
             VStack(spacing: 12) {
                 Text("🧗‍♀️ Hi, " + entry.userName)
-                    .font(.system(size: 14))
+                    .font(.system(size: 10))
                     .bold()
                     .foregroundColor(.primary)
 
@@ -81,7 +80,7 @@ struct AllexWidgetEntryView : View {
                     .frame(width: 130, height: 80)
                     .overlay(
                         VStack(alignment: .center, spacing: 4) {
-                            Text(LocalizedKey.Widget_Latest_Title.rawValue.localized(with: "") + entry.latestGrade)
+                            Text(LocalizedKey.Widget_BestRecord.rawValue.localized(with: "") + entry.latestGrade)
                                 .asSmallWidgetText()
                                 
                             

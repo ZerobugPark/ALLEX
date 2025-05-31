@@ -164,6 +164,7 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
             return MonthlyClimbingStatistics()
         }
         
+        
         let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)
         let startDate = DateFormatterHelper.convertStringToDate(UserDefaultManager.startDate)
         let date = LocalizedKey.userId.rawValue.localized(with: (DateFormatterHelper.daysBetween(startDate, Date()) + 1))
