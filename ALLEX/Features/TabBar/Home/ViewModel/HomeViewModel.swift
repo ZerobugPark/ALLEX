@@ -115,9 +115,16 @@ extension HomeViewModel {
     
     func getUIData() -> MonthlyClimbingStatistics {
     
+        let data = repository.statistics()
+        print(data.nickName)
+        print("2233", UserDefaultManager.nickname)
+        UserDefaultManager.latestGrade = data.latestBestGrade
+        UserDefaultManager.totalExTime = data.totalTime
+        UserDefaultManager.successRate = data.successRate
+        
         WidgetCenter.shared.reloadTimelines(ofKind: "AllexWidget")
         
-        return repository.statistics()
+        return data
     }
     
     func convertToGyms<T: Mappable>(from googleSheetData: GoogleSheetData, type: T.Type) -> [T] {

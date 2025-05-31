@@ -222,46 +222,29 @@ class HomeView: BaseView {
         }
         
         // Challenges Container
-//        challengesContainerView.snp.makeConstraints { make in
-//            make.top.equalTo(timeContainerView.snp.bottom).offset(16)
-//            make.leading.trailing.equalTo(contentView).inset(16)
-//            make.height.equalTo(240)
-//            make.bottom.equalTo(contentView).offset(-16)
-//        }
-//        
-//        challengeTitleLabel.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(20)
-//            make.leading.trailing.equalToSuperview().inset(16)
-//        }
-//        
-//        challengeLocationLabel.snp.makeConstraints { make in
-//            make.top.equalTo(challengeTitleLabel.snp.bottom).offset(16)
-//            make.leading.trailing.equalToSuperview().inset(16)
-//        }
-//        
-//        
-//        challengeDescriptionLabel.snp.makeConstraints { make in
-//            make.top.equalTo(challengeLocationLabel.snp.bottom).offset(8)
-//            make.leading.trailing.equalToSuperview().inset(16)
-//        }
-//        
-//        // Thumbnails
-//        thumbnailsView.snp.makeConstraints { make in
-//            make.top.equalTo(challengeDescriptionLabel.snp.bottom).offset(16)
-//            make.leading.trailing.equalToSuperview().inset(16)
-//            make.bottom.equalToSuperview().offset(-16)
-//            make.height.equalTo(120)
-//        }
-//        
-//        thumbnailImageView1.snp.makeConstraints { make in
-//            make.leading.top.bottom.equalToSuperview()
-//            make.width.equalToSuperview().multipliedBy(0.48)
-//        }
-//        
-//        thumbnailImageView2.snp.makeConstraints { make in
-//            make.trailing.top.bottom.equalToSuperview()
-//            make.width.equalToSuperview().multipliedBy(0.48)
-//        }
+        challengesContainerView.snp.makeConstraints { make in
+            make.top.equalTo(timeContainerView.snp.bottom).offset(16)
+            make.leading.trailing.equalTo(contentView).inset(16)
+            make.height.equalTo(240)
+            make.bottom.equalTo(contentView).offset(-16)
+        }
+        
+        challengeTitleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(20)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        challengeLocationLabel.snp.makeConstraints { make in
+            make.top.equalTo(challengeTitleLabel.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        
+        challengeDescriptionLabel.snp.makeConstraints { make in
+            make.top.equalTo(challengeLocationLabel.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
         
     }
     
@@ -336,21 +319,7 @@ class HomeView: BaseView {
         challengeDescriptionLabel.text = "파랑 문제를 2번 도전해 완등했네요!"
         challengeDescriptionLabel.textColor = UIColor(red: 0.6, green: 0.9, blue: 0.3, alpha: 1.0)
         challengeDescriptionLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        
-      
-        
-        // Thumbnails
-        thumbnailsView.backgroundColor = .clear
-        thumbnailImageView1.backgroundColor = UIColor(red: 0.2, green: 0.2, blue: 0.25, alpha: 1.0)
-        thumbnailImageView1.layer.cornerRadius = 8
-        thumbnailImageView1.clipsToBounds = true
-        thumbnailImageView1.contentMode = .scaleAspectFill
-        
-        thumbnailImageView2.backgroundColor = UIColor(red: 0.2, green: 0.2, blue: 0.25, alpha: 1.0)
-        thumbnailImageView2.layer.cornerRadius = 8
-        thumbnailImageView2.clipsToBounds = true
-        thumbnailImageView2.contentMode = .scaleAspectFill
-        
+                
 
     }
     

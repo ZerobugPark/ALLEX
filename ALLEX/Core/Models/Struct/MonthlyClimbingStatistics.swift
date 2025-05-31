@@ -16,14 +16,27 @@ struct MonthlyClimbingStatistics {
     let totalTime: String
     let latestBestGrade: String
     
-    init(nickName: String = "", date: String = "", tryCount: String = "0", successCount: String = "0", successRate: String = "0%" , totalTime: String = "0", latestBestGrade: String = "VB") {
+    
+    init(nickName: String = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname), date: String = "", tryCount: String = "0", successCount: String = "0", successRate: String = "0%" , totalTime: String = "0", latestBestGrade: String = "") {
+        
+        var resolvedDate: String
+        if date.isEmpty {
+            let startData = DateFormatterHelper.convertStringToDate(UserDefaultManager.startDate)
+            resolvedDate = LocalizedKey.userId.rawValue.localized(with: (DateFormatterHelper.daysBetween(startData, Date()) + 1))
+        } else {
+            resolvedDate = date
+        }
+        
+        
         self.nickName = nickName
-        self.date = date
+        self.date = resolvedDate
         self.tryCount = tryCount
         self.successCount = successCount
         self.successRate = successRate
         self.totalTime = totalTime
         self.latestBestGrade = latestBestGrade
+    
+        
     }
     
     

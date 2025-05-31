@@ -20,6 +20,8 @@ protocol MonthlyClimbingResultRepository: Repository where T == MonthlyClimbingR
     func updateClimbingRecord(with newList: BoulderingList, query: ClimbingRecordQuery)
     
     func statistics() -> MonthlyClimbingStatistics
+    
+    func findLastBoulderingLists(limit: Int) -> [BoulderingList] 
 }
 
 final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbingResultTable>, MonthlyClimbingResultRepository {
@@ -109,7 +111,7 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
         
         return Array(results)
     }
-    
+
     
     // 선택된 날짜의 대한 데이터 조회
     func findBoulderingSelectedList(for query: ClimbingRecordQuery) -> BoulderingList? {
@@ -162,6 +164,7 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
             return MonthlyClimbingStatistics()
         }
         
+        
         let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)
         let startDate = DateFormatterHelper.convertStringToDate(UserDefaultManager.startDate)
         let date = LocalizedKey.userId.rawValue.localized(with: (DateFormatterHelper.daysBetween(startDate, Date()) + 1))
@@ -178,6 +181,25 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
         
         return MonthlyClimbingStatistics(nickName: nickname, date: date, tryCount: String(totalClimbCount), successCount: String(totalSuccessCount), successRate: successRate, totalTime: totalClimbTime, latestBestGrade: lastGrade)
     }
+    
+    
+    func findLastBoulderingLists(limit: Int) -> [BoulderingList] {
+        
+        let month = queryDateFormat(Date())
+        
+        // 월별 데이터를 Realm에서 가져오기
+        let predicate = NSPredicate(format: "month == %@", month)
+        guard let monthlyData = realm.objects(MonthlyClimbingResultTable.self).filter(predicate).first else {
+            return []
+        }
+ 
+        let lastBoulderingLists = monthlyData.boulderingLists
+            .sorted { $0.climbDate > $1.climbDate }
+            .prefix(limit)
+
+        return Array(lastBoulderingLists)
+    }
+
     
     
 
