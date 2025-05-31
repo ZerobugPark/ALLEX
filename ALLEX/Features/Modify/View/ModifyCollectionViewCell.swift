@@ -44,7 +44,6 @@ final class ModifyCollectionViewCell: BaseCollectionViewCell {
         bouldering.gradeLabel.text = data.difficulty
         bouldering.gradeLabel.textColor = .setAllexColor(.routeColor)
         
-        
         bouldering.tryCountLabel.text = "\(data.tryCount)"
         bouldering.successCountLabel.text = "\(data.successCount)"
         

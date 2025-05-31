@@ -7,6 +7,8 @@
 
 import UIKit
 
+import Kingfisher
+
 final class GymHeaderCollectionViewCell: BaseCollectionViewCell {
     
     // MARK: - UI Components
@@ -57,14 +59,14 @@ final class GymHeaderCollectionViewCell: BaseCollectionViewCell {
         }
         
         instaImageView.snp.makeConstraints { make in
-            make.top.equalTo(addressLabel.snp.bottom).offset(6)
+            make.bottom.equalTo(contentView.safeAreaLayoutGuide).offset(-6)
             make.leading.equalToSuperview().offset(12)
             make.size.equalTo(34)
             
         }
         
         instaButton.snp.makeConstraints { make in
-            make.bottom.equalTo(contentView.safeAreaLayoutGuide).offset(-4)
+            make.centerY.equalTo(instaImageView.snp.centerY)
             make.leading.equalTo(instaImageView.snp.trailing).offset(8)
         }
 
@@ -104,15 +106,11 @@ final class GymHeaderCollectionViewCell: BaseCollectionViewCell {
         addressLabel.text = address
         instaButton.setTitle(insta, for: .normal)
         
-        Task {
-            do {
-                let data = try await NetworkManger.shared.fetchAsycnAwait(url: imageURL)
-                logoImageView.image = data
-            } catch {
-                logoImageView.image = .setAllexSymbol(.star)
-            }
-            
-        }
+        
+        let url = NetworkManger.shared.convertGoogleDriveURLToDownloadLink(imageURL)!
+        logoImageView.kf.setImage(with: URL(string: url), options: [.cacheOriginalImage])
+        
+        
       
     }
   

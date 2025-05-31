@@ -30,7 +30,7 @@ final class GymSelectionViewModel: BaseViewModel {
     
     
     private let updateGym = PublishRelay<String>()
-    let repository: any ClimbingResultRepository = RealmClimbingResultRepository()
+    let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
     
     var recentGymList: [Gym] = []
     
@@ -94,8 +94,10 @@ final class GymSelectionViewModel: BaseViewModel {
 
 extension GymSelectionViewModel {
     
+ 
     private func recentVisit() -> [Gym] {
         
+        // 최근 기록 방문 짐
         let data = repository.findLastBoulderingLists(limit: 10)
         
         var gymSet: Set<Gym> = []
@@ -107,5 +109,5 @@ extension GymSelectionViewModel {
         
         return Array(gymSet)
     }
-    
+   
 }

@@ -60,6 +60,7 @@ final class ProfileSettingViewController: BaseViewController<SignUpView, SignUpV
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = false
+        tabBarController?.tabBar.isHidden = false
     }
     
     

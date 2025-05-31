@@ -75,8 +75,6 @@ final class CalendarView: BaseView {
         calendarView.fontDesign = .rounded
         calendarView.tintColor = .setAllexColor(.textTertiary)
         
-        
-        //    tableView.separatorInset = .zero
         tableView.rowHeight = 170
        
         tableView.isScrollEnabled = false // 스크롤뷰 내에서는 테이블뷰 스크롤 비활성화

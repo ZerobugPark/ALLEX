@@ -75,8 +75,11 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         
         
         mainView.tableView.rx.modelSelected(ClimbingInfo.self).bind(with: self) { owner, value in
-           
-            owner.coordinator?.showDetail(id: value.id)
+
+            let data = ClimbingRecordQuery(objectId: value.id, date: value.climbDate)
+            print(value.id)
+            owner.coordinator?.showDetail(mode: .detail(data))
+            
         }.disposed(by: disposeBag)
         
         rightBarButton.rx.tap.bind(with: self) { owner, _ in
@@ -88,10 +91,15 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
             ])
 
             
-            owner.coordinator?.showModify()
+            owner.coordinator?.showModify(mode: .add)
             
         }.disposed(by: disposeBag)
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
     }
         
     deinit {

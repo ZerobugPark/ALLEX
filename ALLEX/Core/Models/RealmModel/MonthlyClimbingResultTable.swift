@@ -1,8 +1,8 @@
 //
-//  ClimbingResultTable.swift
+//  MonthlyClimbingResultTable.swift
 //  ALLEX
 //
-//  Created by youngkyun park on 4/4/25.
+//  Created by youngkyun park on 5/7/25.
 //
 
 import Foundation
@@ -10,16 +10,18 @@ import Foundation
 import RealmSwift
 
 
-class ClimbingResultTable: Object {
-        
+class MonthlyClimbingResultTable: Object {
+    
     @Persisted(primaryKey: true) var id: ObjectId
+    @Persisted var month: String
     @Persisted var boulderingLists: List<BoulderingList> // 해당 폴더 안의 등반 기록들
     //향후 추가 : 자연 / 지구력 / 킬터보드
     
-    convenience init(boulderingLists: [BoulderingList]) {
-         self.init()
-         self.boulderingLists.append(objectsIn: boulderingLists)
-     }
+    convenience init(month: String, boulderingLists: [BoulderingList]) {
+        self.init()
+        self.month = month
+        self.boulderingLists.append(objectsIn: boulderingLists)
+    }
     
 }
 
@@ -67,7 +69,7 @@ class RouteResult: EmbeddedObject {
     @Persisted var totalClimbCount: Int  // 해당 난이도의 총 등반 횟수
     @Persisted var totalSuccessCount: Int  // 해당 난이도의 총 성공 횟수
     
-
+    
     override required init() {
         super.init()  // 부모 클래스인 `EmbeddedObject`의 초기화 호출
     }

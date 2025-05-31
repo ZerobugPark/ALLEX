@@ -9,8 +9,8 @@ import UIKit
 
 import RealmSwift
 
-final class CalendarCoordinator: Coordinator {
-        
+final class CalendarCoordinator: Coordinator, ModifyCoordinating {
+ 
     var childCoordinators: [Coordinator] = []
 
     private let navigationController: UINavigationController
@@ -29,16 +29,25 @@ final class CalendarCoordinator: Coordinator {
     
     }
     
-    func showDetail(id: ObjectId) {
-        let vm = DetailInfoViewModel(sharedData, id)
-        let vc = DetailInfoViewController(viewModel: vm)
-        navigationController.pushViewController(vc, animated: true)
+    func showDetail(mode: ResultMode) {
+        
+        switch mode {
+        case .latest:
+            break
+        case .detail(let query):
+            print(query)
+            let vm = DetailInfoViewModel(sharedData, mode: .detail(query))
+            let vc = DetailInfoViewController(viewModel: vm)
+            vc.coordinator = self
+            navigationController.pushViewController(vc, animated: true)
+        }
+      
         
     }
     
-    func showModify() {
+    func showModify(mode: ModifyMode) {
         
-        let vm = ModifyViewModel(sharedData)
+        let vm = ModifyViewModel(sharedData, mode: mode)
         let vc = ModifyViewController(viewModel: vm)
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
@@ -46,11 +55,9 @@ final class CalendarCoordinator: Coordinator {
         
     }
     
-    func dismiss() {
-        
+    func popView() {
         navigationController.popViewController(animated: true)
     }
-    
 
     
 }

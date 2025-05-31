@@ -7,17 +7,24 @@
 
 import UIKit
 
-class DetailInfoViewController: BaseViewController<ResultView, DetailInfoViewModel> {
+final class DetailInfoViewController: BaseViewController<ResultView, DetailInfoViewModel> {
 
+    
+    var coordinator: ModifyCoordinating?
+    
+    private var rightBarButton = UIBarButtonItem(image: UIImage.setAllexSymbol(.modify), style: .plain, target: nil, action: nil)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-     
+        navigationItem.title = "Result"
+        
+        navigationItem.rightBarButtonItem = rightBarButton
     }
     
     override func bind() {
         
-        let input = DetailInfoViewModel.Input()
+        let input = DetailInfoViewModel.Input(modifyButtonTapped:  rightBarButton.rx.tap)
         
         let output = viewModel.transform(input: input)
         
@@ -49,5 +56,23 @@ class DetailInfoViewController: BaseViewController<ResultView, DetailInfoViewMod
                 
         }.disposed(by: disposeBag)
         
+        
+        output.modifyButton.drive(with: self) { owner, query in
+            owner.coordinator?.showModify(mode: .modify(query))
+           
+        }.disposed(by: disposeBag)
+                
+        
+
     }
+    
+    deinit {
+        coordinator = nil
+        print(String(describing: self) + "Deinit")
+    }
+      
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        navigationController?.navigationBar.isHidden = false
+//    }
 }

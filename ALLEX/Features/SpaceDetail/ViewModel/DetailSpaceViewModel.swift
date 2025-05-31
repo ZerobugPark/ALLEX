@@ -60,9 +60,8 @@ extension DetailSpaceViewModel {
         // 헤더 섹션
         let headerSection: GymInfoSectionModel
         
-        
-        let languageCode = Locale.preferredLanguageCode
-        if languageCode == "en" {
+    
+        if Locale.isEnglish {
             headerSection = GymInfoSectionModel(
                 section: .header(title: "Climbing Info"),
                 items: [.headerItem(title: gymInfo.nameEn, address: gymInfo.addressEn, insta: gymInfo.instaID, logoImage: gymInfo.imageURL)]
