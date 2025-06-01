@@ -141,9 +141,6 @@ final class ModifyViewController: BaseViewController<ModifyView, ModifyViewModel
         }.disposed(by: disposeBag)
         
         mainView.tableView.rx.modelSelected(Gym.self).bind(with: self) { owner, data in
-            
-            print(data.brandID, data.gymID)
-            
             owner.selectedGym.accept((data.brandID, data.gymID))
           
             owner.mainView.spaceTextField.text = Locale.isEnglish ? data.nameEn : data.nameKo

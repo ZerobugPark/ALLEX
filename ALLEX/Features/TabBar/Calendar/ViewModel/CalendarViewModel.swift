@@ -55,16 +55,26 @@ final class CalendarViewModel: BaseViewModel {
     // 캐싱을 위한 딕셔너리
     private var gymInfoCache: [String: Gym] = [:]
     
+    private lazy var setupList = BehaviorRelay(value: currentDateList)
+    
     
     init(_ sharedData: SharedDataModel) {
         self.sharedData = sharedData
         self.cacheGymInfo()
+        
+        /// 업데이트 되면 캘린더도 업데이트 될 수 있도록
+        NotificationCenterManager.isUpdatedRecored.addObserverVoid().bind(with: self) { owner, _ in
+            
+            owner.currentDateList = owner.formatClimbingData(for: Date())
+            owner.setupList.accept(owner.currentDateList)
+            
+        }.disposed(by: disposeBag)
     }
 
     
     func transform(input: Input) -> Output {
         
-        let setupList = BehaviorRelay(value: currentDateList)
+        
         let eventList = BehaviorRelay(value: CalendarList())
         
         // 현재 날짜 데이터 로드 및 캘린더 설정
@@ -149,9 +159,6 @@ extension CalendarViewModel {
         result.newYear = newYear
         result.newMonth = newMonth
         result.list = data
-        
-        //print(result)
-        
         return result
         
     }

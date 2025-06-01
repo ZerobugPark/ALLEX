@@ -29,8 +29,8 @@ final class DetailInfoViewController: BaseViewController<ResultView, DetailInfoV
         let output = viewModel.transform(input: input)
         
         output.setupUI.drive(with: self) { owner, value in
-        
-        
+            print(#function)
+            print(owner.mainView.problemViewArray.count)
             owner.mainView.dateLabel.text = value.date
             owner.mainView.spaceDetailButton.title.text = value.space
             owner.mainView.attemptView.valueLabel.text = value.totalTryCount
@@ -43,7 +43,7 @@ final class DetailInfoViewController: BaseViewController<ResultView, DetailInfoV
             for i in 0..<owner.mainView.problemViewArray.count {
                 
                 if i < value.results.count {
-                    
+                    owner.mainView.problemViewArray[i].isHidden = false
                     owner.mainView.problemViewArray[i].levelLabel.text = value.results[i].difficulty
                     owner.mainView.problemViewArray[i].levelCircle.backgroundColor = .setBoulderColor(from: value.results[i].color)
                     owner.mainView.problemViewArray[i].progressView.progress = Float(value.results[i].totalSuccessCount) / Float(value.results[i].totalClimbCount)

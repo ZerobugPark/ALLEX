@@ -51,7 +51,9 @@ struct MonthlyGymStatistics {
     
     
     var rating: Float {
-        return (Float(mostVisitCount) / Float(totalCount))
+        let rawRatio = Float(mostVisitCount) / Float(totalCount)
+        let ratio = rawRatio.isNaN ? 0.0 : rawRatio
+        return ratio
     }
     
     init(gymName: String = "", totalCount: Int = 0, mostVisitCount: Int = 0) {

@@ -65,7 +65,8 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
         
         output.setupMonthlyGymList.drive(with: self) { owner, data in
             
-            owner.mainView.monthlyGymLabel.text = data.gymName
+            
+            owner.mainView.monthlyGymLabel.text = data.gymName.isEmpty ? "데이터 없음" :data.gymName
             
             let visit: String
             let total: String
