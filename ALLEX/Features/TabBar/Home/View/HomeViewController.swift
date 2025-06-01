@@ -63,6 +63,30 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
             
         }.disposed(by: disposeBag)
         
+        output.setupMonthlyGymList.drive(with: self) { owner, data in
+            
+            owner.mainView.monthlyGymLabel.text = data.gymName
+            
+            let visit: String
+            let total: String
+
+            if data.mostVisitCount == 0 {
+                visit = "-"
+                total = "-"
+            } else {
+                visit = "\(data.mostVisitCount)"
+                total = "\(data.totalCount)"
+            }
+
+            owner.mainView.monthlyCountLabel.text = "\(visit)/\(total)회 방문함"
+
+            owner.mainView.monthGymProgressView.setProgress(data.rating, animated: true)
+
+            
+            
+            
+        }.disposed(by: disposeBag)
+        
         output.stopIndicator.drive(with: self) { owner, _ in
             
             owner.mainView.indicator.stopAnimating()

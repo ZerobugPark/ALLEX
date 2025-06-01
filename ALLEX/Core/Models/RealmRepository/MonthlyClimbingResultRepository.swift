@@ -19,9 +19,12 @@ protocol MonthlyClimbingResultRepository: Repository where T == MonthlyClimbingR
     
     func updateClimbingRecord(with newList: BoulderingList, query: ClimbingRecordQuery)
     
-    func statistics() -> MonthlyClimbingStatistics
+    func monthlyBoulderingStatistics() -> MonthlyClimbingStatistics
     
-    func findLastBoulderingLists(limit: Int) -> [BoulderingList] 
+    func findLastBoulderingLists(limit: Int) -> [BoulderingList]
+    
+    func monthlyGymListStatistics() -> (totalCount: Int, mostFrequentGymID: String?, mostFrequentGymCount: Int)
+    
 }
 
 final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbingResultTable>, MonthlyClimbingResultRepository {
@@ -152,7 +155,7 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
     }
     
     // 월별 통계
-    func statistics() -> MonthlyClimbingStatistics {
+    func monthlyBoulderingStatistics() -> MonthlyClimbingStatistics {
         
         let month = queryDateFormat(Date())
 
@@ -163,6 +166,7 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
             .first else {
             return MonthlyClimbingStatistics()
         }
+        
         
         
         let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)
@@ -182,6 +186,33 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
         return MonthlyClimbingStatistics(nickName: nickname, date: date, tryCount: String(totalClimbCount), successCount: String(totalSuccessCount), successRate: successRate, totalTime: totalClimbTime, latestBestGrade: lastGrade)
     }
     
+    // 이번달 가장 많이 간 암장 찾기
+    func monthlyGymListStatistics() -> (totalCount: Int, mostFrequentGymID: String?, mostFrequentGymCount: Int) {
+        let month = queryDateFormat(Date())
+        let predicate = NSPredicate(format: "month == %@", month)
+        
+        guard let monthlyResult = realm.objects(MonthlyClimbingResultTable.self)
+            .filter(predicate)
+            .first else {
+            return (0, nil, 0)
+        }
+
+        let allBoulderingRecords = monthlyResult.boulderingLists
+
+        let totalCount = allBoulderingRecords.count
+
+        let gymIDFrequency = Dictionary(grouping: allBoulderingRecords, by: { $0.gymId })
+            .mapValues { $0.count }
+
+        let mostFrequentGymID = gymIDFrequency
+            .max(by: { $0.value < $1.value })?
+            .key
+
+        let mostFrequent = gymIDFrequency.max(by: { $0.value < $1.value })
+        
+        return (totalCount, mostFrequent?.key, mostFrequent?.value ?? 0)
+    }
+
     
     func findLastBoulderingLists(limit: Int) -> [BoulderingList] {
         

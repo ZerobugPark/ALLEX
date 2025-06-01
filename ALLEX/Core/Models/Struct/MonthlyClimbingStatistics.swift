@@ -17,7 +17,7 @@ struct MonthlyClimbingStatistics {
     let latestBestGrade: String
     
     
-    init(nickName: String = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname), date: String = "", tryCount: String = "0", successCount: String = "0", successRate: String = "0%" , totalTime: String = "0", latestBestGrade: String = "") {
+    init(nickName: String = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname), date: String = "", tryCount: String = "0", successCount: String = "0", successRate: String = "0%" , totalTime: String = "0", latestBestGrade: String = "VB") {
         
         var resolvedDate: String
         if date.isEmpty {
@@ -39,5 +39,25 @@ struct MonthlyClimbingStatistics {
         
     }
     
+    
+}
+
+
+struct MonthlyGymStatistics {
+    
+    let gymName: String
+    let totalCount: Int
+    let mostVisitCount: Int
+    
+    
+    var rating: Float {
+        return Float(mostVisitCount / totalCount)
+    }
+    
+    init(gymName: String = "", totalCount: Int = 0, mostVisitCount: Int = 0) {
+        self.gymName = gymName
+        self.totalCount = totalCount
+        self.mostVisitCount = mostVisitCount
+    }
     
 }
