@@ -59,7 +59,6 @@ final class DetailInfoViewModel: BaseViewModel {
             guard let query = query else { return }
             owner.mode = .detail(query)
             owner.result = owner.formatData()
-            print("result", owner.result)
             owner.setupUI.accept(owner.result)
         }.disposed(by: disposeBag)
 

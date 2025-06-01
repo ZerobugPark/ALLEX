@@ -29,8 +29,6 @@ final class DetailInfoViewController: BaseViewController<ResultView, DetailInfoV
         let output = viewModel.transform(input: input)
         
         output.setupUI.drive(with: self) { owner, value in
-            print(#function)
-            print(owner.mainView.problemViewArray.count)
             owner.mainView.dateLabel.text = value.date
             owner.mainView.spaceDetailButton.title.text = value.space
             owner.mainView.attemptView.valueLabel.text = value.totalTryCount
