@@ -50,6 +50,9 @@ final class HomeViewModel: BaseViewModel {
             let data = owner.getUIData()
             owner.setupUI.accept(data)
             
+            let monltyData = owner.getMonthlyGymList()
+            owner.setupMonthlyGymList.accept(monltyData)
+            
         }.disposed(by: disposeBag)
         
         
@@ -98,8 +101,6 @@ final class HomeViewModel: BaseViewModel {
                 /// 최근 가장 많이 방문한 곳
                 let monltyData = owner.getMonthlyGymList()
                 owner.setupMonthlyGymList.accept(monltyData)
-                
-                
                 
                 stopIndicator.accept(())
                 

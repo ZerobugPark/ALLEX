@@ -150,7 +150,7 @@ extension CalendarViewModel {
         result.newMonth = newMonth
         result.list = data
         
-        print(result)
+        //print(result)
         
         return result
         

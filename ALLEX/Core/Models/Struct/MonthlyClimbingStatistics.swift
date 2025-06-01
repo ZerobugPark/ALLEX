@@ -51,7 +51,7 @@ struct MonthlyGymStatistics {
     
     
     var rating: Float {
-        return Float(mostVisitCount / totalCount)
+        return (Float(mostVisitCount) / Float(totalCount))
     }
     
     init(gymName: String = "", totalCount: Int = 0, mostVisitCount: Int = 0) {

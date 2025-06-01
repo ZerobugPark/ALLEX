@@ -204,10 +204,6 @@ final class RealmMonthlyClimbingResultRepository: RealmRepository<MonthlyClimbin
         let gymIDFrequency = Dictionary(grouping: allBoulderingRecords, by: { $0.gymId })
             .mapValues { $0.count }
 
-        let mostFrequentGymID = gymIDFrequency
-            .max(by: { $0.value < $1.value })?
-            .key
-
         let mostFrequent = gymIDFrequency.max(by: { $0.value < $1.value })
         
         return (totalCount, mostFrequent?.key, mostFrequent?.value ?? 0)
