@@ -23,7 +23,7 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
     var coordinator: CalendarCoordinator?
 
     
-    private var eventDates: Set<DateComponents> = [] // ✅ 이벤트가 있는 날짜 저장
+    private var eventDates: Set<DateComponents> = [] //  이벤트가 있는 날짜 저장
     
     private let currentDate = PublishRelay<Date>()
     private let changedMonth = PublishRelay<(Int,Int)>()
@@ -77,7 +77,7 @@ final class CalendarViewController: BaseViewController<CalendarView, CalendarVie
         mainView.tableView.rx.modelSelected(ClimbingInfo.self).bind(with: self) { owner, value in
 
             let data = ClimbingRecordQuery(objectId: value.id, date: value.climbDate)
-            print(value.id)
+        
             owner.coordinator?.showDetail(mode: .detail(data))
             
         }.disposed(by: disposeBag)
@@ -194,7 +194,7 @@ extension CalendarViewController: UICalendarViewDelegate {
         } != nil
         
         if hasEvent {
-            //print("✅ 이벤트 있음: \(dateComponents)")
+            //print(" 이벤트 있음: \(dateComponents)")
             return UICalendarView.Decoration.customView {
                 let view = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 6))
                 view.backgroundColor = .red
@@ -202,7 +202,7 @@ extension CalendarViewController: UICalendarViewDelegate {
                 return view
             }
         } else {
-            //print("❌ 이벤트 없음: \(dateComponents)")
+            //print(" 이벤트 없음: \(dateComponents)")
         }
         
         
@@ -213,13 +213,13 @@ extension CalendarViewController: UICalendarViewDelegate {
         guard let newMonth = calendarView.visibleDateComponents.month,
               let newYear = calendarView.visibleDateComponents.year else { return }
         
-        // ✅ 변경된 월의 데이터를 다시 불러옴
+        // 변경된 월의 데이터를 다시 불러옴
         changedMonth.accept((newYear,newMonth))
      
     }
     
     func loadEventDates(for year: Int, month: Int, eventData: [String]) {
-        // ✅ 테이블뷰의 데이터에서 해당 월의 이벤트만 필터링 (예제 데이터)
+        // 테이블뷰의 데이터에서 해당 월의 이벤트만 필터링 (예제 데이터)
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -235,7 +235,7 @@ extension CalendarViewController: UICalendarViewDelegate {
         
         
         if #available(iOS 17.0, *) {
-            //print("🔴 이벤트 날짜: \(eventDates)")
+            //print(" 이벤트 날짜: \(eventDates)")
             mainView.calendarView.reloadDecorations(forDateComponents: Array(eventDates), animated: true)
         } else {
             

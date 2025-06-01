@@ -35,7 +35,7 @@ final class DetailInfoViewModel: BaseViewModel {
     var disposeBag = DisposeBag()
     
     private let sharedData: SharedDataModel
-    private let mode: ResultMode
+    private var mode: ResultMode
     private var climbingRecord: ClimbingRecordQuery = ClimbingRecordQuery()
 
     
@@ -45,28 +45,31 @@ final class DetailInfoViewModel: BaseViewModel {
     
     private var result: ResultData
     
+    private lazy var setupUI = BehaviorRelay<ResultData>(value: result)
     
     init(_ sharedData: SharedDataModel, mode: ResultMode) {
         self.sharedData = sharedData
         self.mode = mode
         self.result = empty
         self.result = formatData()
-        
-        if case .latest = mode {
-            NotificationCenterManager.isUpdatedRecored.post()
-        }
-        
-         NotificationCenterManager.isUpdatedRecored.post()
+                
+        /// 업데이트 되면 데이터 수정
+        let observable: Observable<ClimbingRecordQuery?> = NotificationCenterManager.isModifyRecored.addObserver()
+        observable.bind(with: self) { owner, query in
+            guard let query = query else { return }
+            owner.mode = .detail(query)
+            owner.result = owner.formatData()
+            owner.setupUI.accept(owner.result)
+        }.disposed(by: disposeBag)
+
+
     }
     
 
     
     func transform(input: Input) -> Output {
-        
-        
-        let setupUI = BehaviorRelay<ResultData>(value: result)
+       
         let modifyButton = PublishRelay<ClimbingRecordQuery>()
-        
         
         input.modifyButtonTapped.bind(with: self) { owner, _ in
             
@@ -79,6 +82,8 @@ final class DetailInfoViewModel: BaseViewModel {
     
     
     deinit {
+        /// 실시간 기록 또는 내용 수정, 기록 추가 관련해서 상세뷰로 넘어오고, 이제 종료될 때 홈업데이트 할 수 있게 전달
+        NotificationCenterManager.isUpdatedRecored.post()
         print(String(describing: self) + "Deinit")
     }
 }
@@ -95,7 +100,8 @@ extension DetailInfoViewModel {
                 return data
             case .detail(let query):
                 climbingRecord = query
-                return repository.findBoulderingSelectedList(for: query)
+                let data = repository.findBoulderingSelectedList(for: query)
+                return data
             }
         }()
         
