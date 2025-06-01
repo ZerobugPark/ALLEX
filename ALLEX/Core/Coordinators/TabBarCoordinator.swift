@@ -147,6 +147,6 @@ final class TabBarCoordinator: Coordinator {
 
 extension TabBarCoordinator {
     func logout() {
-        appCoordinator?.logout() // 🔹 AppCoordinator에게 로그아웃 요청
+        appCoordinator?.logout() //  AppCoordinator에게 로그아웃 요청
     }
 }

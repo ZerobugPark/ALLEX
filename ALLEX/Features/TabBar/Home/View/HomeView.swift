@@ -53,19 +53,23 @@ class HomeView: BaseView {
     private let difficultyLabel = TertiaryLabel()
     let difficultyValueLabel = TertiaryLabel()
     
-    private let challengesContainerView = CustomView()
-    private let challengeTitleLabel = TertiaryLabel()
-    private let challengeLocationLabel = TertiaryLabel()
-    private let challengeDescriptionLabel = TertiaryLabel()
     
-    private let thumbnailsView = CustomView()
-    private let thumbnailImageView1 = UIImageView()
-    private let thumbnailImageView2 = UIImageView()
+    /// Montly 정보
+    private let monthlyTitleLabel = SubTitleLabel()
+    private let monthlyGymContainerView = CustomView(radius: 12, bgColor: .setAllexColor(.backGroundSecondary))
+    let monthlyGymLabel = TertiaryLabel()
+    let monthlyCountLabel = TertiaryLabel()
+    let monthGymProgressView = UIProgressView(progressViewStyle: .bar)
+    
+    
+    
+
     
     override func configureHierarchy() {
         
         self.addSubviews(scrollView, indicator)
         scrollView.addSubview(contentView)
+        
         
         contentView.addSubviews(greetingLabel, statusLabel, statsContainerView)
         
@@ -84,12 +88,10 @@ class HomeView: BaseView {
         
         contentView.addSubview(timeContainerView)
         
-        // 챌린지 컨테이너 계층 구조 설정
-//        challengesContainerView.addSubviews(challengeTitleLabel, challengeLocationLabel, challengeDescriptionLabel, thumbnailsView)
-//        
-//        thumbnailsView.addSubviews(thumbnailImageView1, thumbnailImageView2)
-//        
-//        contentView.addSubview(challengesContainerView)
+        // 이번달 자주 가는 암장 리스트
+        contentView.addSubview(monthlyTitleLabel)
+        monthlyGymContainerView.addSubviews(monthlyGymLabel, monthlyCountLabel,monthGymProgressView)
+        contentView.addSubview(monthlyGymContainerView)
         
     }
     
@@ -221,31 +223,35 @@ class HomeView: BaseView {
             make.centerX.equalToSuperview()
         }
         
-        // Challenges Container
-        challengesContainerView.snp.makeConstraints { make in
-            make.top.equalTo(timeContainerView.snp.bottom).offset(16)
-            make.leading.trailing.equalTo(contentView).inset(16)
-            make.height.equalTo(240)
-            make.bottom.equalTo(contentView).offset(-16)
+        monthlyTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(timeContainerView.snp.bottom).offset(32)
+            make.horizontalEdges.equalTo(contentView).inset(16)
         }
         
-        challengeTitleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
-            make.leading.trailing.equalToSuperview().inset(16)
-        }
-        
-        challengeLocationLabel.snp.makeConstraints { make in
-            make.top.equalTo(challengeTitleLabel.snp.bottom).offset(16)
-            make.leading.trailing.equalToSuperview().inset(16)
+        monthlyGymContainerView.snp.makeConstraints { make in
+            make.top.equalTo(monthlyTitleLabel.snp.bottom).offset(16)
+            make.horizontalEdges.equalTo(contentView).inset(16)
+            make.height.equalTo(100)
         }
         
         
-        challengeDescriptionLabel.snp.makeConstraints { make in
-            make.top.equalTo(challengeLocationLabel.snp.bottom).offset(8)
-            make.leading.trailing.equalToSuperview().inset(16)
+        monthlyGymLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(16)
+            make.leading.equalToSuperview().offset(8)
+        }
+        
+        monthlyCountLabel.snp.makeConstraints { make in
+            make.top.equalTo(monthlyGymLabel.snp.bottom).offset(12)
+            make.trailing.equalToSuperview().inset(8)
+        }
+        
+        monthGymProgressView.snp.makeConstraints { make in
+            make.top.equalTo(monthlyCountLabel.snp.bottom).offset(16)
+            make.horizontalEdges.equalToSuperview().inset(16)
         }
         
         
+                
     }
     
     override func configureView() {
@@ -303,24 +309,8 @@ class HomeView: BaseView {
        
         difficultyValueLabel.font = .setAllexFont(.bold_16)
         
-        // Challenges Container
-        challengesContainerView.backgroundColor = UIColor(red: 0.15, green: 0.15, blue: 0.2, alpha: 1.0)
-        challengesContainerView.layer.cornerRadius = 12
-       
-        
-        challengeTitleLabel.text = "차밍별님의 가장 뿌듯했던 도전"
-        challengeTitleLabel.textColor = UIColor(red: 0.6, green: 0.6, blue: 0.7, alpha: 1.0)
-        challengeTitleLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        
-        challengeLocationLabel.text = "더클라임 성수점에서"
-        challengeLocationLabel.textColor = .white
-        challengeLocationLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        
-        challengeDescriptionLabel.text = "파랑 문제를 2번 도전해 완등했네요!"
-        challengeDescriptionLabel.textColor = UIColor(red: 0.6, green: 0.9, blue: 0.3, alpha: 1.0)
-        challengeDescriptionLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-                
 
+        makeMonthlyGymView()
     }
     
     
@@ -343,4 +333,37 @@ class HomeView: BaseView {
         
     }
     
+}
+
+
+extension HomeView {
+    
+    
+    
+    // MARK: 이번 달 가장 많이 가는 암장
+    private func makeMonthlyGymView() {
+        monthlyTitleLabel.text = "이번달 가장 많이 방문한 곳"
+        monthlyTitleLabel.font = .setAllexFont(.bold_16)
+        
+        monthlyGymLabel.text = "데이터 없음"
+        monthlyGymLabel.font = .setAllexFont(.bold_14)
+        
+        monthlyCountLabel.text = "-/-회 방문함"
+        monthlyCountLabel.font = .setAllexFont(.bold_14)
+        
+        monthGymProgressView.setProgress(0.0, animated: true)
+        monthGymProgressView.progressTintColor = .pirmary
+        monthGymProgressView.trackTintColor = .lightGray
+        monthGymProgressView.transform = CGAffineTransform(scaleX: 1, y: 3)
+        
+        // 둥글게 만들기
+        monthGymProgressView.layer.cornerRadius = 3     // 두께의 절반 정도
+        monthGymProgressView.clipsToBounds = true
+
+        // 내부 바도 둥글게
+        if let sublayer = monthGymProgressView.subviews.first {
+            sublayer.layer.cornerRadius = 3
+            sublayer.clipsToBounds = true
+        }
+    }
 }

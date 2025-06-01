@@ -101,29 +101,6 @@ final class NetworkManger: GoogleSheetRepository {
     }
     
     
-    // MARK: 이미지 로드 (Kingfisher로 대체)
-//    func fetchAsycnAwait(url: String) async throws -> UIImage { // 오로지 성공 데이터
-//        
-//        let convertURL = (convertGoogleDriveURLToDownloadLink(url))!
-//        let request = URLRequest(url: URL(string: convertURL)!, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 1000)
-//        
-//        let (data, response) =  try await URLSession.shared.data(for: request)
-//        
-//        
-//        
-//        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-//            throw NetworkError.unknown(statusCode: 0, message: "이미지 통신 실패")
-//        }
-//        
-//        guard let image = UIImage(data: data) else {
-//            throw NetworkError.unknown(statusCode: 0, message: "이미지 데이터 로드 실패")
-//        }
-//        
-//        return image
-//        
-//        
-//    }
-    
     func convertGoogleDriveURLToDownloadLink(_ url: String) -> String? {
         let pattern = #"drive\.google\.com\/(?:file\/d\/|open\?id=)([a-zA-Z0-9_-]+)"#
         

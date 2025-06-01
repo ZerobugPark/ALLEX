@@ -73,9 +73,9 @@ class RealmRepository<T: Object>: Repository {
             try realm.write {
                 realm.deleteAll() // ✅ 모든 데이터 삭제
             }
-            print("✅ Realm 데이터 전부 삭제 완료")
+            print("Realm 데이터 전부 삭제 완료")
         } catch {
-            print("❌ Realm 데이터 삭제 실패: \(error.localizedDescription)")
+            print("Realm 데이터 삭제 실패: \(error.localizedDescription)")
         }
     }
     

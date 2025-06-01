@@ -52,7 +52,7 @@ final class ProfileCoordinator: Coordinator {
     }
     
     func logout() {
-        parentCoordinator?.logout() // 🔹 TabBarCoordinator에게 전달
+        parentCoordinator?.logout() //  TabBarCoordinator에게 전달
     }
 
     
