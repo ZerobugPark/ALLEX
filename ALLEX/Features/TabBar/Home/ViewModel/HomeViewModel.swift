@@ -59,10 +59,10 @@ final class HomeViewModel: BaseViewModel {
         //프로필 업데이트
         NotificationCenterManager.isChangedUserInfo.addObserverVoid().bind(with: self) { owner, _ in
             
-            let name = UserDefaultManager.nickname
+            let nickname = LocalizedKey.greeting.rawValue.localized(with:  UserDefaultManager.nickname)
             let startDate = DateFormatterHelper.convertStringToDate(UserDefaultManager.startDate)
             let date = LocalizedKey.userId.rawValue.localized(with: (DateFormatterHelper.daysBetween(startDate, Date()) + 1))
-            owner.isChangedName.accept((name,date))
+            owner.isChangedName.accept((nickname,date))
             
         }.disposed(by: disposeBag)
         
