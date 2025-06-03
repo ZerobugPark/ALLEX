@@ -1,47 +1,39 @@
-# ProjectName: Allex
-
-## 목차
-1. Application 소개
-2. 주요 기능
-3. 기술 스택
-4. 기술 설명
-5. DB Schema
-6. 트러블 슈팅
-
-***
-
-## Application 소개
-"Allex"는 프랑스어의 Allez과 extreme의 합쳐진 합성어로, 클라이머들의 극한의 도전을 기록하고 관리하는 애플리케이션입니다.
-
-***
-
-## 프로젝트 기간
-기획 및 개발: 2025.03.29 ~ 2025.04.08(10일간)
-유지보수 및 기능 업데이트: 2025.04.09 ~
+# 🧗‍♂️ 클라이밍 기록 관리 서비스 앱 ALLEX
+![ReadMeTitle](https://github.com/user-attachments/assets/5f81374c-e918-4aaf-ac9e-de722f5479e4)
+<br><br><br>
 
 
-***
+## 프로젝트 소개
+- **Allex**는 프랑스어의 Allez과 extreme의 합쳐진 합성어로, 클라이머들의 극한의 도전을 기록하고 관리하는 애플리케이션입니다.
+- 월간 클라이밍 기록을 확인하고, 자주 방문하는 클라이밍장을 쉽게 확인할 수 있습니다.
+- 운동 기록은 **실시간으로 바로 기록하거나, 나중에 수동으로 등록**할 수 있으며, 언제든지 수정이 가능합니다.
+- 국내 클라이밍장 정보를 검색하고 확인할 수 있습니다.
+<br><br>
+## 프로젝트 정보
+기획 및 개발: 2025.03.29 ~ 2025.04.08(10일간)  
+유지보수 및 기능 업데이트: 2025.04.09 ~  
+[업데이트 이력 보기](/.CHANGELOG.md)
 
-### 주요 기능
-1. 지금 가장 인기있는 영화 Top20
-2. 영화 검색 기능
-3. 최근 검색어 저장 기능
-4. 프로필 설정 기능
-5. 좋아요 기능
+<br><br>
 
-***
 ### 기술 스택
-- FrameWork - UIKit  
-- Library - Lottie, Realm, RxSwift, RxDataSource, SnapKit
-- Architecture - MVVM-C
+- **FrameWork** - UIKit  
+- **Library** - Lottie, Realm, RxSwift, RxDataSource, SnapKit, KingFisher
+- **Architecture** - MVVM-C
+<br><br>
 
-***
+### 기술 스택
+- **FrameWork** - UIKit  
+- **Library** - Lottie, Realm, RxSwift, RxDataSource, SnapKit, KingFisher
+- **Architecture** - MVVM-C
+<br><br>
 ### 기술 설명
 - **최소 지원 iOS 버전**: iOS 16.0  
 - **다크모드**: 지원  
 - **다국어 지원**: 영어 (`Localizable.strings`)
 - **Local DB**: Realm
 - **API**: Google Sheet (Rest API)
+<br><br>
 
 Swift의 UICalendarView(iOS 16.0+)를 사용하기 위해 최소버전은 16.0 이상으로 설정하였습니다.
 
