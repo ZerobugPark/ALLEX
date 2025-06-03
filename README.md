@@ -18,7 +18,7 @@
 
 ### 기술 스택
 - **FrameWork** - UIKit  
-- **Library** - Lottie, Realm, RxSwift, RxDataSource, SnapKit, KingFisher<br>
+- **Library** - Lottie, Realm, RxSwift, RxDataSource, SnapKit, KingFisher, Firebase<br>
 - **Architecture** - MVVM-C  
 
 🔗 [오픈소스 라이브러리 라이선스 보기](THIRD_PARTY_LICENSES.md)
@@ -34,7 +34,35 @@
 
 ## 아키텍쳐 기준과 브랜치 전략
 
+### 아키텍쳐 선정 기준
+이번 프로젝트에서는 MVVM 아키텍처와 Coordinator 패턴을 적용했습니다. 빠르게 만들기만 하는 구조보다는, 출시 이후에도 유지보수가 쉽고 확장 가능한 구조를 목표로 했습니다.  
+View는 화면 표시만 담당하고, 화면 전환은 Coordinator가, 로직 처리는 ViewModel이 담당하도록 역할을 분리했습니다.  
+현재는 View에서 Coordinator를 참조하고 있지만, 다음 프로젝트에서는 ViewModel이 이벤트만 전달하고, Coordinator가 구독해서 처리하는 구조를 시도해볼 계획입니다.
 
+### Realm 
+Core Data는 Apple에서 제공하는 퍼스트 파티 프레임워크로, 데이터 변경 사항 추적 기능과 다양한 기능을 제공하지만,  
+초기 설정이 복잡하고 러닝커브가 높은 편입니다. 반면 Realm은 상대적으로 빠르게 적용할 수 있으며, 데이터 변경 사항 추적도 간단하게 구현할 수 있습니다.  
+특히 Realm은 자체 경량 엔진과 메모리 매핑 기반 구조 덕분에, Core Data보다 더 빠른 성능을 보여줄 수 있어 **짧은 기간 내 앱 개발이 필요한 상황에서 더 적합한 선택**이라고 판단했습니다.
+
+
+### RxSwfit 
+UIKit 기반 앱을 리액티브하게 설계하기 위해 RxSwift를 선택했습니다. Combine은 SwiftUI와 함께할 때 강력한 퍼스트 파티 프레임워크이지만,  
+UIKit에서는 UI 이벤트 연동이 번거롭고, 실무 사례도 적은 편이라 RxCocoa를 활용한 RxSwift가 더 적합하다고 판단했습니다.
+
+### API 호출 최적화 전략
+Google Sheet API를 사용하면서, API 호출 수 제한에 대한 고민이 있었습니다.  
+클라이밍장 데이터는 자주 바뀌지 않는 특성이 있어, 앱 실행 시 1회만 서버에서 데이터를 받아오고, 이후에는 공통 데이터(ShareData)로 보관한 뒤,  
+각 ViewModel에 주입하는 구조로 설계했습니다.  
+이 방식을 통해 반복 호출을 줄이고, UX 성능도 확보할 수 있었습니다. 추후 사용자 수나 데이터량이 늘어나면,  
+주기적 동기화(예: 주 1회) 방식으로 확장할 계획입니다.
+
+### 브랜치 전략
+- Git Flow 전략을 기반으로 main, develop, feature 브랜치를 운영했습니다.
+  - **main:** 배포 가능한 브랜치로, 언제든 배포 가능한 상태로 관리합니다.
+  - **develop:** 새로운 기능 개발 및 버그 수정 등 모든 개발 작업을 포함합니다.
+  - **feature:** 새로운 기능을 개발을 위한 브랜치로 develop에서 분기되며, 기능 개발이 완료되면 develop 브랜치로 병합합니다.
+
+<br><br>
 
 ## 페이지별 기능
 
