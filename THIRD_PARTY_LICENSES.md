@@ -10,3 +10,4 @@
 | RxDataSources | MIT   | [GitHub](https://github.com/RxSwiftCommunity/RxDataSources) |
 | SnapKit    | MIT      | [GitHub](https://github.com/SnapKit/SnapKit) |
 | Kingfisher | MIT      | [GitHub](https://github.com/onevcat/Kingfisher) |
+| Firebase | Apache 2.0 | [GitHub](https://github.com/firebase/firebase-ios-sdk) |
