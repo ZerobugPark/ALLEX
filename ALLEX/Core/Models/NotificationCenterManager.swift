@@ -34,6 +34,7 @@ enum NotificationCenterManager: NotificationCenterHandler {
     case isGymSelected // 실시간 짐 선택
     case isChangedUserInfo // 프로필 수정
     case isUpdatedRecored // 기록 업데이트 (실시간 또는 유저 추가)
+    case isModifyRecored // 기록 수정
     
     var name: Notification.Name {
         switch self {
@@ -43,6 +44,8 @@ enum NotificationCenterManager: NotificationCenterHandler {
             return Notification.Name("UserInfo.Changed")
         case .isUpdatedRecored:
             return Notification.Name("Updated.record")
+        case .isModifyRecored:
+            return Notification.Name("Modify.record")
         }
     }
     

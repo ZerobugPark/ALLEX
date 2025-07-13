@@ -13,7 +13,7 @@ final class GymSelectionCoordinator: Coordinator {
     private let navigationController: UINavigationController
     private let sharedData: SharedDataModel
     
-    var onGymSelected: (() -> Void)? // ✅ Gym 선택 후 전달할 콜백
+    var onGymSelected: (() -> Void)? //  Gym 선택 후 전달할 콜백
 
     init(navigationController: UINavigationController, sharedData: SharedDataModel) {
         self.navigationController = navigationController
@@ -53,7 +53,7 @@ final class GymSelectionCoordinator: Coordinator {
         navigationController.dismiss(animated: true, completion: nil)
     }
     
-    // ✅ 암장 선택 시 콜백 실행
+    //  암장 선택 시 콜백 실행
     func didSelectGym() {
         
         navigationController.popViewController(animated: true)

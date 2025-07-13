@@ -160,7 +160,6 @@ final class ModifyViewModel: BaseViewModel {
                     
                 }
             case .modify:
-                
                 owner.savedData(for: value.0, self.mode)
                 popView.accept(())
                 NotificationCenterManager.isUpdatedRecored.post()
@@ -203,8 +202,9 @@ extension ModifyViewModel {
     }
     
     private func setupModifyInitialValues(for query: ClimbingRecordQuery) -> ModifyInit {
-        
+
         let data = repository.findBoulderingSelectedList(for: query)!
+        
         
         // 문자열 변환시 60으로 나누어진 값을 넣기 때문에, 60을 곱해줌
         totalMinutes = Int(TimeInterval(data.climbTime) * 60)
@@ -226,8 +226,6 @@ extension ModifyViewModel {
         // 0 == brand id, 1 == gymid
         updateGymInfo(brandID: data.brandId, gymID: data.gymId)
         
-        
-        //gradeList.accept(owner.boulderingData)
         return ModifyInit(date: date, time: time, bouldering: bouldering, space: localizedSpace)
         
     }
@@ -297,7 +295,7 @@ extension ModifyViewModel {
         let brandId = currentGym.0
         let gymId = currentGym.1
         let timeMinute = totalMinutes
-        print(brandId, gymId)
+        
         let exerciseDate = date.isEmpty ? defaultDate : dateConvertor(date)
         
         // 2. 통계 계산 (한 번의 순회로 여러 값 계산)
