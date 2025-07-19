@@ -36,7 +36,7 @@ Allex는 기능 개선과 새로운 기능 추가를 통해 점진적으로 발�
 
 ### 기술 스택
 - **FrameWork** - UIKit, AVFoundation  
-- **Library** - Lottie, Realm, RxSwift, RxDataSource, SnapKit, KingFisher, Firebase<br>
+- **Library** - Lottie, Realm, RxSwift, RxDataSource, SnapKit, KingFisher, Firebase
 - **Architecture** - MVVM-C  
 
 🔗 [오픈소스 라이브러리 라이선스 보기](THIRD_PARTY_LICENSES.md)
