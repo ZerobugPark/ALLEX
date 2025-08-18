@@ -9,6 +9,7 @@ import Foundation
 
 enum GoogleSheetRequest {
     
+    case version
     case brand
     case gym
     case gymGrades
@@ -17,6 +18,8 @@ enum GoogleSheetRequest {
 
     var endpoint: GoogleSheetEndPoint {
         switch self {
+        case .version:
+            return .version
         case .brand:
             return .brand
         case .gym:
@@ -27,12 +30,13 @@ enum GoogleSheetRequest {
             return .boulderingRoutes
         case .leadRoutes:
             return .leadRoutes
+    
         }
     }
     
     var parameters: [String: String]? {
         switch self {
-        case .brand, .gym, .gymGrades, .boulderingRoutes, .leadRoutes:
+        case .version, .brand, .gym, .gymGrades, .boulderingRoutes, .leadRoutes:
             return ["key": GoogleAPI.APIKey]
         }
     }

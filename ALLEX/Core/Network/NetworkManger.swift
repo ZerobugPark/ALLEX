@@ -10,7 +10,7 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-final class NetworkManger: GoogleSheetRepository {
+final class NetworkManger {
     
     
     static let shared = NetworkManger()
@@ -48,11 +48,10 @@ final class NetworkManger: GoogleSheetRepository {
         }
     }
     
-    
-    func callRequest() -> Single<Result<[GoogleSheetData], NetworkError>> {
+    func fetchRemoteDBVersion() -> Single<Result<GoogleSheetData, NetworkError>> {
         
-        return Single<Result<[GoogleSheetData],NetworkError>>.create { [weak self] value in
-          
+        return Single<Result<GoogleSheetData,NetworkError>>.create { [weak self] value in
+            
             guard let self = self else {
                 value(.success(.failure(.unknown(statusCode: 0, message: "Instance has been deallocated"))))
                 return Disposables.create()
@@ -60,31 +59,22 @@ final class NetworkManger: GoogleSheetRepository {
             
             Task {
                 do {
-                    async let brand = self.fetchAsyncAwait(api: .brand).transform()
-                    async let gym = self.fetchAsyncAwait(api: .gym).transform()
-                    async let grade = self.fetchAsyncAwait(api: .gymGrades).transform()
-                    async let route = self.fetchAsyncAwait(api: .boulderingRoutes).transform()
+                    let result = try await self.fetchAsyncAwait(api: .version).transform()
                     
-                    let results = try await [brand, gym, grade, route]
-                    
-                    value(.success(.success(results)))
+                    value(.success(.success(result)))
                     
                 } catch let error as NetworkError {
                     
-                    let results = await [
-                        try? self.fetchAsyncAwait(api: .brand).transform(),
-                        try? self.fetchAsyncAwait(api: .gym).transform(),
-                        try? self.fetchAsyncAwait(api: .gymGrades).transform(),
-                        try? self.fetchAsyncAwait(api: .boulderingRoutes).transform()
-                    ]
+                    let results = try await self.fetchAsyncAwait(api: .version).transform()
+
                     
-                    let validResults = results.compactMap { $0 }
+                    let validResults = results
                     
-                    if validResults.isEmpty {
+                    if validResults.values.isEmpty {
                         value(.success(.failure(error)))
                     } else {
                         value(.success(.success(validResults)))
-                    } 
+                    }
                     
                 }  catch {
                     // 예상치 못한 에러 처리
@@ -92,13 +82,93 @@ final class NetworkManger: GoogleSheetRepository {
                 }
             }
             
-            
-            
             return Disposables.create()
         }
+    }
+    
+    func callRequest() async -> Result<[GoogleSheetData], NetworkError> {
+        do {
+            async let brand = fetchAsyncAwait(api: .brand).transform()
+            async let gym = fetchAsyncAwait(api: .gym).transform()
+            async let grade = fetchAsyncAwait(api: .gymGrades).transform()
+            async let route = fetchAsyncAwait(api: .boulderingRoutes).transform()
+
+            let results = try await [brand, gym, grade, route]
+            return .success(results)
+
+        } catch let error as NetworkError {
+            // 부분 성공 허용
+            let results = await [
+                try? fetchAsyncAwait(api: .brand).transform(),
+                try? fetchAsyncAwait(api: .gym).transform(),
+                try? fetchAsyncAwait(api: .gymGrades).transform(),
+                try? fetchAsyncAwait(api: .boulderingRoutes).transform()
+            ]
+
+            let validResults = results.compactMap { $0 }
+
+            if validResults.isEmpty {
+                return .failure(error)
+            } else {
+                return .success(validResults)
+            }
+
+        } catch {
+            return .failure(.unknown(statusCode: 0, message: error.localizedDescription))
+        }
+    }
+    
+    
+    
+//    func callRequest() -> Single<Result<[GoogleSheetData], NetworkError>> {
+//        
+//        return Single<Result<[GoogleSheetData],NetworkError>>.create { [weak self] value in
+//          
+//            guard let self = self else {
+//                value(.success(.failure(.unknown(statusCode: 0, message: "Instance has been deallocated"))))
+//                return Disposables.create()
+//            }
+//            
+//            Task {
+//                do {
+//                    
+//                    async let brand = self.fetchAsyncAwait(api: .brand).transform()
+//                    async let gym = self.fetchAsyncAwait(api: .gym).transform()
+//                    async let grade = self.fetchAsyncAwait(api: .gymGrades).transform()
+//                    async let route = self.fetchAsyncAwait(api: .boulderingRoutes).transform()
+//                    
+//                    let results = try await [brand, gym, grade, route]
+//                    
+//                    value(.success(.success(results)))
+//                    
+//                } catch let error as NetworkError {
+//                    
+//                    let results = await [
+//                        try? self.fetchAsyncAwait(api: .brand).transform(),
+//                        try? self.fetchAsyncAwait(api: .gym).transform(),
+//                        try? self.fetchAsyncAwait(api: .gymGrades).transform(),
+//                        try? self.fetchAsyncAwait(api: .boulderingRoutes).transform()
+//                    ]
+//                    
+//                    let validResults = results.compactMap { $0 }
+//                    
+//                    if validResults.isEmpty {
+//                        value(.success(.failure(error)))
+//                    } else {
+//                        value(.success(.success(validResults)))
+//                    } 
+//                    
+//                }  catch {
+//                    // 예상치 못한 에러 처리
+//                    value(.success(.failure(.unknown(statusCode: 0, message: error.localizedDescription))))
+//                }
+//            }
+//            
+//            return Disposables.create()
+//        }
         
 
-    }
+//    }
     
     
     func convertGoogleDriveURLToDownloadLink(_ url: String) -> String? {

@@ -124,7 +124,7 @@ final class ModifyViewModel: BaseViewModel {
         
         input.selectedGym.drive(with: self) { owner, value in
             
-            let bouldering = owner.sharedData.getData(for: Bouldering.self)!.filter {  $0.brandID == value.0 }.map { BoulderingAttempt(gradeLevel: Int($0.GradeLevel)!, color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0) }
+            let bouldering = owner.sharedData.getData(for: Bouldering.self)!.filter {  $0.brandID == value.0 }.map { BoulderingAttempt(gradeLevel: Int($0.gradeLevel)!, color: $0.color, difficulty: $0.difficulty, tryCount: 0, successCount: 0) }
             
             // 0 == brand id, 1 == gymid
             owner.updateGymInfo(brandID: value.0, gymID: value.1)

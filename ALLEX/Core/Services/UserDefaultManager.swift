@@ -33,7 +33,7 @@ import Foundation
 
 enum UserDefaultManager {
     enum Key: String {
-        case isLoggedIn, nickname, startDate, latestGrade, totalExTime, successRate
+        case isLoggedIn, nickname, startDate, latestGrade, totalExTime, successRate, databaseVersion
     }
     
     @AllexUserDefaultManager(key: Key.isLoggedIn.rawValue, empty: false)
@@ -44,6 +44,9 @@ enum UserDefaultManager {
     
     @AllexUserDefaultManager(key: Key.startDate.rawValue, empty: "")
     static var startDate
+    
+    @AllexUserDefaultManager(key: Key.startDate.rawValue, empty: "")
+    static var databaseVersion
     
     
     @AllexUserDefaultManager(key: Key.latestGrade.rawValue, empty: "VB", useAppGroup: true)

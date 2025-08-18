@@ -7,6 +7,18 @@
 
 import Foundation
 
+struct DatabaseVersion: Mappable {
+    
+    let version: String
+    
+    // Gym 객체 초기화하는 메서드
+    init(from data: [String]) {
+        self.version = data.first ?? ""
+        
+    }
+}
+
+
 struct Brand: Mappable {
     
     let brandID: String
@@ -16,6 +28,11 @@ struct Brand: Mappable {
     init(from data: [String]) {
         self.brandID = data[0]
         self.brandName = data[1]
+    }
+    
+    init(from data: BrandObject) {
+        self.brandID = data.brandID
+        self.brandName = data.brandName
     }
 }
 
@@ -56,6 +73,23 @@ struct Gym: Mappable, Hashable {
             self.facilities = []
         }
     }
+    
+    init(from data: GymObject) {
+        self.gymID = data.gymID
+        self.brandID = data.brandID
+        self.nameKo = data.nameKo
+        self.nameEn = data.nameEn
+        self.countryKo = data.countryKo
+        self.countryEn = data.countryEn
+        self.cityKo = data.cityKo
+        self.cityEn = data.cityEn
+        self.addressKo = data.addressKo
+        self.addressEn = data.addressEn
+        self.imageURL = data.imageURL
+        self.instaID = data.instaID
+        self.facilities = Array(data.facilities)
+    }
+    
 }
 
 
@@ -70,24 +104,41 @@ struct GymGrades: Mappable {
         self.brandID = data[0]
         self.type = data[1]
         self.minDifficulty = data[2] == "null" ? nil : data[2]
-        self.maxDifficulty = data[3] == "null" ? nil : data[2]
+        self.maxDifficulty = data[3] == "null" ? nil : data[3]
         
     }
+    
+    init(from data: GymGradesObject) {
+        self.brandID = data.brandID
+        self.type = data.type
+        self.minDifficulty = data.minDifficulty
+        self.maxDifficulty = data.maxDifficulty
+        
+    }
+    
 }
 
 struct Bouldering: Mappable {
     let brandID: String
-    let GradeLevel: String
-    let Color: String
-    let Difficulty : String
+    let gradeLevel: String
+    let color: String
+    let difficulty : String
     
     
     // Gym 객체 초기화하는 메서드
     init(from data: [String]) {
         self.brandID = data[0]
-        self.GradeLevel = data[1]
-        self.Color = data[2]
-        self.Difficulty = data[3]
+        self.gradeLevel = data[1]
+        self.color = data[2]
+        self.difficulty = data[3]
+        
+    }
+    
+    init(from data: BoulderingObject) {
+        self.brandID = data.brandID
+        self.gradeLevel = data.gradeLevel
+        self.color = data.color
+        self.difficulty = data.difficulty
         
     }
 }
