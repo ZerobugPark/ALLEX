@@ -178,7 +178,7 @@ final class RecordViewModel: BaseViewModel {
         let gradeInfo = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[0] }
         
         gymGradeList.append(contentsOf: gradeInfo.map {
-            BoulderingAttempt(gradeLevel: Int($0.GradeLevel) ?? 0, color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0)
+            BoulderingAttempt(gradeLevel: Int($0.gradeLevel) ?? 0, color: $0.color, difficulty: $0.difficulty, tryCount: 0, successCount: 0)
         })
         
     }

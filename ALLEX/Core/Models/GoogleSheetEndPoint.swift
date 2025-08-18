@@ -9,6 +9,7 @@ import Foundation
 
 enum GoogleSheetEndPoint {
     
+    case version
     case brand
     case gym
     case gymGrades
@@ -17,6 +18,8 @@ enum GoogleSheetEndPoint {
     
     var path: String {
         switch self {
+        case .version:
+            return "/values/Version/"
         case .brand:
             return "/values/BrandID/"
         case .gym:
@@ -27,6 +30,7 @@ enum GoogleSheetEndPoint {
             return "/values/BoulderingRoutes/"
         case .leadRoutes:
             return "/values/LeadRoutes/"
+ 
         }
     }
     
