@@ -6,14 +6,19 @@
 //
 
 import UIKit
-
+import AVFoundation
 import SnapKit
+
+final class CameraPreviewView: UIView {
+    override class var layerClass: AnyClass { AVCaptureVideoPreviewLayer.self }
+    var videoPreviewLayer: AVCaptureVideoPreviewLayer { layer as! AVCaptureVideoPreviewLayer }
+}
 
 final class VideoCaptureView: BaseView {
     
     
     // MARK: - UI 요소
-    let previewView =  UIView()
+    let previewView = CameraPreviewView()
     
     let recordButton = RecordButton()
     
@@ -108,9 +113,14 @@ final class VideoCaptureView: BaseView {
         
         qualityButton.setTitle("HD", for: .normal)
         qualityButton.setTitleColor(.setAllexColor(.textSecondary), for: .normal)
+        
+        previewView.isOpaque = true
+        previewView.layer.masksToBounds = true
+        previewView.videoPreviewLayer.videoGravity = .resizeAspectFill
+
+        previewView.backgroundColor = .black
     }
     
     
     
 }
-
