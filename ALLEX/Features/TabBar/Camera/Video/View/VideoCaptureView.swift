@@ -40,6 +40,13 @@ final class VideoCaptureView: BaseView {
     
     let closeButton = UIButton()
     
+    // MARK: - Aspect Ratio Overlay
+    private let overlayMaskLayer = CAShapeLayer()
+    private let cropBorderLayer = CAShapeLayer()
+    var aspectRatio: VideoAspectRatio = .ratio9x16 { // default portrait
+        didSet { updateAspectOverlay() }
+    }
+    
     
     override func configureHierarchy() {
         self.addSubviews(previewView, settingsView, containerView)
@@ -52,7 +59,7 @@ final class VideoCaptureView: BaseView {
         // MARK: - UI 설정
         
         settingsView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.equalToSuperview().offset(20)
             make.horizontalEdges.equalToSuperview()
             make.height.equalTo(100)
         }
@@ -92,7 +99,7 @@ final class VideoCaptureView: BaseView {
         }
         
         containerView.snp.makeConstraints { make in
-            make.bottom.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-20)
             make.horizontalEdges.equalToSuperview()
             make.height.equalTo(80)
         }
@@ -101,26 +108,96 @@ final class VideoCaptureView: BaseView {
     }
     
     override func configureView() {
-        settingsView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        containerView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        
+
         folderButton.setImage(UIImage(systemName: "folder"), for: .normal)
-        folderButton.tintColor = .setAllexColor(.textSecondary)
+        folderButton.tintColor = .white
         folderButton.isHidden = true
         
         closeButton.setImage(.setAllexSymbol(.xmark), for: .normal)
-        closeButton.tintColor = .setAllexColor(.textSecondary)
+        closeButton.tintColor = .setAllexColor(.backGround)
+        
+        aspectRatioButton.setTitle("9:16", for: .normal)
+        aspectRatioButton.setTitleColor(.setAllexColor(.backGround), for: .normal)
         
         qualityButton.setTitle("HD", for: .normal)
-        qualityButton.setTitleColor(.setAllexColor(.textSecondary), for: .normal)
+        qualityButton.setTitleColor(.setAllexColor(.backGround), for: .normal)
         
         previewView.isOpaque = true
         previewView.layer.masksToBounds = true
         previewView.videoPreviewLayer.videoGravity = .resizeAspectFill
 
+        // Overlay setup (dim outside crop area)
+        overlayMaskLayer.fillRule = .evenOdd
+        overlayMaskLayer.fillColor = UIColor.black.withAlphaComponent(0.45).cgColor
+        overlayMaskLayer.frame = previewView.bounds
+        previewView.layer.addSublayer(overlayMaskLayer)
+
+        // Visible crop border
+        cropBorderLayer.fillColor = UIColor.clear.cgColor
+        cropBorderLayer.lineWidth = 2
+        cropBorderLayer.strokeColor = UIColor.white.withAlphaComponent(0.9).cgColor
+        previewView.layer.addSublayer(cropBorderLayer)
+        cropBorderLayer.isHidden = true
+
+        // Initial overlay draw
+        updateAspectOverlay()
+        
         previewView.backgroundColor = .black
     }
     
     
+    /// 외부에서 비율 변경 시 호출 (VC에서 mainView.aspectRatio = ... 로 사용)
+    func setAspectRatio(_ ratio: VideoAspectRatio) {
+        self.aspectRatio = ratio
+    }
+
+    /// 프리뷰 위에 선택된 비율(9:16, 4:5)의 안전 영역을 시각적으로 표시
+    private func updateAspectOverlay() {
+        let bounds = previewView.bounds
+        guard bounds.width > 0 && bounds.height > 0 else { return }
+
+        let target: CGSize
+        switch aspectRatio {
+        case .ratio9x16:
+            target = CGSize(width: 9, height: 16)
+        case .ratio4x5:
+            target = CGSize(width: 4, height: 5)
+        }
+
+        // 프리뷰 bounds 안에서 비율 유지한 안전 영역 계산 (센터 기준)
+        // 영상이 촬영되는 크기의 영역
+        let safeRect = AVMakeRect(aspectRatio: target, insideRect: bounds)
+
+        /// 전체 크기의 마스크 (데이터 경로)
+        let maskPath = UIBezierPath(rect: bounds)
+        /// 마스크 안에 촬영 영역 처리
+        maskPath.append(UIBezierPath(rect: safeRect))
+        
+        /// 마스크를 쓸 뷰의 크기는 전체 크기
+        overlayMaskLayer.frame = bounds
+        
+        /// 어떤 점이 패스에 의해 홀수 번 포함되면 채우고, 짝수 번 포함되면 비운다. (MaskPath 기준)
+        /// bounds 바깥 → 포함 0번(짝수) → 비움
+        /// bounds 안 & safeRect 바깥 → bounds에 1번 포함(홀수) → 채움 (검정)
+        /// safeRect 안쪽 → bounds(1) + safeRect(1) = 2번(짝수) → 비움 (뚫림)
+        /// overlayMaskLayer.path = maskPath.cgPath 아 그러면 여기서 지금 path 기준으로 짝수인 전체 bouns 즉 overlayMaskLAyer 는 채우고, safeRect영역 만큼만 이제 뺌
+        overlayMaskLayer.fillRule = .evenOdd // 홀수만 채우겠다.
+        
+        /// 마스크할 패스 설정
+        overlayMaskLayer.path = maskPath.cgPath
+        overlayMaskLayer.fillColor = UIColor.black.cgColor
+
+        
+        aspectRatioButton.setTitle(aspectRatio.title, for: .normal)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // 미리보기 레이어 프레임 갱신
+        if previewView.layer.sublayers?.contains(previewView.videoPreviewLayer) == true {
+            previewView.videoPreviewLayer.frame = previewView.bounds
+        }
+        updateAspectOverlay()
+    }
     
 }
