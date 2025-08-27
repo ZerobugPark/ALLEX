@@ -46,7 +46,7 @@ final class TabBarCoordinator: Coordinator {
         let emptyVC = UIViewController()
         
         let searchNav = UINavigationController()
-        let searchCoordinator = SearchCoordinator(navigationController: searchNav, sharedData: sharedData)
+        let searchCoordinator = SearchCoordinator(navigationController: searchNav)
         searchNav.view.backgroundColor = .setAllexColor(.backGround)
         searchCoordinator.start()
         

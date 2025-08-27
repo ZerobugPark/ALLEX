@@ -62,7 +62,7 @@ final class DataSyncManager {
             
             await saveToRealm(brands: brands, gyms: gyms, gymGrades: gymGrades, bouldering: bouldering)
             
-            syncBoulderingData(brands: brands, gyms: gyms, gymGrades: gymGrades, bouldering: bouldering)
+//            /syncBoulderingData(brands: brands, gyms: gyms, gymGrades: gymGrades, bouldering: bouldering)
             
             UserDefaultManager.databaseVersion = version
 
@@ -92,29 +92,29 @@ extension DataSyncManager {
     }
     
     
-    func loadRealmRepository() {
-        
-        do {
-            let brands = try spaceRepo.fetchBrands()
-            let gyms = try spaceRepo.fetchAllGyms()
-            let gymGrades = try spaceRepo.fetchGymGrades()
-            let bouldering = try spaceRepo.fetchBouldering()
-            
-            syncBoulderingData(brands: brands, gyms: gyms, gymGrades: gymGrades, bouldering: bouldering)
-            
-        } catch {
-            print("Realm fetch 실패:", error)
-        }
-
-    }
+//    func loadRealmRepository() {
+//        
+//        do {
+//            let brands = try spaceRepo.fetchBrands()
+//            let gyms = try spaceRepo.fetchAllGyms()
+//            let gymGrades = try spaceRepo.fetchGymGrades()
+//            //let bouldering = try spaceRepo.fetchBouldering()
+//            
+//            //syncBoulderingData(brands: brands, gyms: gyms, gymGrades: gymGrades, bouldering: bouldering)
+//            
+//        } catch {
+//            print("Realm fetch 실패:", error)
+//        }
+//
+//    }
     
-    func syncBoulderingData(brands: [Brand], gyms: [Gym], gymGrades: [GymGrades], bouldering: [Bouldering]) {
-        
-        //sharedData.updateData(data: brands, for: Brand.self)
-        //sharedData.updateData(data: gyms, for: Gym.self)
-        //sharedData.updateData(data: gymGrades, for: GymGrades.self)
-        //sharedData.updateData(data: bouldering, for: Bouldering.self)
-    }
+//    func syncBoulderingData(brands: [Brand], gyms: [Gym], gymGrades: [GymGrades], bouldering: [Bouldering]) {
+//        
+//        //sharedData.updateData(data: brands, for: Brand.self)
+//        //sharedData.updateData(data: gyms, for: Gym.self)
+//        //sharedData.updateData(data: gymGrades, for: GymGrades.self)
+//        //sharedData.updateData(data: bouldering, for: Bouldering.self)
+//    }
     
 }
 

@@ -27,12 +27,11 @@ final class DetailSpaceViewModel: BaseViewModel {
     
     var disposeBag = DisposeBag()
     
-    private var sharedData: SharedDataModel
-    private var sectionsData: [GymInfoSectionModel] = []
     
-    init(_ sharedData: SharedDataModel, _ gymID: String) {
-        self.sharedData = sharedData
-        
+    private var sectionsData: [GymInfoSectionModel] = []
+    private let spaceRepo: any ClimbingSpaceRepository = RealmClimbingSpaceRepository()
+    
+    init(_ gymID: String) {
         sectionsData = formatData(gymID)
     }
     
@@ -54,8 +53,8 @@ final class DetailSpaceViewModel: BaseViewModel {
 extension DetailSpaceViewModel {
     
     private func formatData(_ id: String) -> [GymInfoSectionModel] {
-        let gymInfo: Gym = sharedData.getData(for: Gym.self)!.filter { $0.gymID == id }.first!
-            
+        
+        guard let gymInfo = try? spaceRepo.fetchGym(gymID: id) else { return [] }
         
         // 헤더 섹션
         let headerSection: GymInfoSectionModel
@@ -73,18 +72,6 @@ extension DetailSpaceViewModel {
             )
         }
         
-        
-        // 난이도 섹션
-        let brandInfo: [Bouldering] = sharedData.getData(for: Bouldering.self)!.filter { $0.brandID == gymInfo.brandID }
-        let grades = brandInfo.map { BoulderingGrade(difficulty: $0.difficulty, color: $0.color) }
-        let gradeItems = grades.map { GymInfoSectionItem.boulderingGradeItem($0) }
-        let boulderingGradeSection = GymInfoSectionModel(
-            section: .boulderingGrade(title: LocalizedKey.Gym_Info_Grade.rawValue.localized(with: "")),
-            items: gradeItems
-        )
-        
-        
-        
         // 시설 정보 섹션
         let facilities = gymInfo.facilities.map { FacilityInfo(facility: $0) }
         let facilityItems = facilities.map { GymInfoSectionItem.facilityItem($0) }
@@ -93,16 +80,26 @@ extension DetailSpaceViewModel {
             items: facilityItems
         )
         
-
         // 푸터 섹션
         let footerSection = GymInfoSectionModel(
             section: .footer,
             items: [.footerItem(LocalizedKey.Gym_Info_request_modify.rawValue.localized(with: ""))]
         )
         
-        // 모든 섹션 반환
-        return [headerSection, boulderingGradeSection, facilitySection, footerSection]
+        
+        // 난이도 섹션
+        if let brandInfo = try? spaceRepo.fetchBouldering(brandID: gymInfo.brandID) {
+            let grades = brandInfo.map { BoulderingGrade(difficulty: $0.difficulty, color: $0.color) }
+            let gradeItems = grades.map { GymInfoSectionItem.boulderingGradeItem($0) }
+            let boulderingGradeSection = GymInfoSectionModel(
+                section: .boulderingGrade(title: LocalizedKey.Gym_Info_Grade.rawValue.localized(with: "")),
+                items: gradeItems
+            )
+            // 모든 섹션 반환
+            return [headerSection, boulderingGradeSection, facilitySection, footerSection]
+        } else {
+            return [headerSection, facilitySection, footerSection]
+        }
+    
     }
-    
-    
 }

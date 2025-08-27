@@ -48,7 +48,6 @@ final class SearchViewController: BaseViewController<SearchListView, SearchListV
         output.infoLabel.drive(mainView.infoLabel.rx.isHidden).disposed(by: disposeBag)
         
         mainView.tableView.rx.modelSelected(Gym.self).bind(with: self) { owner, gym in
-            
             owner.coordinator?.showSpaceDetail(gym.gymID)
             
         }.disposed(by: disposeBag)
