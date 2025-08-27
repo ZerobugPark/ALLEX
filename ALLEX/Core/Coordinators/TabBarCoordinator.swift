@@ -27,7 +27,9 @@ final class TabBarCoordinator: Coordinator {
     
     
     func start() {
-        
+        Task {
+            await DataSyncManager.shared.syncIfNeeded()
+        }
         
         
         let homeNav = UINavigationController()

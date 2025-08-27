@@ -32,8 +32,8 @@ final class HomeViewModel: BaseViewModel {
     
     var disposeBag = DisposeBag()
     
-    private let setupUI = PublishRelay<MonthlyClimbingStatistics>()
-    private let setupMonthlyGymList = PublishRelay<MonthlyGymStatistics>()
+    private let setupUI = BehaviorSubject(value: MonthlyClimbingStatistics()) //<MonthlyClimbingStatistics>()
+    private let setupMonthlyGymList = BehaviorSubject(value: MonthlyGymStatistics())
     
     private let isChangedName = PublishRelay<(String, String)>()
     
@@ -49,10 +49,11 @@ final class HomeViewModel: BaseViewModel {
         NotificationCenterManager.isUpdatedRecored.addObserverVoid().bind(with: self) { owner, _ in
             
             let data = owner.getUIData()
-            owner.setupUI.accept(data)
+            owner.setupUI.onNext(data)
+            //owner.setupUI.accept(data)
             
             let monltyData = owner.getMonthlyGymList()
-            owner.setupMonthlyGymList.accept(monltyData)
+            owner.setupMonthlyGymList.onNext(monltyData)
             
         }.disposed(by: disposeBag)
         
@@ -70,48 +71,62 @@ final class HomeViewModel: BaseViewModel {
         
     }
     
-    
-    
     func transform(input: Input) -> Output {
         
         let stopIndicator = PublishRelay<Void>()
         
-        input.viewdidLoad.flatMap {
-            NetworkManger.shared.fetchRemoteDBVersion()
+        
+        
+        input.viewdidLoad.bind(with: self) { owner, response in
+            /// 월간 기록 및 시도, 시간 등
+            let data = owner.getUIData()
+            owner.setupUI.onNext(data)
+            //owner.setupUI.accept(data)
             
-        }.observe(on: MainScheduler.instance).bind(with: self) { owner, response in
-            
-            switch response {
-            case .success(let value):
+            /// 최근 가장 많이 방문한 곳
+            let monltyData = owner.getMonthlyGymList()
+            owner.setupMonthlyGymList.onNext(monltyData)
                 
-                let versions: [DatabaseVersion] = owner.convertToGyms(from: value, type: DatabaseVersion.self)
-                let remoteVersion = versions.first?.version ?? ""
-                let localDBVersion = UserDefaultManager.databaseVersion
-                if remoteVersion == localDBVersion {
-                    owner.loadRealmRepository()
-                } else {
-                    Task {
-                        await owner.refreshAllDataFromGoogleDB(remoteVersion: remoteVersion)
-                    }
-                }
-
-                /// 월간 기록 및 시도, 시간 등
-                let data = owner.getUIData()
-                owner.setupUI.accept(data)
-                
-                /// 최근 가장 많이 방문한 곳
-                let monltyData = owner.getMonthlyGymList()
-                owner.setupMonthlyGymList.accept(monltyData)
-                
-                stopIndicator.accept(())
-                
-            case .failure(let error):
-                print(error)
-            }
-            
             
         }.disposed(by: disposeBag)
         
+        
+//        input.viewdidLoad.flatMap {
+//            NetworkManger.shared.fetchRemoteDBVersion()
+//
+//        }.observe(on: MainScheduler.instance).bind(with: self) { owner, response in
+//
+//            switch response {
+//            case .success(let value):
+//                
+//                let versions: [DatabaseVersion] = owner.convertToGyms(from: value, type: DatabaseVersion.self)
+//                let remoteVersion = versions.first?.version ?? ""
+//                let localDBVersion = UserDefaultManager.databaseVersion
+//                if remoteVersion == localDBVersion {
+//                    owner.loadRealmRepository()
+//                } else {
+//                    Task {
+//                        await owner.refreshAllDataFromGoogleDB(remoteVersion: remoteVersion)
+//                    }
+//                }
+//
+//                /// 월간 기록 및 시도, 시간 등
+//                let data = owner.getUIData()
+//                owner.setupUI.accept(data)
+//                
+//                /// 최근 가장 많이 방문한 곳
+//                let monltyData = owner.getMonthlyGymList()
+//                owner.setupMonthlyGymList.accept(monltyData)
+//                
+//                
+//                
+//            case .failure(let error):
+//                print(error)
+//            }
+//            
+//            
+//        }.disposed(by: disposeBag)
+//        
         
         
         return Output(
@@ -154,22 +169,27 @@ extension HomeViewModel {
         
         // 총 시도가 0이면 빈 값 반환
         guard totalCount > 0 else {
-            return MonthlyGymStatistics(gymName: "", totalCount: 0, mostVisitCount: 0)
+            return MonthlyGymStatistics()
         }
         
-        // Gym 리스트에서 해당 gymID에 해당하는 항목 탐색
-        guard
-            let gymlist = sharedData.getData(for: Gym.self),
-            let gym = gymlist.first(where: { $0.gymID == gymID })
-        else {
-            return MonthlyGymStatistics(gymName: "", totalCount: 0, mostVisitCount: 0)
+        do {
+            let gymlist = try spaceRepo.fetchAllGyms()
+            print(gymlist)
+            guard let gym = gymlist.first(where: { $0.gymID == gymID }) else {
+                return MonthlyGymStatistics()
+            }
+
+            return MonthlyGymStatistics(
+                gymName: gym.nameKo,
+                totalCount: totalCount,
+                mostVisitCount: visitCount
+            )
+        } catch {
+            // Realm fetch 실패했을 때
+            return MonthlyGymStatistics()
         }
         
-        return MonthlyGymStatistics(
-            gymName: gym.nameKo,
-            totalCount: totalCount,
-            mostVisitCount: visitCount
-        )
+        
         
     }
     
