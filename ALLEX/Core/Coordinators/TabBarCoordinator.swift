@@ -17,8 +17,6 @@ final class TabBarCoordinator: Coordinator {
     
     let tabBarController: UITabBarController
     
-    private let sharedData = SharedDataModel()
-    
     init(tabBarController: UITabBarController, appCoordinator: AppCoordinator?) {
         self.tabBarController = tabBarController
         self.appCoordinator = appCoordinator
@@ -33,12 +31,12 @@ final class TabBarCoordinator: Coordinator {
         
         
         let homeNav = UINavigationController()
-        let homeCoordinator = HomeCoordinator(navigationController: homeNav, sharedData: sharedData)
+        let homeCoordinator = HomeCoordinator(navigationController: homeNav)
         homeNav.view.backgroundColor = .setAllexColor(.backGround)
         homeCoordinator.start()
         
         let calendarNav = UINavigationController()
-        let calendarCoordinator = CalendarCoordinator(navigationController: calendarNav, sharedData: sharedData)
+        let calendarCoordinator = CalendarCoordinator(navigationController: calendarNav)
         calendarNav.view.backgroundColor = .setAllexColor(.backGround)
         calendarCoordinator.start()
         
@@ -51,7 +49,7 @@ final class TabBarCoordinator: Coordinator {
         searchCoordinator.start()
         
         let profileNav = UINavigationController()
-        let profileCoordinator = ProfileCoordinator(navigationController: profileNav, sharedData: sharedData, parentCoordinator: self)
+        let profileCoordinator = ProfileCoordinator(navigationController: profileNav, parentCoordinator: self)
         profileNav.view.backgroundColor = .setAllexColor(.backGround)
         profileCoordinator.start()
         
@@ -139,7 +137,7 @@ final class TabBarCoordinator: Coordinator {
     
     
     @objc func cameraButtonTapped() {
-        let cameraCoordinator = CameraCoordinator(presentingController: tabBarController, sharedData: sharedData)
+        let cameraCoordinator = CameraCoordinator(presentingController: tabBarController)
         cameraCoordinator.start()
     }
     

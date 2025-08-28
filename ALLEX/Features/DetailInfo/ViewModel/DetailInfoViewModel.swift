@@ -34,12 +34,14 @@ final class DetailInfoViewModel: BaseViewModel {
     
     var disposeBag = DisposeBag()
     
-    private let sharedData: SharedDataModel
     private var mode: ResultMode
     private var climbingRecord: ClimbingRecordQuery = ClimbingRecordQuery()
 
     
     private let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
+    
+    private let spaceRepo: any ClimbingSpaceRepository = RealmClimbingSpaceRepository()
+    
     
     private let empty = ResultData(space: "", date: "", totalTryCount: "", totalSuccessCount: "", totalSuccessRate: "", bestGrade: "", excersieTime: "", results: [])
     
@@ -47,8 +49,7 @@ final class DetailInfoViewModel: BaseViewModel {
     
     private lazy var setupUI = BehaviorRelay<ResultData>(value: result)
     
-    init(_ sharedData: SharedDataModel, mode: ResultMode) {
-        self.sharedData = sharedData
+    init(mode: ResultMode) {
         self.mode = mode
         self.result = empty
         self.result = formatData()
@@ -109,11 +110,10 @@ extension DetailInfoViewModel {
             return empty
         }
 
-        
-        let gymInfo = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == climbingElements.gymId }.first!
-        
-
-        return ResultData(space: Locale.isEnglish ? gymInfo.nameEn : gymInfo.nameKo,
+        do {
+            guard let gymInfo = try spaceRepo.fetchGym(gymID: climbingElements.gymId) else { return ResultData(space: "", date: "", totalTryCount: "", totalSuccessCount: "", totalSuccessRate: "", bestGrade: "", excersieTime: "", results: []) }
+            
+            return ResultData(space: Locale.isEnglish ? gymInfo.nameEn : gymInfo.nameKo,
                                          date: climbingElements.climbDate.toFormattedString(),
                                          totalTryCount:  String(climbingElements.totalClimb),
                                          totalSuccessCount: String(climbingElements.totalSuccess),
@@ -121,6 +121,9 @@ extension DetailInfoViewModel {
                                          bestGrade: climbingElements.bestGrade,
                                          excersieTime: climbingElements.climbTime.toTimeFormat(),
                                          results: climbingElements.toClimbingResults())
+        } catch {
+            return ResultData(space: "", date: "", totalTryCount: "", totalSuccessCount: "", totalSuccessRate: "", bestGrade: "", excersieTime: "", results: [])
+        }
     }
 }
 

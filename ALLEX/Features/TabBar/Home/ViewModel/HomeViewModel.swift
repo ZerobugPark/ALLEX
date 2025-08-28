@@ -36,22 +36,17 @@ final class HomeViewModel: BaseViewModel {
     private let setupMonthlyGymList = BehaviorSubject(value: MonthlyGymStatistics())
     
     private let isChangedName = PublishRelay<(String, String)>()
-    
-    private var sharedData: SharedDataModel
-    
+        
     let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
     let spaceRepo: any ClimbingSpaceRepository = RealmClimbingSpaceRepository()
     
-    init(_ sharedData: SharedDataModel) {
-        self.sharedData = sharedData
+    init() {
         
         //기록화면이후 화면 업데이트
         NotificationCenterManager.isUpdatedRecored.addObserverVoid().bind(with: self) { owner, _ in
             
             let data = owner.getUIData()
-            owner.setupUI.onNext(data)
-            //owner.setupUI.accept(data)
-            
+            owner.setupUI.onNext(data)            
             let monltyData = owner.getMonthlyGymList()
             owner.setupMonthlyGymList.onNext(monltyData)
             
@@ -135,7 +130,6 @@ extension HomeViewModel {
         
         do {
             let gymlist = try spaceRepo.fetchAllGyms()
-            print(gymlist)
             guard let gym = gymlist.first(where: { $0.gymID == gymID }) else {
                 return MonthlyGymStatistics()
             }

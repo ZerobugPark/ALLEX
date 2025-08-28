@@ -82,39 +82,13 @@ final class DataSyncManager {
             print("렘 저장 오류", error)
         }
     }
-
-}
-extension DataSyncManager {
     
     private func convertToGyms<T: Mappable>(from googleSheetData: GoogleSheetData, type: T.Type) -> [T] {
         // 첫 번째 행(헤더)은 제외하고 나머지 데이터를 Gym 객체로 변환
         return googleSheetData.values.dropFirst().map { T(from: $0) }
     }
     
-    
-//    func loadRealmRepository() {
-//        
-//        do {
-//            let brands = try spaceRepo.fetchBrands()
-//            let gyms = try spaceRepo.fetchAllGyms()
-//            let gymGrades = try spaceRepo.fetchGymGrades()
-//            //let bouldering = try spaceRepo.fetchBouldering()
-//            
-//            //syncBoulderingData(brands: brands, gyms: gyms, gymGrades: gymGrades, bouldering: bouldering)
-//            
-//        } catch {
-//            print("Realm fetch 실패:", error)
-//        }
-//
-//    }
-    
-//    func syncBoulderingData(brands: [Brand], gyms: [Gym], gymGrades: [GymGrades], bouldering: [Bouldering]) {
-//        
-//        //sharedData.updateData(data: brands, for: Brand.self)
-//        //sharedData.updateData(data: gyms, for: Gym.self)
-//        //sharedData.updateData(data: gymGrades, for: GymGrades.self)
-//        //sharedData.updateData(data: bouldering, for: Bouldering.self)
-//    }
-    
+
 }
+
 

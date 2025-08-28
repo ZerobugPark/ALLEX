@@ -22,15 +22,8 @@ final class ProfileViewModel: BaseViewModel {
     }
     
     var disposeBag = DisposeBag()
-    private var sharedData: SharedDataModel
-  
     
-    
-    init(_ sharedData: SharedDataModel) {
-        self.sharedData = sharedData
-        
-        
-    }
+    init() { }
 
     
     

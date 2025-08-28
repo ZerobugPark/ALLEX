@@ -12,16 +12,14 @@ final class ProfileCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     weak var parentCoordinator: TabBarCoordinator?
     private let navigationController: UINavigationController
-    private let sharedData: SharedDataModel
  
-    init(navigationController: UINavigationController, sharedData: SharedDataModel, parentCoordinator: TabBarCoordinator?) {
-        self.sharedData = sharedData
+    init(navigationController: UINavigationController, parentCoordinator: TabBarCoordinator?) {
         self.navigationController = navigationController
         self.parentCoordinator = parentCoordinator
     }
     
     func start() {
-        let vm = ProfileViewModel(sharedData)
+        let vm = ProfileViewModel()
         let vc = ProfileViewController(viewModel: vm)
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)

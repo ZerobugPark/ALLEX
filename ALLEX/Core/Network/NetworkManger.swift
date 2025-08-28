@@ -118,59 +118,6 @@ final class NetworkManger {
         }
     }
     
-    
-    
-//    func callRequest() -> Single<Result<[GoogleSheetData], NetworkError>> {
-//        
-//        return Single<Result<[GoogleSheetData],NetworkError>>.create { [weak self] value in
-//          
-//            guard let self = self else {
-//                value(.success(.failure(.unknown(statusCode: 0, message: "Instance has been deallocated"))))
-//                return Disposables.create()
-//            }
-//            
-//            Task {
-//                do {
-//                    
-//                    async let brand = self.fetchAsyncAwait(api: .brand).transform()
-//                    async let gym = self.fetchAsyncAwait(api: .gym).transform()
-//                    async let grade = self.fetchAsyncAwait(api: .gymGrades).transform()
-//                    async let route = self.fetchAsyncAwait(api: .boulderingRoutes).transform()
-//                    
-//                    let results = try await [brand, gym, grade, route]
-//                    
-//                    value(.success(.success(results)))
-//                    
-//                } catch let error as NetworkError {
-//                    
-//                    let results = await [
-//                        try? self.fetchAsyncAwait(api: .brand).transform(),
-//                        try? self.fetchAsyncAwait(api: .gym).transform(),
-//                        try? self.fetchAsyncAwait(api: .gymGrades).transform(),
-//                        try? self.fetchAsyncAwait(api: .boulderingRoutes).transform()
-//                    ]
-//                    
-//                    let validResults = results.compactMap { $0 }
-//                    
-//                    if validResults.isEmpty {
-//                        value(.success(.failure(error)))
-//                    } else {
-//                        value(.success(.success(validResults)))
-//                    } 
-//                    
-//                }  catch {
-//                    // 예상치 못한 에러 처리
-//                    value(.success(.failure(.unknown(statusCode: 0, message: error.localizedDescription))))
-//                }
-//            }
-//            
-//            return Disposables.create()
-//        }
-        
-
-//    }
-    
-    
     func convertGoogleDriveURLToDownloadLink(_ url: String) -> String? {
         let pattern = #"drive\.google\.com\/(?:file\/d\/|open\?id=)([a-zA-Z0-9_-]+)"#
         
