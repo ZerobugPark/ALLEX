@@ -12,7 +12,6 @@ final class CameraCoordinator: Coordinator, ModifyCoordinating {
     
     var childCoordinators: [Coordinator] = []
     
-    private let sharedData: SharedDataModel
     private let presentingController: UIViewController
     private var selectedCondition: ConditionType?
     
@@ -22,8 +21,7 @@ final class CameraCoordinator: Coordinator, ModifyCoordinating {
     }
     
     
-    init(presentingController: UIViewController, sharedData: SharedDataModel) {
-        self.sharedData = sharedData
+    init(presentingController: UIViewController) {
         self.presentingController = presentingController
     }
     
@@ -54,7 +52,7 @@ final class CameraCoordinator: Coordinator, ModifyCoordinating {
             return
         }
         
-        let gymSelectionCoordinator = GymSelectionCoordinator(navigationController: navigationController, sharedData: sharedData)
+        let gymSelectionCoordinator = GymSelectionCoordinator(navigationController: navigationController)
         
         gymSelectionCoordinator.onGymSelected = { [weak gymSelectionCoordinator] in
             
@@ -76,7 +74,7 @@ final class CameraCoordinator: Coordinator, ModifyCoordinating {
             return
         }
         
-        let vm = RecordViewModel(sharedData)
+        let vm = RecordViewModel()
         let vc = RecordViewController(viewModel: vm)
         vc.modalPresentationStyle = .fullScreen
         vc.coordinator = self
@@ -90,7 +88,7 @@ final class CameraCoordinator: Coordinator, ModifyCoordinating {
             return
         }
         
-        let vm = VideoCaptureViewModel(sharedData)
+        let vm = VideoCaptureViewModel()
         let vc = VideoCaptureViewController(viewModel: vm)
         //vc.coordinator = self
         vc.modalPresentationStyle = .overFullScreen // fullScreen은 화면을 덮기 때문에, 탭바가 Nil이 되는 현상이 발생 (탭바를 삭제한다는 느낌?)
@@ -113,7 +111,7 @@ final class CameraCoordinator: Coordinator, ModifyCoordinating {
                     return
                 }
                 
-                let vm = DetailInfoViewModel(sharedData, mode: .latest)
+                let vm = DetailInfoViewModel(mode: .latest)
                 let vc = DetailInfoViewController(viewModel: vm)
                 vc.coordinator = self
                 vc.hidesBottomBarWhenPushed = true // 탭바 숨김
@@ -134,7 +132,7 @@ final class CameraCoordinator: Coordinator, ModifyCoordinating {
             return
         }
         
-        let vm = ModifyViewModel(sharedData, mode: mode)
+        let vm = ModifyViewModel(mode: mode)
         let vc = ModifyViewController(viewModel: vm)
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)

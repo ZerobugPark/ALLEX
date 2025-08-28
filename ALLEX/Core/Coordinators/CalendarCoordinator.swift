@@ -14,15 +14,13 @@ final class CalendarCoordinator: Coordinator, ModifyCoordinating {
     var childCoordinators: [Coordinator] = []
 
     private let navigationController: UINavigationController
-    private let sharedData: SharedDataModel
  
-    init(navigationController: UINavigationController, sharedData: SharedDataModel) {
-        self.sharedData = sharedData
+    init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
     func start() {
-        let vm = CalendarViewModel(sharedData)
+        let vm = CalendarViewModel()
         let vc = CalendarViewController(viewModel: vm)
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
@@ -35,7 +33,7 @@ final class CalendarCoordinator: Coordinator, ModifyCoordinating {
         case .latest:
             break
         case .detail(let query):
-            let vm = DetailInfoViewModel(sharedData, mode: .detail(query))
+            let vm = DetailInfoViewModel(mode: .detail(query))
             let vc = DetailInfoViewController(viewModel: vm)
             vc.coordinator = self
             navigationController.pushViewController(vc, animated: true)
@@ -46,7 +44,7 @@ final class CalendarCoordinator: Coordinator, ModifyCoordinating {
     
     func showModify(mode: ModifyMode) {
         
-        let vm = ModifyViewModel(sharedData, mode: mode)
+        let vm = ModifyViewModel(mode: mode)
         let vc = ModifyViewController(viewModel: vm)
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)

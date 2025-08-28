@@ -17,8 +17,6 @@ final class TabBarCoordinator: Coordinator {
     
     let tabBarController: UITabBarController
     
-    private let sharedData = SharedDataModel()
-    
     init(tabBarController: UITabBarController, appCoordinator: AppCoordinator?) {
         self.tabBarController = tabBarController
         self.appCoordinator = appCoordinator
@@ -27,16 +25,18 @@ final class TabBarCoordinator: Coordinator {
     
     
     func start() {
-        
+        Task {
+            await DataSyncManager.shared.syncIfNeeded()
+        }
         
         
         let homeNav = UINavigationController()
-        let homeCoordinator = HomeCoordinator(navigationController: homeNav, sharedData: sharedData)
+        let homeCoordinator = HomeCoordinator(navigationController: homeNav)
         homeNav.view.backgroundColor = .setAllexColor(.backGround)
         homeCoordinator.start()
         
         let calendarNav = UINavigationController()
-        let calendarCoordinator = CalendarCoordinator(navigationController: calendarNav, sharedData: sharedData)
+        let calendarCoordinator = CalendarCoordinator(navigationController: calendarNav)
         calendarNav.view.backgroundColor = .setAllexColor(.backGround)
         calendarCoordinator.start()
         
@@ -44,12 +44,12 @@ final class TabBarCoordinator: Coordinator {
         let emptyVC = UIViewController()
         
         let searchNav = UINavigationController()
-        let searchCoordinator = SearchCoordinator(navigationController: searchNav, sharedData: sharedData)
+        let searchCoordinator = SearchCoordinator(navigationController: searchNav)
         searchNav.view.backgroundColor = .setAllexColor(.backGround)
         searchCoordinator.start()
         
         let profileNav = UINavigationController()
-        let profileCoordinator = ProfileCoordinator(navigationController: profileNav, sharedData: sharedData, parentCoordinator: self)
+        let profileCoordinator = ProfileCoordinator(navigationController: profileNav, parentCoordinator: self)
         profileNav.view.backgroundColor = .setAllexColor(.backGround)
         profileCoordinator.start()
         
@@ -137,7 +137,7 @@ final class TabBarCoordinator: Coordinator {
     
     
     @objc func cameraButtonTapped() {
-        let cameraCoordinator = CameraCoordinator(presentingController: tabBarController, sharedData: sharedData)
+        let cameraCoordinator = CameraCoordinator(presentingController: tabBarController)
         cameraCoordinator.start()
     }
     

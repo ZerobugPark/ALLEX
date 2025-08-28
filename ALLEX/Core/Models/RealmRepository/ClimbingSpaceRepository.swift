@@ -19,8 +19,10 @@ protocol ClimbingSpaceRepository {
     // 조회
     func fetchBrands() throws -> [Brand]
     func fetchAllGyms() throws -> [Gym]
-    func fetchBouldering() throws -> [Bouldering]
+    //func fetchBouldering() throws -> [Bouldering]
     func fetchGymGrades() throws -> [GymGrades]
+    func fetchGym(gymID: String) throws -> Gym?
+    func fetchBouldering(brandID: String) throws -> [Bouldering] 
 }
 
 final class RealmClimbingSpaceRepository: ClimbingSpaceRepository {
@@ -71,15 +73,27 @@ final class RealmClimbingSpaceRepository: ClimbingSpaceRepository {
         let arrayData = Array(data)
         return arrayData.map { Gym(from: $0) }
     }
-
-
-    func fetchBouldering() throws -> [Bouldering] {
-        let data = try makeRealm().objects(BoulderingObject.self)
-        let arrayData = Array(data)
-        return arrayData.map { Bouldering(from: $0) }
-   
+    
+    func fetchGym(gymID: String) throws -> Gym? {
+        let data = try makeRealm().object(ofType: GymObject.self, forPrimaryKey: gymID)
+        return data.map { Gym(from: $0) }
     }
 
+    
+    func fetchBouldering(brandID: String) throws -> [Bouldering] {
+        
+        let data = try makeRealm().objects(BoulderingObject.self).filter("brandID == %@", brandID)
+        return data.map { Bouldering(from: $0) }
+    }
+    
+
+//    func fetchBouldering(brandID: String) throws -> [Bouldering] {
+//        let data = try makeRealm().objects(BoulderingObject.self)
+//        let arrayData = Array(data)
+//        return arrayData.map { Bouldering(from: $0) }
+//   
+//    }
+    
     func fetchGymGrades() throws -> [GymGrades] {
         let data = try makeRealm().objects(GymGradesObject.self)
         let arrayData = Array(data)

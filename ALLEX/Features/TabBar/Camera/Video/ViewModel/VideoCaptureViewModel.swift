@@ -12,8 +12,6 @@ import RxCocoa
 
 final class VideoCaptureViewModel: BaseViewModel {
     
-    var sharedData: SharedDataModel
-    
     struct Input {
        
     }
@@ -24,8 +22,7 @@ final class VideoCaptureViewModel: BaseViewModel {
     
     var disposeBag =  DisposeBag()
     
-    init(_ sharedData: SharedDataModel) {
-        self.sharedData = sharedData
+    init() {
     }
     
     

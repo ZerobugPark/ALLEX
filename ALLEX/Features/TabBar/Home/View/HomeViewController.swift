@@ -17,14 +17,11 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
     
     private let repository: RealmRepository = RealmMonthlyClimbingResultRepository()
     
-    
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .setAllexColor(.backGround)
-        tabBarController?.tabBar.isUserInteractionEnabled = false // 탭전환 비활성화
-        mainView.indicator.startAnimating()
+        //tabBarController?.tabBar.isUserInteractionEnabled = false // 탭전환 비활성화
+        //mainView.indicator.startAnimating()
         repository.getFileURL()
     }
     
@@ -66,7 +63,7 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
         output.setupMonthlyGymList.drive(with: self) { owner, data in
             
             
-            owner.mainView.monthlyGymLabel.text = data.gymName.isEmpty ? "데이터 없음" :data.gymName
+            owner.mainView.monthlyGymLabel.text = data.gymName.isEmpty ? "" :data.gymName
             
             let visit: String
             let total: String
@@ -88,13 +85,13 @@ final class HomeViewController: BaseViewController<HomeView, HomeViewModel> {
             
         }.disposed(by: disposeBag)
         
-        output.stopIndicator.drive(with: self) { owner, _ in
-            
-            owner.mainView.indicator.stopAnimating()
-            owner.mainView.indicator.isHidden = true
-            owner.tabBarController?.tabBar.isUserInteractionEnabled = true
-            
-        }.disposed(by: disposeBag)
+//        output.stopIndicator.drive(with: self) { owner, _ in
+//            
+//            owner.mainView.indicator.stopAnimating()
+//            owner.mainView.indicator.isHidden = true
+//            owner.tabBarController?.tabBar.isUserInteractionEnabled = true
+//            
+//        }.disposed(by: disposeBag)
         
         output.isChangedName.drive(with: self) { owner, value in
             owner.mainView.greetingLabel.text = value.0

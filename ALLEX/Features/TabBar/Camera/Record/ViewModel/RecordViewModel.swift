@@ -36,11 +36,11 @@ final class RecordViewModel: BaseViewModel {
     }
     
     
-    var sharedData: SharedDataModel
-    
     var disposeBag =  DisposeBag()
     
     let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
+    
+    private let spaceRepo: any ClimbingSpaceRepository = RealmClimbingSpaceRepository()
     
     private let timerSubject = PublishSubject<String>()
     private var timerSubscription: Disposable?
@@ -52,14 +52,10 @@ final class RecordViewModel: BaseViewModel {
     var gymGradeList: [BoulderingAttempt] = []
     private var hiddenData: [BoulderingAttempt] = []
     
-    
-    init(_ sharedData: SharedDataModel) {
-        self.sharedData = sharedData
+    init() {
         self.toggleTimer(isSelected: isSelected)
         
         getGymInfo()
-        
-        
     }
     
     func transform(input: Input) -> Output {
@@ -169,18 +165,26 @@ final class RecordViewModel: BaseViewModel {
     private func getGymInfo() {
         let languageCode = (Locale.preferredLanguages.first ?? "en").split(separator: "-").first ?? ""
         
-        let info = sharedData.getData(for: String.self)!
-        let data = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == info[1] }
-        
-        gymTitle = languageCode == "en" ? data[0].nameEn : data[0].nameKo
+        let info = UserDefaultManager.selectedClimb
+            
         
         
-        let gradeInfo = self.sharedData.getData(for: Bouldering.self)!.filter{  $0.brandID == info[0] }
-        
-        gymGradeList.append(contentsOf: gradeInfo.map {
-            BoulderingAttempt(gradeLevel: Int($0.gradeLevel) ?? 0, color: $0.color, difficulty: $0.difficulty, tryCount: 0, successCount: 0)
-        })
-        
+        do {
+            guard let data = try spaceRepo.fetchGym(gymID: info[1]) else { return }
+            gymTitle = languageCode == "en" ? data.nameEn : data.nameKo
+            
+            
+            guard let gradeInfo = try? spaceRepo.fetchBouldering(brandID: info[0]) else { return }
+      
+            gymGradeList.append(contentsOf: gradeInfo.map {
+                BoulderingAttempt(gradeLevel: Int($0.gradeLevel) ?? 0, color: $0.color, difficulty: $0.difficulty, tryCount: 0, successCount: 0)
+            })
+            
+            
+        } catch {
+            return
+        }
+  
     }
     
     
@@ -196,7 +200,7 @@ extension RecordViewModel {
     
     func savedData() {
         // 1. 필요한 데이터 준비
-        let info = sharedData.getData(for: String.self)!
+        let info =  UserDefaultManager.selectedClimb  
         let brandId = info[0]
         let gymId = info[1]
         let timeMinute = max(1, timeCount / 60)
