@@ -82,7 +82,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         
         
         output.timerString
-            .observe(on:MainScheduler.instance) // UI 업데이트는 메인 스레드에서
+            .observe(on:MainScheduler.instance) // UI 업데이트는 메인 스레드에서 
             .bind(to: mainView.timeRecord.timeLabel.rx.text)
             .disposed(by: disposeBag)
         
