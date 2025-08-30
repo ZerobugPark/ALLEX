@@ -97,7 +97,7 @@ final class RecordViewController: BaseViewController<RecordView, RecordViewModel
         
         output.dismissView.drive(with: self) { owner, _ in
             
-            owner.coordinator?.showDetail(mode: .latest) //dismiss()
+            owner.coordinator?.showDetail(mode: .latest)
             
         }.disposed(by: disposeBag)
         

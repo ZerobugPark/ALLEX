@@ -56,11 +56,15 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
     // MARK: - 속성
     private let session = AVCaptureSession()
     private var videoOutput: AVCaptureMovieFileOutput!
-    private var recordedVideos: [URL] = []
+    
     private var currentQuality: AVCaptureSession.Preset = .high
     
     private let sessionQueue = DispatchQueue(label: "camera.session.queue") /// 전역 큐 설정
     var coordinator: CameraCoordinator?
+    private let editVideo = PublishRelay<[Int : [URL]]>()
+    private let savedVideo = PublishRelay<(URL, VideoAspectRatio)>()
+    private let savedRecord = PublishRelay<Void>()
+    
     
     // MARK: - 생명주기
     override func viewDidLoad() {
@@ -97,7 +101,12 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
     override func bind() {
         
         let input = VideoCaptureViewModel.Input(
-            selectedGrade: mainView.gradeCollectionView.rx.modelSelected(BoulderingAttempt.self).asDriver()
+            selectedGrade: mainView.gradeCollectionView.rx.modelSelected(BoulderingAttempt.self).asDriver(),
+            savedVideo: savedVideo.asDriver(onErrorDriveWith: .empty()),
+            editVideo: editVideo.asDriver(onErrorDriveWith: .empty()),
+            recordedButton: mainView.recordButton.recordingButton.rx.tap,
+            savedRecord: savedRecord.asDriver(onErrorJustReturn: ()),
+            
         )
         
         let output = viewModel.transform(input: input)
@@ -105,7 +114,7 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
         mainView.closeButton.rx.tap.bind(with: self) { owner, _ in
             Task { @MainActor in
                 
-                if owner.recordedVideos.isEmpty {
+                if owner.viewModel.recordedVideos.isEmpty {
                     owner.coordinator?.dismiss()
                 } else {
                     owner.showAlert()
@@ -144,9 +153,9 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
         }.disposed(by: disposeBag)
 
 
-//        mainView.folderButton.rx.tap.bind(with: self) { owner, _ in
-//            owner.showFolder()
-//        }.disposed(by: disposeBag)
+        mainView.folderButton.rx.tap.bind(with: self) { owner, _ in
+            owner.showFolder()
+        }.disposed(by: disposeBag)
         
         
         
@@ -161,12 +170,20 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
             
         }.disposed(by: disposeBag)
         
-        
-        
+        output.finisehdVideo.drive(with: self) { owner, _ in
             
-//        mainView.gradeCollectionView.rx.modelSelected(BoulderingAttempt.self).bind(with: self) { owner, value in
-//            owner.mainView.recordButton.recordButton.backgroundColor = .setBoulderColor(from: value.color)
-//        }.disposed(by: disposeBag)
+            owner.mainView.folderButton.isHidden = owner.viewModel.recordedVideos.isEmpty
+            owner.mainView.qualityButton.isHidden = false
+            owner.mainView.aspectRatioButton.isHidden = false
+        }.disposed(by: disposeBag)
+        
+        
+        output.dismissView.drive(with: self) { owner, _ in
+            
+            owner.coordinator?.showDetail(mode: .latest)
+            
+        }.disposed(by: disposeBag)
+        
     }
     
 
@@ -176,8 +193,12 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
         
         let alert = UIAlertController(title: "안내", message: "기록을 저장하시겠습니까?", preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "저장", style: .default))
-        alert.addAction(UIAlertAction(title: "저장히지 않음", style: .destructive))
+        alert.addAction(UIAlertAction(title: "저장", style: .default, handler: { [weak self] _ in
+            self?.savedRecord.accept(())
+        }))
+        alert.addAction(UIAlertAction(title: "저장하지 않음", style: .destructive, handler: { [weak self] _ in
+            self?.coordinator?.dismiss()
+        }))
         alert.addAction(UIAlertAction(title: "취소", style: .cancel))
         present(alert, animated: true)
     }
@@ -222,7 +243,6 @@ extension VideoCaptureViewController {
             guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
                   let input = try? AVCaptureDeviceInput(device: device),
                   session.canAddInput(input) else {
-                /// canAdd: 이 인풋을 세션에 추가할 수 있냐?
                 print("장치 오류")
                 return
             }
@@ -285,7 +305,10 @@ extension VideoCaptureViewController {
     }
     
     private func showFolder() {
-        let videoListVC = VideoListViewController(videoURLs: recordedVideos)
+        
+        let videoListVC = VideoListViewController(recordedVideos: viewModel.recordedVideos) { [weak self] videoData in
+            self?.editVideo.accept(videoData)
+        }
         videoListVC.modalPresentationStyle = .formSheet
         present(videoListVC, animated: true)
     }
@@ -368,175 +391,6 @@ extension VideoCaptureViewController: AVCaptureFileOutputRecordingDelegate {
             return
         }
 
-        // iOS 16+ 기준: 비동기 처리로 후보정 후 저장
-        Task { [weak self] in
-            guard let self = self else { return }
-            await self.processAndSaveVideoAsync(originalURL: outputFileURL, ratio: self.mainView.aspectRatio)
-        }
-    }
-
-    /// iOS 16+ 전제: 비디오를 선택된 비율로 센터 크롭/리사이즈 후 저장
-    private func processAndSaveVideoAsync(originalURL: URL, ratio: VideoAspectRatio) async {
-        
-        /// 원본인 경우 그냥 저장
-        if ratio == .ratio9x16 {
-            recordedVideos.append(originalURL)
-            saveVideoToPhotoLibrary(originalURL)
-            await MainActor.run {
-                self.mainView.folderButton.isHidden = self.recordedVideos.isEmpty
-                self.mainView.qualityButton.isHidden = false
-                self.mainView.aspectRatioButton.isHidden = false
-            }
-            return
-        }
-
-        let asset = AVAsset(url: originalURL)
-
-        // 1) 메타 로딩 (iOS 16+ async APIs)
-        let assetDuration = (try? await asset.load(.duration)) ?? .zero
-        let videoTrack = try? await asset.loadTracks(withMediaType: .video).first
-        guard let videoTrack else {
-            print("비디오 트랙을 찾을 수 없습니다")
-            self.saveVideoToPhotoLibrary(originalURL)
-            return
-        }
-        let naturalSize = (try? await videoTrack.load(.naturalSize)) ?? .zero
-        /// preferredTransform: 카메라 센서가 내보낸 버퍼의 회전/미러링 정보
-        let preferredTransform = (try? await videoTrack.load(.preferredTransform)) ?? .identity
-
-        // FPS 계산: nominalFrameRate > 0 우선, 없으면 minFrameDuration
-        let fps: Double = await {
-            if let nfr = try? await videoTrack.load(.nominalFrameRate), nfr > 0 { return Double(nfr) }
-            if let mfd = try? await videoTrack.load(.minFrameDuration), mfd.isValid, mfd.seconds > 0 { return 1.0 / mfd.seconds }
-            return 30
-        }()
-
-        // 2) 타깃 렌더 사이즈 (짧은 변 1080, enum 기준)
-        let targetSize = ratio.renderSize(shortSide: 1080)
-
-        // 3) 원본 디스플레이 사이즈(orientation 반영)
-        let isPortrait = (preferredTransform.a == 0 && abs(preferredTransform.b) == 1 && abs(preferredTransform.c) == 1 && preferredTransform.d == 0)
-        let sourceDisplaySize = isPortrait ? CGSize(width: naturalSize.height, height: naturalSize.width) : naturalSize
-
-        // 4) 센터 크롭 스케일/이동
-        let targetAspect = targetSize.width / targetSize.height
-        let sourceAspect = sourceDisplaySize.width / sourceDisplaySize.height
-        let scale: CGFloat = (sourceAspect > targetAspect)
-            ? (targetSize.height / sourceDisplaySize.height)
-            : (targetSize.width  / sourceDisplaySize.width)
-        let scaledW = sourceDisplaySize.width * scale
-        let scaledH = sourceDisplaySize.height * scale
-        let tx = (targetSize.width  - scaledW)  * 0.5
-        let ty = (targetSize.height - scaledH) * 0.5
-
-        // 5) 합성 구성 (오디오 패스스루)
-        let composition = AVMutableComposition()
-        guard let compVideo = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) else {
-            print("합성 비디오 트랙 생성 실패")
-            self.saveVideoToPhotoLibrary(originalURL)
-            return
-        }
-        do {
-            try compVideo.insertTimeRange(CMTimeRange(start: .zero, duration: assetDuration), of: videoTrack, at: .zero)
-            compVideo.preferredTransform = .identity
-        } catch {
-            print("비디오 트랙 삽입 실패: \(error)")
-            self.saveVideoToPhotoLibrary(originalURL)
-            return
-        }
-
-        if let aTrack = try? await asset.loadTracks(withMediaType: .audio).first,
-           let compAudio = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) {
-            try? compAudio.insertTimeRange(CMTimeRange(start: .zero, duration: assetDuration), of: aTrack, at: .zero)
-        }
-
-        // 6) 비디오 합성 인스트럭션 (회전 → 스케일 → 이동)
-        let instruction = AVMutableVideoCompositionInstruction()
-        instruction.timeRange = CMTimeRange(start: .zero, duration: assetDuration)
-        let layer = AVMutableVideoCompositionLayerInstruction(assetTrack: compVideo)
-        var transform = preferredTransform
-        transform = transform.concatenating(CGAffineTransform(scaleX: scale, y: scale))
-        transform = transform.concatenating(CGAffineTransform(translationX: tx, y: ty))
-        layer.setTransform(transform, at: .zero)
-        instruction.layerInstructions = [layer]
-
-        let videoComp = AVMutableVideoComposition()
-        videoComp.renderSize = CGSize(width: round(targetSize.width), height: round(targetSize.height))
-        videoComp.frameDuration = CMTime(value: 1, timescale: CMTimeScale(max(fps, 1)))
-        videoComp.instructions = [instruction]
-
-        // 7) 익스포트
-        let filenameSuffix: String = {
-            switch ratio {
-            case .ratio9x16: return "_9x16"
-            case .ratio4x5:  return "_4x5"
-            }
-        }()
-        
-        let outURL: URL = {
-            let dir = FileManager.default.temporaryDirectory
-            let name = "export_\(Int(Date().timeIntervalSince1970))\(filenameSuffix).mp4"
-            return dir.appendingPathComponent(name)
-        }()
-
-        guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
-            print("Exporter 생성 실패")
-            self.saveVideoToPhotoLibrary(originalURL)
-            return
-        }
-        exporter.outputURL = outURL
-        exporter.outputFileType = .mp4
-        exporter.videoComposition = videoComp
-        exporter.shouldOptimizeForNetworkUse = true
-
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            exporter.exportAsynchronously {
-                continuation.resume()
-            }
-        }
-
-        switch exporter.status {
-        case .completed:
-            print("Export 완료: \(outURL)")
-            self.recordedVideos.append(outURL)
-            self.saveVideoToPhotoLibrary(outURL)
-            try? FileManager.default.removeItem(at: originalURL)
-            await MainActor.run {
-                self.mainView.folderButton.isHidden = self.recordedVideos.isEmpty
-                self.mainView.qualityButton.isHidden = false
-                self.mainView.aspectRatioButton.isHidden = false
-            }
-        case .failed, .cancelled:
-            print("Export 실패: \(exporter.error?.localizedDescription ?? "unknown") — 원본 저장 시도")
-            self.recordedVideos.append(originalURL)
-            self.saveVideoToPhotoLibrary(originalURL)
-            await MainActor.run {
-                self.mainView.folderButton.isHidden = self.recordedVideos.isEmpty
-                self.mainView.qualityButton.isHidden = false
-                self.mainView.aspectRatioButton.isHidden = false
-            }
-        default:
-            break
-        }
-    }
-
-    private func saveVideoToPhotoLibrary(_ fileURL: URL) {
-   
-        PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
-            guard status == .authorized else {
-                print("사진 앱에 추가 권한이 없습니다: \(status)")
-                return
-            }
-            PHPhotoLibrary.shared().performChanges({
-                PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: fileURL)
-            }) { success, error in
-                if let error = error {
-                    print("갤러리 저장 실패: \(error)")
-                } else {
-                    print("갤러리에 저장 완료: \(success)")
-                }
-            }
-        }
-    
+        savedVideo.accept((outputFileURL, self.mainView.aspectRatio))
     }
 }
