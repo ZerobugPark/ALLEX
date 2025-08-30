@@ -23,9 +23,16 @@ final class RecordButton: UIButton {
     
     let recordButton: UIButton = {
         let button = UIButton(type: .system) // UIButton으로 변경
-        button.backgroundColor = .yellow
         button.layer.cornerRadius = 30
         button.layer.borderWidth = 0
+        return button
+    }()
+    
+    let recordingButton: UIButton = {
+        let button = UIButton(type: .system) // UIButton으로 변경
+        button.backgroundColor = .red
+        button.layer.borderWidth = 0
+        button.isHidden = true
         return button
     }()
     
@@ -35,7 +42,7 @@ final class RecordButton: UIButton {
         
         // customImageView 설정
         addSubviews(recordView)
-        recordView.addSubview(recordButton)
+        recordView.addSubviews(recordButton, recordingButton)
         
         recordView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -48,6 +55,10 @@ final class RecordButton: UIButton {
             make.size.equalTo(60)
         }
         
+        recordingButton.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.size.equalTo(40)
+        }
        
       
         

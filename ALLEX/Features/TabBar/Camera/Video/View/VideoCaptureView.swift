@@ -40,6 +40,9 @@ final class VideoCaptureView: BaseView {
     
     let closeButton = UIButton()
     
+    lazy var gradeCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
+    let gradeButton = UIButton()
+    
     // MARK: - Aspect Ratio Overlay
     private let overlayMaskLayer = CAShapeLayer()
     private let cropBorderLayer = CAShapeLayer()
@@ -49,17 +52,17 @@ final class VideoCaptureView: BaseView {
     
     
     override func configureHierarchy() {
-        self.addSubviews(previewView, settingsView, containerView)
+        self.addSubviews(previewView, settingsView, containerView, gradeCollectionView)
         settingsView.addSubviews(closeButton, aspectRatioButton, qualityButton)
-        containerView.addSubviews(folderButton, recordButton)
-        
+        containerView.addSubviews(folderButton, recordButton, gradeButton)
+   
     }
     
     override func configureLayout() {
         // MARK: - UI 설정
         
         settingsView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(-4)
             make.horizontalEdges.equalToSuperview()
             make.height.equalTo(100)
         }
@@ -95,7 +98,6 @@ final class VideoCaptureView: BaseView {
         folderButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(40)
         }
         
         containerView.snp.makeConstraints { make in
@@ -104,6 +106,16 @@ final class VideoCaptureView: BaseView {
             make.height.equalTo(80)
         }
         
+        gradeButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-20)
+            make.centerY.equalToSuperview()
+        }
+        
+        gradeCollectionView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview().inset(20)
+            make.height.equalTo(160)
+            make.bottom.equalTo(recordButton.snp.top).offset(-20)
+        }
         
     }
     
@@ -112,6 +124,21 @@ final class VideoCaptureView: BaseView {
         folderButton.setImage(UIImage(systemName: "folder"), for: .normal)
         folderButton.tintColor = .white
         folderButton.isHidden = true
+        
+        
+        folderButton.contentHorizontalAlignment = .fill
+        folderButton.contentVerticalAlignment = .fill
+        folderButton.imageView?.contentMode = .scaleAspectFit
+        folderButton.configuration?.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
+        // Increase the symbol point size; without this, SFSymbols default to ~17pt and look small
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 17, weight: .regular, scale: .large)
+        folderButton.setPreferredSymbolConfiguration(symbolConfig, forImageIn: .normal)
+        
+        gradeButton.setTitle("난이도", for: .normal)
+        gradeButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
+        gradeButton.setTitleColor(.setAllexColor(.backGround), for: .normal)
+
+    
         
         closeButton.setImage(.setAllexSymbol(.xmark), for: .normal)
         closeButton.tintColor = .setAllexColor(.backGround)
@@ -143,6 +170,11 @@ final class VideoCaptureView: BaseView {
         updateAspectOverlay()
         
         previewView.backgroundColor = .black
+
+        gradeCollectionView.showsVerticalScrollIndicator = false
+        gradeCollectionView.showsHorizontalScrollIndicator = false
+        
+        gradeCollectionView.isHidden = true
     }
     
     
@@ -159,8 +191,10 @@ final class VideoCaptureView: BaseView {
         let target: CGSize
         switch aspectRatio {
         case .ratio9x16:
+            qualityButton.isEnabled = true
             target = CGSize(width: 9, height: 16)
         case .ratio4x5:
+            qualityButton.isEnabled = false
             target = CGSize(width: 4, height: 5)
         }
 
@@ -197,7 +231,40 @@ final class VideoCaptureView: BaseView {
         if previewView.layer.sublayers?.contains(previewView.videoPreviewLayer) == true {
             previewView.videoPreviewLayer.frame = previewView.bounds
         }
+        gradeCollectionView.layer.cornerRadius = 10
         updateAspectOverlay()
+        updateGradeLayout()
+    }
+    
+    // 5 items per row, up to 2 rows (height = 80)
+    private func updateGradeLayout() {
+        guard let layout = gradeCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+
+        let columns: CGFloat = 5
+        //// We want exact 2 rows in 80pt, so line spacing must be 0 and item height = 40
+        layout.minimumLineSpacing = 20
+
+        // Keep circle diameter 40pt
+        let itemSide: CGFloat = 60
+        layout.itemSize = CGSize(width: itemSide, height: itemSide)
+        
+        
+        // Compute horizontal spacing so exactly 5 items fit the current width
+        let availableWidth = gradeCollectionView.bounds.width - layout.sectionInset.left - layout.sectionInset.right
+        let rawSpacing = (availableWidth - (columns * itemSide)) / (columns - 1)
+        layout.minimumInteritemSpacing = max(0, floor(rawSpacing))
+
+        layout.invalidateLayout()
+    }
+    
+    private func createCollectionViewLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.sectionInset = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 0
+        layout.itemSize = CGSize(width: 60, height: 60)
+        return layout
     }
     
 }

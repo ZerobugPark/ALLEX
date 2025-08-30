@@ -56,10 +56,15 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
     // MARK: - 속성
     private let session = AVCaptureSession()
     private var videoOutput: AVCaptureMovieFileOutput!
-    private var recordedVideos: [URL] = []
+    
     private var currentQuality: AVCaptureSession.Preset = .high
     
+    private let sessionQueue = DispatchQueue(label: "camera.session.queue") /// 전역 큐 설정
     var coordinator: CameraCoordinator?
+    private let editVideo = PublishRelay<[Int : [URL]]>()
+    private let savedVideo = PublishRelay<(URL, VideoAspectRatio)>()
+    private let savedRecord = PublishRelay<Void>()
+    
     
     // MARK: - 생명주기
     override func viewDidLoad() {
@@ -67,12 +72,8 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
         
         checkPermissionAndSetupCamera()
         
-        //        Task {
-        //            await setupCamera()
-        //            await MainActor.run {
-        //                updatePreviewLayerFrame()
-        //            }
-        //        }
+        mainView.gradeCollectionView.register(VideoGradeCell.self, forCellWithReuseIdentifier: VideoGradeCell.reuseId)
+        
     }
     
     
@@ -99,36 +100,120 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
     }
     override func bind() {
         
+        let input = VideoCaptureViewModel.Input(
+            selectedGrade: mainView.gradeCollectionView.rx.modelSelected(BoulderingAttempt.self).asDriver(),
+            savedVideo: savedVideo.asDriver(onErrorDriveWith: .empty()),
+            editVideo: editVideo.asDriver(onErrorDriveWith: .empty()),
+            recordedButton: mainView.recordButton.recordingButton.rx.tap,
+            savedRecord: savedRecord.asDriver(onErrorJustReturn: ()),
+            
+        )
         
-        //        mainView.closeButton.rx.tap.bind(with: self) { owner, _ in
-        //            owner.coordinator?.dismiss()
-        //        }.disposed(by: disposeBag)
-        //
+        let output = viewModel.transform(input: input)
+        
+        mainView.closeButton.rx.tap.bind(with: self) { owner, _ in
+            Task { @MainActor in
+                
+                if owner.viewModel.recordedVideos.isEmpty {
+                    owner.coordinator?.dismiss()
+                } else {
+                    owner.showAlert()
+                }
+                
+            }
+        }.disposed(by: disposeBag)
+
         mainView.qualityButton.rx.tap.bind(with: self) { owner, _ in
             owner.toggleQuality()
         }.disposed(by: disposeBag)
         
-        mainView.recordButton.recordButton.rx.tap.bind(with: self) { owner, _ in
+        Observable.of(
+            mainView.recordButton.recordButton.rx.tap,
+            mainView.recordButton.recordingButton.rx.tap
+        ).merge().bind(with: self) { owner, _ in
             /// 촬영 중에는 해상도 및 비율 바꾸기 금지
             Task { @MainActor in
                 owner.mainView.qualityButton.isHidden = true
                 owner.mainView.aspectRatioButton.isHidden = true
+                owner.mainView.folderButton.isHidden = true
+                owner.mainView.gradeButton.isHidden = true
             }
             
             owner.handleRecordButton()
         }.disposed(by: disposeBag)
         
+
+        
         mainView.aspectRatioButton.rx.tap.bind(with: self) { owner, _ in
             owner.mainView.aspectRatio = owner.mainView.aspectRatio.next
+            
+            if owner.mainView.aspectRatio == .ratio4x5 {
+                if owner.currentQuality == .hd4K3840x2160 {
+                    owner.toggleQuality()
+                }
+            }
+            
+       
+            
         }.disposed(by: disposeBag)
         
         
-        //
-        //        mainView.folderButton.rx.tap.bind(with: self) { owner, _ in
-        //            owner.showFolder()
-        //        }.disposed(by: disposeBag)
+        output.currentColor.drive(with: self) { owner, color in
+            owner.mainView.recordButton.recordButton.backgroundColor = .setBoulderColor(from: color)
+            owner.mainView.gradeCollectionView.isHidden = true
+        }.disposed(by: disposeBag)
+
+
+        mainView.folderButton.rx.tap.bind(with: self) { owner, _ in
+            owner.showFolder()
+        }.disposed(by: disposeBag)
         
         
+        
+        mainView.gradeButton.rx.tap.bind(with: self) { owner, _ in
+            owner.mainView.gradeCollectionView.isHidden.toggle()
+        }.disposed(by: disposeBag)
+      
+        
+        output.gymGrade.drive(mainView.gradeCollectionView.rx.items(cellIdentifier: VideoGradeCell.id, cellType: VideoGradeCell.self)) { item, element, cell in
+            
+            cell.setupData(element)
+            
+        }.disposed(by: disposeBag)
+        
+        output.finisehdVideo.drive(with: self) { owner, _ in
+            
+            owner.mainView.folderButton.isHidden = owner.viewModel.recordedVideos.isEmpty
+            owner.mainView.qualityButton.isHidden = false
+            owner.mainView.aspectRatioButton.isHidden = false
+            owner.mainView.gradeButton.isHidden = false
+            
+        }.disposed(by: disposeBag)
+        
+        
+        output.dismissView.drive(with: self) { owner, _ in
+            
+            owner.coordinator?.showDetail(mode: .latest)
+            
+        }.disposed(by: disposeBag)
+        
+    }
+    
+
+    
+    
+    private func showAlert() {
+        
+        let alert = UIAlertController(title: "안내", message: "기록을 저장하시겠습니까?", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "저장", style: .default, handler: { [weak self] _ in
+            self?.savedRecord.accept(())
+        }))
+        alert.addAction(UIAlertAction(title: "저장하지 않음", style: .destructive, handler: { [weak self] _ in
+            self?.coordinator?.dismiss()
+        }))
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
+        present(alert, animated: true)
     }
     
 }
@@ -159,52 +244,53 @@ extension VideoCaptureViewController {
     }
     
     private func setupCamera() {
-        
-        /// 세션 설정
-        session.sessionPreset = .high // FHD
-        
-        /// 카메라 입력
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
-              let input = try? AVCaptureDeviceInput(device: device),
-              session.canAddInput(input) else {
-            /// canAdd: 이 인풋을 세션에 추가할 수 있냐?
-            print("장치 오류")
-            return
-        }
-        /// addInput 실제로 세션에 붙이는 동작
-        session.addInput(input)
-        
-        // 오디오 입력 추가
-        if let audioDevice = AVCaptureDevice.default(for: .audio) {
-            if let audioInput = try? AVCaptureDeviceInput(device: audioDevice), session.canAddInput(audioInput) {
-                session.addInput(audioInput)
+        sessionQueue.async { [weak self] in
+            
+            guard let self else { return }
+            
+            
+            /// 세션 설정
+            session.sessionPreset = .high // FHD
+            
+            /// 카메라 입력
+            guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+                  let input = try? AVCaptureDeviceInput(device: device),
+                  session.canAddInput(input) else {
+                print("장치 오류")
+                return
             }
-        }
+            /// addInput 실제로 세션에 붙이는 동작
+            session.addInput(input)
+            
+            // 오디오 입력 추가
+            if let audioDevice = AVCaptureDevice.default(for: .audio) {
+                if let audioInput = try? AVCaptureDeviceInput(device: audioDevice), session.canAddInput(audioInput) {
+                    session.addInput(audioInput)
+                }
+            }
 
-        // 비디오 출력 연결 (녹화용)
-        let movieOutput = AVCaptureMovieFileOutput()
-        if session.canAddOutput(movieOutput) {
-            session.addOutput(movieOutput)
-            self.videoOutput = movieOutput
-            if let conn = movieOutput.connection(with: .video), conn.isVideoStabilizationSupported {
-                conn.preferredVideoStabilizationMode = .auto
+            // 비디오 출력 연결 (녹화용)
+            let movieOutput = AVCaptureMovieFileOutput()
+            if session.canAddOutput(movieOutput) {
+                session.addOutput(movieOutput)
+                self.videoOutput = movieOutput
+                if let conn = movieOutput.connection(with: .video), conn.isVideoStabilizationSupported {
+                    conn.preferredVideoStabilizationMode = .auto
+                }
+            } else {
+                print("movieOutput를 세션에 추가할 수 없습니다")
             }
-        } else {
-            print("movieOutput를 세션에 추가할 수 없습니다")
+            
+            /// 미리보기 추가
+            DispatchQueue.main.async { [weak self] in
+                self?.mainView.previewView.videoPreviewLayer.session = self?.session
+            }
+            
+
+            /// 세션 실행
+            self.session.startRunning()
+            
         }
-        
-        /// 미리보기 추가
-        mainView.previewView.videoPreviewLayer.session = session
-        
-        
-        /// 세션 실행
-        Task {
-            session.startRunning()
-        }
-        
-        
-        
-        
     }
     
     
@@ -217,18 +303,29 @@ extension VideoCaptureViewController {
             }
             if videoOutput.isRecording {
                 videoOutput.stopRecording()
-                mainView.recordButton.recordButton.backgroundColor = .yellow
+                mainView.recordButton.recordButton.backgroundColor = .setBoulderColor(from: viewModel.color)
+                mainView.recordButton.recordButton.isHidden = false
+                mainView.recordButton.recordingButton.isHidden = true
             } else {
                 let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 let fileName = "video_\(Date().timeIntervalSince1970).mov"
                 let fileURL = documentsPath.appendingPathComponent(fileName)
                 videoOutput.startRecording(to: fileURL, recordingDelegate: self)
-                mainView.recordButton.recordButton.backgroundColor = .red
+                mainView.recordButton.recordButton.isHidden = true
+                mainView.recordButton.recordingButton.isHidden = false
             }
         }
     }
     
-
+    private func showFolder() {
+        
+        let videoListVC = VideoListViewController(recordedVideos: viewModel.recordedVideos) { [weak self] videoData in
+            self?.editVideo.accept(videoData)
+        }
+        videoListVC.modalPresentationStyle = .formSheet
+        present(videoListVC, animated: true)
+    }
+    
 }
 
 
@@ -266,8 +363,8 @@ private extension VideoCaptureViewController {
             blurView.alpha = 1.0
         }
         
-        let sessionQueue = DispatchQueue(label: "camera.session.queue")
-        sessionQueue.async { [weak self] in
+      
+        self.sessionQueue.async { [weak self] in
             guard let self else { return }
             CATransaction.begin()
             
@@ -298,135 +395,6 @@ private extension VideoCaptureViewController {
     }
 }
 
-//extension VideoCaptureViewController {
-//    // MARK: - 카메라 설정 (Swift 5 동시성 개선)
-//    private func setupCamera() async {
-//        // 카메라와 오디오 장치 확인
-//        guard let videoDevice = AVCaptureDevice.default(for: .video),
-//              let audioDevice = AVCaptureDevice.default(for: .audio) else {
-//            print("카메라 또는 오디오 장치를 찾을 수 없습니다")
-//            return
-//        }
-//
-//        do {
-//            // 비디오 및 오디오 입력 생성
-//            let videoInput = try AVCaptureDeviceInput(device: videoDevice)
-//            let audioInput = try AVCaptureDeviceInput(device: audioDevice)
-//
-//            // 세션 구성 및 시작 - 반드시 백그라운드 스레드에서 실행
-//            await withCheckedContinuation { continuation in
-//                DispatchQueue.global(qos: .userInitiated).async {
-//                    // 1. 세션 구성
-//                    self.captureSession.beginConfiguration()
-//
-//                    // 비디오 입력 추가
-//                    if self.captureSession.canAddInput(videoInput) {
-//                        self.captureSession.addInput(videoInput)
-//                    }
-//
-//                    // 오디오 입력 추가
-//                    if self.captureSession.canAddInput(audioInput) {
-//                        self.captureSession.addInput(audioInput)
-//                    }
-//
-//                    // 비디오 출력 설정
-//                    self.videoOutput = AVCaptureMovieFileOutput()
-//                    if self.captureSession.canAddOutput(self.videoOutput) {
-//                        self.captureSession.addOutput(self.videoOutput)
-//                    }
-//
-//                    // 세션 프리셋 설정
-//                    self.captureSession.sessionPreset = self.currentQuality
-//                    self.captureSession.commitConfiguration()
-//
-//                    // 2. 세션 시작 - 반드시 백그라운드 스레드에서 호출
-//                    // Apple 문서: startRunning은 시간이 오래 걸릴 수 있으므로
-//                    // 메인 스레드에서 호출하면 안 됨
-//                    self.captureSession.startRunning()
-//
-//                    continuation.resume()
-//                }
-//            }
-//
-//            // UI 업데이트는 메인 스레드에서 실행
-//            await MainActor.run {
-//                // 비디오 프리뷰 레이어 설정
-//                self.videoPreviewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
-//                self.videoPreviewLayer.videoGravity = .resizeAspect
-//                self.mainView.previewView.layer.addSublayer(self.videoPreviewLayer)
-//            }
-//        } catch {
-//            await MainActor.run {
-//                print("카메라 설정 오류: \(error)")
-//                self.showAlert(title: "카메라 오류", message: "카메라를 설정하는 중 문제가 발생했습니다: \(error.localizedDescription)")
-//            }
-//        }
-//    }
-//    private func showAlert(title: String, message: String) {
-//        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-//        alert.addAction(UIAlertAction(title: "확인", style: .default))
-//        present(alert, animated: true)
-//    }
-//
-//
-//    private func updatePreviewLayerFrame() {
-//        guard let videoPreviewLayer = videoPreviewLayer else { return }
-//
-//        let bounds = mainView.previewView.bounds
-//        let targetAspectRatio: CGFloat = 4.0 / 3.0
-//
-//        let width = bounds.height * targetAspectRatio
-//        let xOffset = (bounds.width - width) / 2
-//        videoPreviewLayer.frame = CGRect(x: xOffset, y: 0, width: width, height: bounds.height)
-//
-//        print("적용된 비율: \(targetAspectRatio), 프레임: \(videoPreviewLayer.frame), previewView bounds: \(bounds)")
-//    }
-//
-//    // MARK: - 동작
-
-//
-
-//
-//
-//
-//    private func showFolder() {
-//        let videoListVC = VideoListViewController(videoURLs: recordedVideos)
-//        videoListVC.modalPresentationStyle = .formSheet
-//        present(videoListVC, animated: true)
-//    }
-//
-//
-//    // MARK: - 카메라 권한 요청
-//    private func requestCameraPermission() {
-//        switch AVCaptureDevice.authorizationStatus(for: .video) {
-//        case .authorized:
-//            break
-//        case .notDetermined:
-//            AVCaptureDevice.requestAccess(for: .video) { granted in
-//                if !granted {
-//                    DispatchQueue.main.async {
-//                        self.showPermissionAlert()
-//                    }
-//                }
-//            }
-//        case .denied, .restricted:
-//            showPermissionAlert()
-//        @unknown default:
-//            showPermissionAlert()
-//        }
-//    }
-//
-//    private func showPermissionAlert() {
-//        let alert = UIAlertController(
-//            title: "카메라 권한 필요",
-//            message: "설정에서 카메라 접근을 허용해주세요",
-//            preferredStyle: .alert
-//        )
-//        alert.addAction(UIAlertAction(title: "확인", style: .default))
-//        present(alert, animated: true)
-//    }
-//}
-
 // MARK: - AVCaptureFileOutputRecordingDelegate
 // iOS 16+ async/AVAssetExport 기반 구현 (후보정 및 비율 적용)
 extension VideoCaptureViewController: AVCaptureFileOutputRecordingDelegate {
@@ -436,175 +404,6 @@ extension VideoCaptureViewController: AVCaptureFileOutputRecordingDelegate {
             return
         }
 
-        // iOS 16+ 기준: 비동기 처리로 후보정 후 저장
-        Task { [weak self] in
-            guard let self = self else { return }
-            await self.processAndSaveVideoAsync(originalURL: outputFileURL, ratio: self.mainView.aspectRatio)
-        }
-    }
-
-    /// iOS 16+ 전제: 비디오를 선택된 비율로 센터 크롭/리사이즈 후 저장
-    private func processAndSaveVideoAsync(originalURL: URL, ratio: VideoAspectRatio) async {
-        
-        /// 원본인 경우 그냥 저장
-        if ratio == .ratio9x16 {
-            recordedVideos.append(originalURL)
-            saveVideoToPhotoLibrary(originalURL)
-            await MainActor.run {
-                self.mainView.folderButton.isHidden = self.recordedVideos.isEmpty
-                self.mainView.qualityButton.isHidden = false
-                self.mainView.aspectRatioButton.isHidden = false
-            }
-            return
-        }
-
-        let asset = AVAsset(url: originalURL)
-
-        // 1) 메타 로딩 (iOS 16+ async APIs)
-        let assetDuration = (try? await asset.load(.duration)) ?? .zero
-        let videoTrack = try? await asset.loadTracks(withMediaType: .video).first
-        guard let videoTrack else {
-            print("비디오 트랙을 찾을 수 없습니다")
-            self.saveVideoToPhotoLibrary(originalURL)
-            return
-        }
-        let naturalSize = (try? await videoTrack.load(.naturalSize)) ?? .zero
-        /// preferredTransform: 카메라 센서가 내보낸 버퍼의 회전/미러링 정보
-        let preferredTransform = (try? await videoTrack.load(.preferredTransform)) ?? .identity
-
-        // FPS 계산: nominalFrameRate > 0 우선, 없으면 minFrameDuration
-        let fps: Double = await {
-            if let nfr = try? await videoTrack.load(.nominalFrameRate), nfr > 0 { return Double(nfr) }
-            if let mfd = try? await videoTrack.load(.minFrameDuration), mfd.isValid, mfd.seconds > 0 { return 1.0 / mfd.seconds }
-            return 30
-        }()
-
-        // 2) 타깃 렌더 사이즈 (짧은 변 1080, enum 기준)
-        let targetSize = ratio.renderSize(shortSide: 1080)
-
-        // 3) 원본 디스플레이 사이즈(orientation 반영)
-        let isPortrait = (preferredTransform.a == 0 && abs(preferredTransform.b) == 1 && abs(preferredTransform.c) == 1 && preferredTransform.d == 0)
-        let sourceDisplaySize = isPortrait ? CGSize(width: naturalSize.height, height: naturalSize.width) : naturalSize
-
-        // 4) 센터 크롭 스케일/이동
-        let targetAspect = targetSize.width / targetSize.height
-        let sourceAspect = sourceDisplaySize.width / sourceDisplaySize.height
-        let scale: CGFloat = (sourceAspect > targetAspect)
-            ? (targetSize.height / sourceDisplaySize.height)
-            : (targetSize.width  / sourceDisplaySize.width)
-        let scaledW = sourceDisplaySize.width * scale
-        let scaledH = sourceDisplaySize.height * scale
-        let tx = (targetSize.width  - scaledW)  * 0.5
-        let ty = (targetSize.height - scaledH) * 0.5
-
-        // 5) 합성 구성 (오디오 패스스루)
-        let composition = AVMutableComposition()
-        guard let compVideo = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) else {
-            print("합성 비디오 트랙 생성 실패")
-            self.saveVideoToPhotoLibrary(originalURL)
-            return
-        }
-        do {
-            try compVideo.insertTimeRange(CMTimeRange(start: .zero, duration: assetDuration), of: videoTrack, at: .zero)
-            compVideo.preferredTransform = .identity
-        } catch {
-            print("비디오 트랙 삽입 실패: \(error)")
-            self.saveVideoToPhotoLibrary(originalURL)
-            return
-        }
-
-        if let aTrack = try? await asset.loadTracks(withMediaType: .audio).first,
-           let compAudio = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) {
-            try? compAudio.insertTimeRange(CMTimeRange(start: .zero, duration: assetDuration), of: aTrack, at: .zero)
-        }
-
-        // 6) 비디오 합성 인스트럭션 (회전 → 스케일 → 이동)
-        let instruction = AVMutableVideoCompositionInstruction()
-        instruction.timeRange = CMTimeRange(start: .zero, duration: assetDuration)
-        let layer = AVMutableVideoCompositionLayerInstruction(assetTrack: compVideo)
-        var transform = preferredTransform
-        transform = transform.concatenating(CGAffineTransform(scaleX: scale, y: scale))
-        transform = transform.concatenating(CGAffineTransform(translationX: tx, y: ty))
-        layer.setTransform(transform, at: .zero)
-        instruction.layerInstructions = [layer]
-
-        let videoComp = AVMutableVideoComposition()
-        videoComp.renderSize = CGSize(width: round(targetSize.width), height: round(targetSize.height))
-        videoComp.frameDuration = CMTime(value: 1, timescale: CMTimeScale(max(fps, 1)))
-        videoComp.instructions = [instruction]
-
-        // 7) 익스포트
-        let filenameSuffix: String = {
-            switch ratio {
-            case .ratio9x16: return "_9x16"
-            case .ratio4x5:  return "_4x5"
-            }
-        }()
-        
-        let outURL: URL = {
-            let dir = FileManager.default.temporaryDirectory
-            let name = "export_\(Int(Date().timeIntervalSince1970))\(filenameSuffix).mp4"
-            return dir.appendingPathComponent(name)
-        }()
-
-        guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
-            print("Exporter 생성 실패")
-            self.saveVideoToPhotoLibrary(originalURL)
-            return
-        }
-        exporter.outputURL = outURL
-        exporter.outputFileType = .mp4
-        exporter.videoComposition = videoComp
-        exporter.shouldOptimizeForNetworkUse = true
-
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            exporter.exportAsynchronously {
-                continuation.resume()
-            }
-        }
-
-        switch exporter.status {
-        case .completed:
-            print("Export 완료: \(outURL)")
-            self.recordedVideos.append(outURL)
-            self.saveVideoToPhotoLibrary(outURL)
-            try? FileManager.default.removeItem(at: originalURL)
-            await MainActor.run {
-                self.mainView.folderButton.isHidden = self.recordedVideos.isEmpty
-                self.mainView.qualityButton.isHidden = false
-                self.mainView.aspectRatioButton.isHidden = false
-            }
-        case .failed, .cancelled:
-            print("Export 실패: \(exporter.error?.localizedDescription ?? "unknown") — 원본 저장 시도")
-            self.recordedVideos.append(originalURL)
-            self.saveVideoToPhotoLibrary(originalURL)
-            await MainActor.run {
-                self.mainView.folderButton.isHidden = self.recordedVideos.isEmpty
-                self.mainView.qualityButton.isHidden = false
-                self.mainView.aspectRatioButton.isHidden = false
-            }
-        default:
-            break
-        }
-    }
-
-    private func saveVideoToPhotoLibrary(_ fileURL: URL) {
-   
-        PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
-            guard status == .authorized else {
-                print("사진 앱에 추가 권한이 없습니다: \(status)")
-                return
-            }
-            PHPhotoLibrary.shared().performChanges({
-                PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: fileURL)
-            }) { success, error in
-                if let error = error {
-                    print("갤러리 저장 실패: \(error)")
-                } else {
-                    print("갤러리에 저장 완료: \(success)")
-                }
-            }
-        }
-    
+        savedVideo.accept((outputFileURL, self.mainView.aspectRatio))
     }
 }
