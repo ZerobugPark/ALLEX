@@ -69,8 +69,4 @@ final class DetailInfoViewController: BaseViewController<ResultView, DetailInfoV
         print(String(describing: self) + "Deinit")
     }
       
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        navigationController?.navigationBar.isHidden = false
-//    }
 }

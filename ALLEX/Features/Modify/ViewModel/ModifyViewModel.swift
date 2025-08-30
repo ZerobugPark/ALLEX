@@ -63,7 +63,6 @@ final class ModifyViewModel: BaseViewModel {
     
     var disposeBag = DisposeBag()
     
-    private let sharedData: SharedDataModel
     private let mode: ModifyMode
     
     private var currentGym: (String, String) = ("","")
@@ -77,14 +76,12 @@ final class ModifyViewModel: BaseViewModel {
     //Modify 전용
     private var defaultDate: Date = Date()
     
+    private let spaceRepo: any ClimbingSpaceRepository = RealmClimbingSpaceRepository()
     
-    init(_ sharedData: SharedDataModel, mode: ModifyMode) {
-        self.sharedData = sharedData
+    
+    init(mode: ModifyMode) {
         self.mode = mode
-        
     }
-    
-    
     
     func transform(input: Input) -> Output {
         
@@ -116,7 +113,7 @@ final class ModifyViewModel: BaseViewModel {
         
         input.spaceTextField.bind(with: self) { owner, _ in
             
-            owner.gymList = owner.sharedData.getData(for: Gym.self)!
+            owner.gymList = owner.getGymData()
             outputGymList.accept(owner.gymList)
             
             
@@ -124,8 +121,9 @@ final class ModifyViewModel: BaseViewModel {
         
         input.selectedGym.drive(with: self) { owner, value in
             
-            let bouldering = owner.sharedData.getData(for: Bouldering.self)!.filter {  $0.brandID == value.0 }.map { BoulderingAttempt(gradeLevel: Int($0.GradeLevel)!, color: $0.Color, difficulty: $0.Difficulty, tryCount: 0, successCount: 0) }
             
+            let bouldering = owner.getBoulderingData(brandID: value.0)
+
             // 0 == brand id, 1 == gymid
             owner.updateGymInfo(brandID: value.0, gymID: value.1)
             
@@ -188,6 +186,26 @@ final class ModifyViewModel: BaseViewModel {
     }
 }
 
+extension ModifyViewModel {
+    private func getGymData() -> [Gym] {
+        do {
+            let result = try spaceRepo.fetchAllGyms()
+            return result
+        } catch {
+            return []
+        }
+    }
+    
+    private func getBoulderingData(brandID: String) ->  [BoulderingAttempt] {
+        do {
+            return try spaceRepo.fetchBouldering(brandID: brandID).map {
+               BoulderingAttempt(gradeLevel: Int($0.gradeLevel)!, color: $0.color, difficulty: $0.difficulty, tryCount: 0, successCount: 0)
+           }
+        } catch {
+            return []
+        }
+    }
+}
 
 // MARK: 수정일 때, 초기값 설정
 extension ModifyViewModel {
@@ -213,7 +231,7 @@ extension ModifyViewModel {
         defaultDate = data.climbDate
         let date = dateToString(defaultDate)
         
-        let space = sharedData.getData(for: Gym.self)!.filter { $0.gymID == data.gymId }.first!
+        let space = getGymData().filter { $0.gymID == data.gymId }.first!
         
         
         let localizedSpace =  Locale.isEnglish ? space.nameEn : space.nameKo

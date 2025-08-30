@@ -26,8 +26,6 @@ struct ClimbingInfo {
 
 final class CalendarViewModel: BaseViewModel {
     
-    var sharedData: SharedDataModel
-    
     struct Input {
         let viewDidLoad: Observable<Void>
         let changedMonth: PublishRelay<(Int,Int)>
@@ -56,11 +54,10 @@ final class CalendarViewModel: BaseViewModel {
     private var gymInfoCache: [String: Gym] = [:]
     
     private lazy var setupList = BehaviorRelay(value: currentDateList)
+    private let spaceRepo: any ClimbingSpaceRepository = RealmClimbingSpaceRepository()
     
-    
-    init(_ sharedData: SharedDataModel) {
-        self.sharedData = sharedData
-        self.cacheGymInfo()
+    init() {
+        self.getGymData()
         
         /// 업데이트 되면 캘린더도 업데이트 될 수 있도록
         NotificationCenterManager.isUpdatedRecored.addObserverVoid().bind(with: self) { owner, _ in
@@ -93,10 +90,9 @@ final class CalendarViewModel: BaseViewModel {
         }
         
         
-        
         input.viewDidLoad.bind(with: self) { owner, _ in
             
-            owner.cacheGymInfo()
+            owner.getGymData()
             
             let date = owner.getCurrentYearAndMonth()
             handleMonthChange(date.year, date.month)
@@ -129,12 +125,14 @@ final class CalendarViewModel: BaseViewModel {
 // MARK: Logic Function
 extension CalendarViewModel {
     
-    
-    private func cacheGymInfo() {
-        guard let gymList = sharedData.getData(for: Gym.self) else { return }
-        for gym in gymList {
-            gymInfoCache[gym.gymID] = gym
-        }
+    private func getGymData() {
+        do {
+            let gymList = try spaceRepo.fetchAllGyms()
+            for gym in gymList {
+                gymInfoCache[gym.gymID] = gym
+            }
+            
+        } catch { print("Realm Load Error") }
     }
     
     

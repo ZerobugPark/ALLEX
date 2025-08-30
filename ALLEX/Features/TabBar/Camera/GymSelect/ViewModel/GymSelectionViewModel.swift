@@ -14,7 +14,6 @@ import RealmSwift
 
 final class GymSelectionViewModel: BaseViewModel {
     
-    var sharedData: SharedDataModel
     
     struct Input {
         let selectedGym : Driver<[Gym]>
@@ -31,28 +30,33 @@ final class GymSelectionViewModel: BaseViewModel {
     
     private let updateGym = PublishRelay<String>()
     let repository: any MonthlyClimbingResultRepository = RealmMonthlyClimbingResultRepository()
+    let spaceRepo: any ClimbingSpaceRepository = RealmClimbingSpaceRepository()
     
     var recentGymList: [Gym] = []
     
     
-    init(_ sharedData: SharedDataModel) {
-        self.sharedData = sharedData
+    init() {
         
         NotificationCenterManager.isGymSelected.addObserverVoid().bind(with: self) { owner, _ in
             
             
             let languageCode = (Locale.preferredLanguages.first ?? "en").split(separator: "-").first ?? ""
             
-            let info = sharedData.getData(for: String.self)!
-            let data = sharedData.getData(for: Gym.self)!.filter{ $0.gymID == info[1] }
-     
+            let info = UserDefaultManager.selectedClimb
             
-            if languageCode == "en" {
-                owner.updateGym.accept(data[0].nameEn)
-            } else {
-                owner.updateGym.accept(data[0].nameKo)
+            do {
+                guard let data = try owner.spaceRepo.fetchGym(gymID: info[1]) else { return }
+                
+                if languageCode == "en" {
+                    owner.updateGym.accept(data.nameEn)
+                } else {
+                    owner.updateGym.accept(data.nameKo)
+                }
+                
+            } catch {
+                print("error")
             }
-            
+
         }.disposed(by: disposeBag)
         
         
@@ -68,8 +72,8 @@ final class GymSelectionViewModel: BaseViewModel {
         
         input.selectedGym.compactMap { $0.first }
             .drive(with: self) { owner, value in
-            owner.sharedData.updateData(data: [value.brandID, value.gymID], for: String.self)
-            
+        
+            UserDefaultManager.selectedClimb = [value.brandID, value.gymID]
             
             let languageCode = (Locale.preferredLanguages.first ?? "en").split(separator: "-").first ?? ""
             
@@ -102,12 +106,15 @@ extension GymSelectionViewModel {
         
         var gymSet: Set<Gym> = []
         
+        
+        guard let gyms = try? spaceRepo.fetchAllGyms() else { return [] }
         for item in data {
-            let gyms = sharedData.getData(for: Gym.self)!.filter { $0.gymID == item.gymId }
+            
+            let gyms = gyms.filter { $0.gymID == item.gymId }
             gymSet.formUnion(gyms)
         }
-        
         return Array(gymSet)
+        
     }
    
 }

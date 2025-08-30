@@ -11,9 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class GymListViewModel: BaseViewModel {
-    
-    var sharedData: SharedDataModel
-    
+        
     struct Input {
         let viewDidLoad: Observable<Void>
         let searchText: Observable<ControlProperty<String>.Element>
@@ -28,10 +26,15 @@ final class GymListViewModel: BaseViewModel {
     
     var disposeBag =  DisposeBag()
     private var gymList: [Gym] = []
+    let spaceRepo: any ClimbingSpaceRepository = RealmClimbingSpaceRepository()
     
-    init(_ sharedData: SharedDataModel) {
-        self.sharedData = sharedData
-        self.gymList = sharedData.getData(for: Gym.self)!
+    init() {
+        
+    
+        if let data = try? spaceRepo.fetchAllGyms() {
+            self.gymList = data
+        }
+
     }
     
     
@@ -50,7 +53,9 @@ final class GymListViewModel: BaseViewModel {
             
             
             if text.isEmpty {
-                owner.gymList = owner.sharedData.getData(for: Gym.self)!
+                if let data = try? owner.spaceRepo.fetchAllGyms() {
+                    owner.gymList = data
+                }
             } else {
                 owner.gymList = owner.filterArray(str: text)
             }
@@ -59,7 +64,8 @@ final class GymListViewModel: BaseViewModel {
         }.disposed(by: disposeBag)
         
         input.selectedGym.drive(with: self) { owner, value in
-            owner.sharedData.updateData(data: value, for: String.self)
+            
+            UserDefaultManager.selectedClimb = value
             
             NotificationCenterManager.isGymSelected.post()
             
@@ -83,23 +89,27 @@ extension GymListViewModel {
     
         let normalizedStr = str.replacingOccurrences(of: " ", with: "").uppercased()
         
+        guard let data = try? spaceRepo.fetchAllGyms() else { return [] }
+        
         if detectLanguage(text: normalizedStr) == "Korean" {
-            let data = sharedData.getData(for: Gym.self)!.filter { gym in
+            let gymInfo = data.filter { gym in
                 let normalizedNameKo = gym.nameKo.replacingOccurrences(of: " ", with: "").uppercased()
                 
                 // contains시 공백제거 해놓고 비교해야 할듯, 안하니까 띄어쓰기 문자열이랑 비교연산이 안됨.
                 return normalizedNameKo.contains(normalizedStr)
             }
-            return data
+            return gymInfo
         } else if  detectLanguage(text: normalizedStr) == "English" {
-            let data = sharedData.getData(for: Gym.self)!.filter { gym in
+           let gymInfo = data.filter { gym in
                 let normalizedNameEn = gym.nameEn.replacingOccurrences(of: " ", with: "").uppercased()
                 return normalizedNameEn.contains(normalizedStr)
             }
-            return data
+            return gymInfo
         } else {
             return []
         }
+        
+        
     }
     
     private func detectLanguage(text: String) -> String {

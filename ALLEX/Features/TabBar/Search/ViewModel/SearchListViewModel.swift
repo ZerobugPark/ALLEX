@@ -29,13 +29,11 @@ final class SearchListViewModel: BaseViewModel {
     private var resultData: [Gym] = []
     
     var disposeBag = DisposeBag()
-    
-    private var sharedData: SharedDataModel
-    
-    init(_ sharedData: SharedDataModel) {
-        self.sharedData = sharedData
         
-    }
+    private let spaceRepo: any ClimbingSpaceRepository = RealmClimbingSpaceRepository()
+    private var gymData: [Gym] = []
+    
+    init() { }
     
     
     
@@ -47,7 +45,7 @@ final class SearchListViewModel: BaseViewModel {
         
         input.viewdidLoad.bind(with: self) { owner, _ in
            
-            owner.resultData =  owner.getData()
+            owner.resultData =  owner.getGymData()
             searchResult.accept(owner.resultData)
             infoLabel.accept(true)
             
@@ -70,7 +68,7 @@ final class SearchListViewModel: BaseViewModel {
         
         input.cancelButttonTap.bind(with: self) { owner, _ in
             
-            owner.resultData =  owner.getData()
+            owner.resultData =  owner.getGymData()
             searchResult.accept(owner.resultData)
             
             infoLabel.accept(true)
@@ -88,8 +86,14 @@ final class SearchListViewModel: BaseViewModel {
 
 extension SearchListViewModel {
     
-    private func getData() -> [Gym] {
-        return sharedData.getData(for: Gym.self)!
+    private func getGymData() -> [Gym] {
+        do {
+            let result = try spaceRepo.fetchAllGyms()
+            gymData = result
+            return result
+        } catch {
+            return []
+        }
     }
     
     private func filterArray(str: String) -> [Gym] {
@@ -97,7 +101,7 @@ extension SearchListViewModel {
         let normalizedStr = str.replacingOccurrences(of: " ", with: "").uppercased()
         
         if detectLanguage(text: normalizedStr) == "Korean" {
-            let data = sharedData.getData(for: Gym.self)!.filter { gym in
+            let data = gymData.filter { gym in
                 let normalizedNameKo = gym.nameKo.replacingOccurrences(of: " ", with: "").uppercased()
                 
                 // contains시 공백제거 해놓고 비교해야 할듯, 안하니까 띄어쓰기 문자열이랑 비교연산이 안됨.
@@ -105,7 +109,7 @@ extension SearchListViewModel {
             }
             return data
         } else if  detectLanguage(text: normalizedStr) == "English" {
-            let data = sharedData.getData(for: Gym.self)!.filter { gym in
+            let data = gymData.filter { gym in
                 let normalizedNameEn = gym.nameEn.replacingOccurrences(of: " ", with: "").uppercased()
                 return normalizedNameEn.contains(normalizedStr)
             }
@@ -113,6 +117,7 @@ extension SearchListViewModel {
         } else {
             return []
         }
+        
     }
     
     private func detectLanguage(text: String) -> String {

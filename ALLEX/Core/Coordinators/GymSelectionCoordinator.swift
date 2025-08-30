@@ -11,17 +11,15 @@ final class GymSelectionCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     
     private let navigationController: UINavigationController
-    private let sharedData: SharedDataModel
     
     var onGymSelected: (() -> Void)? //  Gym 선택 후 전달할 콜백
 
-    init(navigationController: UINavigationController, sharedData: SharedDataModel) {
+    init(navigationController: UINavigationController) {
         self.navigationController = navigationController
-        self.sharedData = sharedData
     }
     
     func start() {
-        let vm = GymSelectionViewModel(sharedData)
+        let vm = GymSelectionViewModel()
         let vc = GymSelectionViewController(viewModel: vm)
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
@@ -30,7 +28,7 @@ final class GymSelectionCoordinator: Coordinator {
     
     func showGymlist() {
         
-        let vm = GymListViewModel(sharedData)
+        let vm = GymListViewModel()
         let vc = GymListViewController(viewModel: vm)
         vc.coordinator = self
         configureSheetPresentation(for: vc)

@@ -19,7 +19,7 @@ class HomeView: BaseView {
     // MARK: - Properties
     private let scrollView = UIScrollView()
     private let contentView = CustomView()
-    let indicator = UIActivityIndicatorView()
+    //let indicator = UIActivityIndicatorView()
     
     let greetingLabel = TitleLabel()
     let statusLabel = SubTitleLabel()
@@ -67,7 +67,7 @@ class HomeView: BaseView {
     
     override func configureHierarchy() {
         
-        self.addSubviews(scrollView, indicator)
+        self.addSubviews(scrollView)
         scrollView.addSubview(contentView)
         
         
@@ -102,9 +102,9 @@ class HomeView: BaseView {
             make.edges.equalToSuperview()
         }
         
-        indicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
+//        indicator.snp.makeConstraints { make in
+//            make.center.equalToSuperview()
+//        }
         
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
