@@ -77,26 +77,23 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
     }
     
     
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = true
+        UIApplication.shared.isIdleTimerDisabled = true
         self.view.layoutIfNeeded()
     }
     
     /// 레이아웃이 확정된 이후 처리하기 위해서 사용
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        //updatePreviewLayerFrame()
-        
-        
-        //previewLayer?.frame = mainView.previewView.bounds
     }
-    
-    
-    
+        
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.isHidden = false
+        UIApplication.shared.isIdleTimerDisabled = false
     }
     override func bind() {
         
