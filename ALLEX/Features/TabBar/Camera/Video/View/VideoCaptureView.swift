@@ -191,8 +191,10 @@ final class VideoCaptureView: BaseView {
         let target: CGSize
         switch aspectRatio {
         case .ratio9x16:
+            qualityButton.isEnabled = true
             target = CGSize(width: 9, height: 16)
         case .ratio4x5:
+            qualityButton.isEnabled = false
             target = CGSize(width: 4, height: 5)
         }
 

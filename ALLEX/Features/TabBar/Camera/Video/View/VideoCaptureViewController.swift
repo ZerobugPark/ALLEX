@@ -135,6 +135,8 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
             Task { @MainActor in
                 owner.mainView.qualityButton.isHidden = true
                 owner.mainView.aspectRatioButton.isHidden = true
+                owner.mainView.folderButton.isHidden = true
+                owner.mainView.gradeButton.isHidden = true
             }
             
             owner.handleRecordButton()
@@ -144,6 +146,15 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
         
         mainView.aspectRatioButton.rx.tap.bind(with: self) { owner, _ in
             owner.mainView.aspectRatio = owner.mainView.aspectRatio.next
+            
+            if owner.mainView.aspectRatio == .ratio4x5 {
+                if owner.currentQuality == .hd4K3840x2160 {
+                    owner.toggleQuality()
+                }
+            }
+            
+       
+            
         }.disposed(by: disposeBag)
         
         
@@ -175,6 +186,8 @@ class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCapt
             owner.mainView.folderButton.isHidden = owner.viewModel.recordedVideos.isEmpty
             owner.mainView.qualityButton.isHidden = false
             owner.mainView.aspectRatioButton.isHidden = false
+            owner.mainView.gradeButton.isHidden = false
+            
         }.disposed(by: disposeBag)
         
         
