@@ -83,6 +83,7 @@ final class VideoCaptureViewModel: BaseViewModel {
             if let index = owner.gymGradeList.firstIndex(where: { $0.color == owner.color }) {
                 owner.gymGradeList[index].tryCount += 1
                 owner.grades[owner.color]! += 1
+                print("ddd")
             }
             
         }.disposed(by: disposeBag)
@@ -306,19 +307,12 @@ extension VideoCaptureViewModel {
         videoComp.frameDuration = CMTime(value: 1, timescale: CMTimeScale(max(fps, 1)))
         videoComp.instructions = [instruction]
 
-        // 7) 익스포트
-        let filenameSuffix: String = {
-            switch ratio {
-            case .ratio9x16: return "_9x16"
-            case .ratio4x5:  return "_4x5"
-            }
-        }()
-        
-        
+  
+    
         let outURL: URL = {
             let dir = FileManager.default.temporaryDirectory
-            let name = "export_\(Int(Date().timeIntervalSince1970))\(filenameSuffix).mp4"
-            return dir.appendingPathComponent(name)
+            let fileName = "video_\(color)\(grades[color]!)_\(Date().timeStamp()).mov"
+            return dir.appendingPathComponent(fileName)
         }()
 
         guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
