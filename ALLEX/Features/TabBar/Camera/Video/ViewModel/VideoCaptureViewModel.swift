@@ -34,6 +34,8 @@ final class VideoCaptureViewModel: BaseViewModel {
     
     private var gymGradeList: [BoulderingAttempt] = []
     private(set) var color = "white"
+    private(set) var grades: [String: Int] = [:]
+    
     
     private(set) var recordedVideos: [Int: [URL]] = [:]
     
@@ -80,6 +82,7 @@ final class VideoCaptureViewModel: BaseViewModel {
             
             if let index = owner.gymGradeList.firstIndex(where: { $0.color == owner.color }) {
                 owner.gymGradeList[index].tryCount += 1
+                owner.grades[owner.color]! += 1
             }
             
         }.disposed(by: disposeBag)
@@ -147,6 +150,11 @@ extension VideoCaptureViewModel {
         guard let gradeInfo = try? spaceRepo.fetchBouldering(brandID: info[0]) else { return }
     
         color = gradeInfo.first!.color
+        
+        for grade in gradeInfo {
+            grades[grade.color] = 0
+        }
+        
   
         gymGradeList.append(contentsOf: gradeInfo.map {
             BoulderingAttempt(gradeLevel: Int($0.gradeLevel) ?? 0, color: $0.color, difficulty: $0.difficulty, tryCount: 0, successCount: 0)
@@ -305,6 +313,7 @@ extension VideoCaptureViewModel {
             case .ratio4x5:  return "_4x5"
             }
         }()
+        
         
         let outURL: URL = {
             let dir = FileManager.default.temporaryDirectory

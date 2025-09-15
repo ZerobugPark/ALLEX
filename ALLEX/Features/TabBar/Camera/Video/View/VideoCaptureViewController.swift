@@ -51,7 +51,7 @@ enum VideoAspectRatio {
     }
 }
 
-class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCaptureViewModel> {
+final class VideoCaptureViewController: BaseViewController<VideoCaptureView, VideoCaptureViewModel> {
     
     // MARK: - 속성
     private let session = AVCaptureSession()
@@ -307,11 +307,13 @@ extension VideoCaptureViewController {
                 mainView.recordButton.recordButton.isEnabled = false
             } else {
                 let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                let fileName = "video_\(Date().timeIntervalSince1970).mov"
+            
+                let fileName = "video_\(viewModel.color)_\(viewModel.grades[viewModel.color]!)_.mov"
                 let fileURL = documentsPath.appendingPathComponent(fileName)
                 videoOutput.startRecording(to: fileURL, recordingDelegate: self)
                 mainView.recordButton.recordButton.isHidden = true
                 mainView.recordButton.recordingButton.isHidden = false
+                mainView.recordButton.recordingButton.backgroundColor = .setBoulderColor(from: viewModel.color)
             }
         }
     }

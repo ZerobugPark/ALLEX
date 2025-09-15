@@ -218,7 +218,12 @@ final class PassthroughTrimViewController: UIViewController {
         exporter.timeRange = CMTimeRangeFromTimeToTime(start: start, end: end)
 
         let outDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let outURL = outDir.appendingPathComponent("trim-\(UUID().uuidString).mov")
+        // TODO: 이름 변경
+        
+        let fileName = url.lastPathComponent  
+        let newFileName = fileName.replacingOccurrences(of: "video", with: "trim")
+        
+        let outURL = outDir.appendingPathComponent(newFileName)
 
         if exporter.supportedFileTypes.contains(.mov) {
             exporter.outputFileType = .mov
