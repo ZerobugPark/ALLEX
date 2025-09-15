@@ -63,12 +63,24 @@ final class PassthroughTrimViewController: UIViewController {
         
         startLabel.textAlignment = .left
         endLabel.textAlignment = .right
-            
+        
         // Buttons
         saveButton.setTitle("저장", for: .normal)
+        saveButton.setTitleColor(.valid, for: .normal)
         cancelButton.setTitle("취소", for: .normal)
+        cancelButton.setTitleColor(.unvalid, for: .normal)
         saveButton.addTarget(self, action: #selector(tapSave), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(tapCancel), for: .touchUpInside)
+        
+        /// Slider Color
+        startSlider.minimumTrackTintColor = UIColor(red: 92/255, green: 215/255, blue: 140/255, alpha: 1.0)
+        startSlider.maximumTrackTintColor = UIColor.lightGray.withAlphaComponent(0.3)
+        startSlider.thumbTintColor = UIColor(red: 92/255, green: 215/255, blue: 140/255, alpha: 1.0)
+        
+        endSlider.minimumTrackTintColor = UIColor(red: 255/255, green: 184/255, blue: 77/255, alpha: 1.0)
+        endSlider.maximumTrackTintColor = UIColor.lightGray.withAlphaComponent(0.3)
+        endSlider.thumbTintColor = UIColor(red: 255/255, green: 184/255, blue: 77/255, alpha: 1.0)
+        
         
         // Add targets for sliders
         startSlider.addTarget(self, action: #selector(startChanged), for: .valueChanged)
@@ -206,7 +218,12 @@ final class PassthroughTrimViewController: UIViewController {
         exporter.timeRange = CMTimeRangeFromTimeToTime(start: start, end: end)
 
         let outDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let outURL = outDir.appendingPathComponent("trim-\(UUID().uuidString).mov")
+        // TODO: 이름 변경
+        
+        let fileName = url.lastPathComponent  
+        let newFileName = fileName.replacingOccurrences(of: "video", with: "trim")
+        
+        let outURL = outDir.appendingPathComponent(newFileName)
 
         if exporter.supportedFileTypes.contains(.mov) {
             exporter.outputFileType = .mov
