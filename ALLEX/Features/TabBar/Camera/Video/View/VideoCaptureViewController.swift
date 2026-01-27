@@ -307,8 +307,10 @@ extension VideoCaptureViewController {
                 mainView.recordButton.recordButton.isEnabled = false
             } else {
                 let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            
-                let fileName = "video_\(viewModel.color)_\(viewModel.grades[viewModel.color]!)_.mov"
+                
+                
+                
+                let fileName = "video_\(viewModel.color)\(viewModel.grades[viewModel.color]!)_\(Date().timeStamp()).mov"
                 let fileURL = documentsPath.appendingPathComponent(fileName)
                 videoOutput.startRecording(to: fileURL, recordingDelegate: self)
                 mainView.recordButton.recordButton.isHidden = true

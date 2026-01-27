@@ -26,4 +26,10 @@ extension Date {
         return formattedDate
     }
     
+    
+    func timeStamp() -> Int {
+        let timestampms = Int(self.timeIntervalSince1970 * 1000)
+        return timestampms
+    }
+    
 }
